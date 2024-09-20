@@ -1,0 +1,19 @@
+.wrapper {
+  background: #000;
+}
+.admin-page {
+  max-width: 1155px;
+  padding-inline: 24px;
+  margin-inline: auto;
+  color: #fff;
+  padding-top: 100px;
+  min-height: 100lvh;
+  padding-bottom: 60px;
+}
+.header {
+  display: flex;
+  justify-content: flex-end;
+}
+.btn {
+  display: flex;
+}

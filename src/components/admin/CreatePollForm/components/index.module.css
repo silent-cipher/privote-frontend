@@ -1,0 +1,11 @@
+.without-img-input {
+  background: #0b0c0f;
+  padding: 11px 12px;
+  color: #fff;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.without-img-input::placeholder {
+  color: #535861;
+}

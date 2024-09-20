@@ -1,0 +1,9 @@
+.button {
+  display: flex;
+  padding: 14px 32px 18px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #7f58b7 0.17%, #c65ec6 99.46%);
+}
