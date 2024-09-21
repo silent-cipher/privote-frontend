@@ -33,6 +33,13 @@ export enum PollType {
   WEIGHTED_MULTIPLE_VOTE,
 }
 
+export enum VerificationType {
+  NONE,
+  ANON,
+  WC,
+  NFC,
+}
+
 /**
  * Supported verification key modes
  */

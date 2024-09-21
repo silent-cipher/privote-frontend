@@ -3,7 +3,7 @@ import styles from "./index.module.css";
 
 import Image from "next/image";
 import { useState } from "react";
-import { PollType, EMode } from "~~/types/poll";
+import { PollType, EMode, VerificationType } from "~~/types/poll";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 import WithoutImageInput from "./components/WithoutImageInput";
@@ -25,6 +25,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     options: [""],
     pubKey: "",
     authType: "",
+    veriMethod: "none",
   });
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [candidateSelection, setCandidateSelection] = useState<string>("");
@@ -44,6 +45,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
 
   const handlePollTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPollData({ ...pollData, pollType: parseInt(e.target.value) });
+  };
+
+  const handleVeriMehodChange = (e: React.ChangeEvent<any>) => {
+    setPollData({ ...pollData, veriMethod: e.target.value });
   };
 
   const handlePubKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,6 +238,70 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               <option value={EMode.QV}>Quadratic Vote</option>
               <option value={EMode.NON_QV}>Non Quadratic Vote</option>
             </select>
+          </div>
+          <div className={styles.divider}></div>
+          <div className={styles.verification}>
+            <h1>Verification</h1>
+            <div className={styles["veri-row"]}>
+              <button
+                type="button"
+                className={`${styles["veri-box"]} ${
+                  pollData.veriMethod === "none" ? styles.selected : ""
+                }`}
+                value={"none"}
+                onClick={handleVeriMehodChange}
+              >
+                None
+              </button>
+              <button
+                type="button"
+                className={`${styles["veri-box"]} ${
+                  pollData.veriMethod === "anon" ? styles.selected : ""
+                }`}
+                value={"anon"}
+                onClick={handleVeriMehodChange}
+              >
+                <Image
+                  width={31}
+                  height={31}
+                  alt="icon"
+                  src={"/anon-icon.svg"}
+                />
+                Anon - aadhaar
+              </button>
+              <button
+                type="button"
+                className={`${styles["veri-box"]} ${
+                  pollData.veriMethod === "wc" ? styles.selected : ""
+                }`}
+                value={"wc"}
+                onClick={handleVeriMehodChange}
+              >
+                <Image
+                  width={31}
+                  height={31}
+                  alt="icon"
+                  src={"/worldcoin.svg"}
+                />
+                Worldcoin-orb
+              </button>
+              <button
+                type="button"
+                className={`${styles["veri-box"]} ${
+                  pollData.veriMethod === "nfc" ? styles.selected : ""
+                }`}
+                value={"nfc"}
+                onClick={handleVeriMehodChange}
+              >
+                <Image
+                  width={31}
+                  height={31}
+                  alt="icon"
+                  src={"/nfc-icon.svg"}
+                />
+                NFC
+              </button>
+            </div>
           </div>
           <div className={styles.divider}></div>
           <div className={styles["candidate-box"]}>

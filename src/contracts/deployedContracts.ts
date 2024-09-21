@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 const deployedContracts = {
   17000: {
     ConstantInitialVoiceCreditProxy: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0xF2554363cD29d09B3cb380de8357162653Bc6580",
       abi: [
         {
           inputs: [
@@ -45,10 +45,323 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 1,
+      deploymentBlockNumber: 2377757,
+    },
+    DestinationPrivote: {
+      address: "0x6BFfB925f07FBF45d5050aDA55bDf6fF3E352c82",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "router",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "privoteAddress",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "target",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+          ],
+          name: "FailedToWithdrawEth",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "router",
+              type: "address",
+            },
+          ],
+          name: "InvalidRouter",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "latestMessageId",
+              type: "bytes32",
+            },
+            {
+              indexed: false,
+              internalType: "uint64",
+              name: "latestSourceChainSelector",
+              type: "uint64",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "latestSender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "latestMessage",
+              type: "string",
+            },
+          ],
+          name: "MessageReceived",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferRequested",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "acceptOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              components: [
+                {
+                  internalType: "bytes32",
+                  name: "messageId",
+                  type: "bytes32",
+                },
+                {
+                  internalType: "uint64",
+                  name: "sourceChainSelector",
+                  type: "uint64",
+                },
+                {
+                  internalType: "bytes",
+                  name: "sender",
+                  type: "bytes",
+                },
+                {
+                  internalType: "bytes",
+                  name: "data",
+                  type: "bytes",
+                },
+                {
+                  components: [
+                    {
+                      internalType: "address",
+                      name: "token",
+                      type: "address",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "amount",
+                      type: "uint256",
+                    },
+                  ],
+                  internalType: "struct Client.EVMTokenAmount[]",
+                  name: "destTokenAmounts",
+                  type: "tuple[]",
+                },
+              ],
+              internalType: "struct Client.Any2EVMMessage",
+              name: "message",
+              type: "tuple",
+            },
+          ],
+          name: "ccipReceive",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getLatestMessageDetails",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
+            },
+            {
+              internalType: "uint64",
+              name: "",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getRouter",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "privote",
+          outputs: [
+            {
+              internalType: "contract IPrivote",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes4",
+              name: "interfaceId",
+              type: "bytes4",
+            },
+          ],
+          name: "supportsInterface",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "beneficiary",
+              type: "address",
+            },
+          ],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "beneficiary",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "token",
+              type: "address",
+            },
+          ],
+          name: "withdrawToken",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentBlockNumber: 2377792,
     },
     FreeForAllGatekeeper: {
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      address: "0xaaD9aDa5c7cf782041E96e9e9353D5977a329090",
       abi: [
         {
           inputs: [],
@@ -100,10 +413,265 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 3,
+      deploymentBlockNumber: 2377758,
     },
-    MACIWrapper: {
-      address: "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+    MessageProcessorFactory: {
+      address: "0x5496306809c80c39696F575f0F7BE473b54fEcDD",
+      abi: [
+        {
+          inputs: [],
+          name: "MESSAGE_DATA_LENGTH",
+          outputs: [
+            {
+              internalType: "uint8",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_verifier",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_vkRegistry",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_poll",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+            {
+              internalType: "enum DomainObjs.Mode",
+              name: "_mode",
+              type: "uint8",
+            },
+          ],
+          name: "deploy",
+          outputs: [
+            {
+              internalType: "address",
+              name: "messageProcessorAddr",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      deploymentBlockNumber: 2377768,
+    },
+    PollFactory: {
+      address: "0x17f2FD3514422356e12edA364C6661e747c88014",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "payable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "MESSAGE_DATA_LENGTH",
+          outputs: [
+            {
+              internalType: "uint8",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_duration",
+              type: "uint256",
+            },
+            {
+              components: [
+                {
+                  internalType: "uint8",
+                  name: "intStateTreeDepth",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint8",
+                  name: "messageTreeSubDepth",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint8",
+                  name: "messageTreeDepth",
+                  type: "uint8",
+                },
+                {
+                  internalType: "uint8",
+                  name: "voteOptionTreeDepth",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct Params.TreeDepths",
+              name: "_treeDepths",
+              type: "tuple",
+            },
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "x",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "y",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct DomainObjs.PubKey",
+              name: "_coordinatorPubKey",
+              type: "tuple",
+            },
+            {
+              internalType: "address",
+              name: "_maci",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_emptyBallotRoot",
+              type: "uint256",
+            },
+          ],
+          name: "deploy",
+          outputs: [
+            {
+              internalType: "address",
+              name: "pollAddr",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      deploymentBlockNumber: 2377767,
+    },
+    PoseidonT3: {
+      address: "0x18e6219106eDAC33746A4b29956114eA396ef2BE",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[2]",
+              name: "input",
+              type: "uint256[2]",
+            },
+          ],
+          name: "poseidon",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      deploymentBlockNumber: 2377761,
+    },
+    PoseidonT4: {
+      address: "0x5b0AbEb3195d96426924dd260B8dfEC59A6cCf75",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[3]",
+              name: "input",
+              type: "uint256[3]",
+            },
+          ],
+          name: "poseidon",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      deploymentBlockNumber: 2377763,
+    },
+    PoseidonT5: {
+      address: "0xa7B84A722f3Bf4afE618A19633A7F1b48D6A26Ad",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[4]",
+              name: "input",
+              type: "uint256[4]",
+            },
+          ],
+          name: "poseidon",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      deploymentBlockNumber: 2377764,
+    },
+    PoseidonT6: {
+      address: "0xCAFD37abA3F0A600E590F54cE8c5313088E7dFa7",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "uint256[5]",
+              name: "input",
+              type: "uint256[5]",
+            },
+          ],
+          name: "poseidon",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+      ],
+      deploymentBlockNumber: 2377766,
+    },
+    Privote: {
+      address: "0x34914AcA7EdBe594fbe97b638b6E5d6f0491e33c",
       abi: [
         {
           inputs: [
@@ -142,6 +710,16 @@ const deployedContracts = {
               name: "_emptyBallotRoots",
               type: "uint256[5]",
             },
+            {
+              internalType: "uint256",
+              name: "_stake",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_slashThreshold",
+              type: "uint256",
+            },
           ],
           stateMutability: "nonpayable",
           type: "constructor",
@@ -158,6 +736,11 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "InvalidCaller",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "InvalidMessage",
           type: "error",
         },
@@ -169,28 +752,6 @@ const deployedContracts = {
         {
           inputs: [],
           name: "NumberOfLeavesCannotBeZero",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "owner",
-              type: "address",
-            },
-          ],
-          name: "OwnableInvalidOwner",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "account",
-              type: "address",
-            },
-          ],
-          name: "OwnableUnauthorizedAccount",
           type: "error",
         },
         {
@@ -250,29 +811,6 @@ const deployedContracts = {
               internalType: "uint256",
               name: "_coordinatorPubKeyY",
               type: "uint256",
-            },
-            {
-              components: [
-                {
-                  internalType: "address",
-                  name: "poll",
-                  type: "address",
-                },
-                {
-                  internalType: "address",
-                  name: "messageProcessor",
-                  type: "address",
-                },
-                {
-                  internalType: "address",
-                  name: "tally",
-                  type: "address",
-                },
-              ],
-              indexed: false,
-              internalType: "struct MACI.PollContracts",
-              name: "pollAddr",
-              type: "tuple",
             },
             {
               indexed: false,
@@ -371,8 +909,33 @@ const deployedContracts = {
               name: "endTime",
               type: "uint256",
             },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "authType",
+              type: "string",
+            },
           ],
           name: "PollCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "pollDeployer",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "PollDeployerSlashed",
           type: "event",
         },
         {
@@ -445,24 +1008,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
-          name: "coordinatorPubKey",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "x",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "y",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [
             {
               internalType: "string",
@@ -489,10 +1034,32 @@ const deployedContracts = {
               name: "isQv",
               type: "uint8",
             },
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "x",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "y",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct DomainObjs.PubKey",
+              name: "coordinatorPubKey",
+              type: "tuple",
+            },
+            {
+              internalType: "string",
+              name: "authType",
+              type: "string",
+            },
           ],
           name: "createPoll",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
@@ -563,30 +1130,7 @@ const deployedContracts = {
             },
           ],
           name: "deployPoll",
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: "address",
-                  name: "poll",
-                  type: "address",
-                },
-                {
-                  internalType: "address",
-                  name: "messageProcessor",
-                  type: "address",
-                },
-                {
-                  internalType: "address",
-                  name: "tally",
-                  type: "address",
-                },
-              ],
-              internalType: "struct MACI.PollContracts",
-              name: "pollAddr",
-              type: "tuple",
-            },
-          ],
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
@@ -688,8 +1232,40 @@ const deployedContracts = {
                   name: "tallyJsonCID",
                   type: "string",
                 },
+                {
+                  components: [
+                    {
+                      internalType: "uint256",
+                      name: "x",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "y",
+                      type: "uint256",
+                    },
+                  ],
+                  internalType: "struct DomainObjs.PubKey",
+                  name: "coordinatorPubKey",
+                  type: "tuple",
+                },
+                {
+                  internalType: "address",
+                  name: "pollDeployer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "slashThreshold",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "authType",
+                  type: "string",
+                },
               ],
-              internalType: "struct MACIWrapper.PollData",
+              internalType: "struct Privote.PollData",
               name: "poll_",
               type: "tuple",
             },
@@ -786,8 +1362,40 @@ const deployedContracts = {
                   name: "tallyJsonCID",
                   type: "string",
                 },
+                {
+                  components: [
+                    {
+                      internalType: "uint256",
+                      name: "x",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "y",
+                      type: "uint256",
+                    },
+                  ],
+                  internalType: "struct DomainObjs.PubKey",
+                  name: "coordinatorPubKey",
+                  type: "tuple",
+                },
+                {
+                  internalType: "address",
+                  name: "pollDeployer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "slashThreshold",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "authType",
+                  type: "string",
+                },
               ],
-              internalType: "struct MACIWrapper.PollData[]",
+              internalType: "struct Privote.PollData[]",
               name: "polls_",
               type: "tuple[]",
             },
@@ -806,9 +1414,26 @@ const deployedContracts = {
           name: "getPoll",
           outputs: [
             {
-              internalType: "address",
-              name: "poll",
-              type: "address",
+              components: [
+                {
+                  internalType: "address",
+                  name: "poll",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "messageProcessor",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "tally",
+                  type: "address",
+                },
+              ],
+              internalType: "struct MACI.PollContracts",
+              name: "pollContracts",
+              type: "tuple",
             },
           ],
           stateMutability: "view",
@@ -1249,7 +1874,17 @@ const deployedContracts = {
           outputs: [
             {
               internalType: "address",
-              name: "",
+              name: "poll",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "messageProcessor",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "tally",
               type: "address",
             },
           ],
@@ -1290,23 +1925,6 @@ const deployedContracts = {
               ],
               internalType: "struct Params.TreeDepths",
               name: "_treeDepths",
-              type: "tuple",
-            },
-            {
-              components: [
-                {
-                  internalType: "uint256",
-                  name: "x",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "y",
-                  type: "uint256",
-                },
-              ],
-              internalType: "struct DomainObjs.PubKey",
-              name: "_coordinatorPubKey",
               type: "tuple",
             },
             {
@@ -1387,6 +2005,64 @@ const deployedContracts = {
               internalType: "contract SignUpGatekeeper",
               name: "",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "slashPollDeployer",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "slashThreshold",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "stake",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "stakes",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -1531,88 +2207,118 @@ const deployedContracts = {
         signUpGatekeeper: "maci-contracts/contracts/MACI.sol",
         stateTreeDepth: "maci-contracts/contracts/MACI.sol",
         tallyFactory: "maci-contracts/contracts/MACI.sol",
+        owner: "@openzeppelin/contracts/access/Ownable.sol",
+        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deploymentBlockNumber: 21,
+      deploymentBlockNumber: 2377771,
     },
-    MessageProcessorFactory: {
-      address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+    SourcePrivote: {
+      address: "0x1De7c4b19ECDa4f57847ed787d0952d9d1E9859c",
       abi: [
-        {
-          inputs: [],
-          name: "MESSAGE_DATA_LENGTH",
-          outputs: [
-            {
-              internalType: "uint8",
-              name: "",
-              type: "uint8",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
         {
           inputs: [
             {
               internalType: "address",
-              name: "_verifier",
+              name: "router",
               type: "address",
             },
             {
               internalType: "address",
-              name: "_vkRegistry",
-              type: "address",
-            },
-            {
-              internalType: "address",
-              name: "_poll",
-              type: "address",
-            },
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-            {
-              internalType: "enum DomainObjs.Mode",
-              name: "_mode",
-              type: "uint8",
-            },
-          ],
-          name: "deploy",
-          outputs: [
-            {
-              internalType: "address",
-              name: "messageProcessorAddr",
+              name: "link",
               type: "address",
             },
           ],
           stateMutability: "nonpayable",
-          type: "function",
-        },
-      ],
-      deploymentBlockNumber: 17,
-    },
-    PollFactory: {
-      address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
-      abi: [
-        {
-          inputs: [],
-          stateMutability: "payable",
           type: "constructor",
         },
         {
-          inputs: [],
-          name: "InvalidMaxValues",
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "target",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "value",
+              type: "uint256",
+            },
+          ],
+          name: "FailedToWithdrawEth",
           type: "error",
         },
         {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "messageId",
+              type: "bytes32",
+            },
+          ],
+          name: "MessageSent",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferRequested",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
           inputs: [],
-          name: "MESSAGE_DATA_LENGTH",
+          name: "acceptOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
           outputs: [
             {
-              internalType: "uint8",
+              internalType: "address",
               name: "",
-              type: "uint8",
+              type: "address",
             },
           ],
           stateMutability: "view",
@@ -1621,52 +2327,93 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "uint64",
+              name: "destinationChainSelector",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "receiver",
+              type: "address",
+            },
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "x",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "y",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct DomainObjs.PubKey",
+              name: "_pubKey",
+              type: "tuple",
+            },
+            {
+              internalType: "bytes",
+              name: "_signUpGatekeeperData",
+              type: "bytes",
+            },
+            {
+              internalType: "bytes",
+              name: "_initialVoiceCreditProxyData",
+              type: "bytes",
+            },
+            {
+              internalType: "enum SourcePrivote.PayFeesIn",
+              name: "payFeesIn",
+              type: "uint8",
+            },
+          ],
+          name: "signup",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint64",
+              name: "destinationChainSelector",
+              type: "uint64",
+            },
+            {
+              internalType: "address",
+              name: "receiver",
+              type: "address",
+            },
+            {
               internalType: "uint256",
-              name: "_duration",
+              name: "pollId",
               type: "uint256",
             },
             {
               components: [
                 {
-                  internalType: "uint256",
-                  name: "maxMessages",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "maxVoteOptions",
-                  type: "uint256",
+                  internalType: "uint256[10]",
+                  name: "data",
+                  type: "uint256[10]",
                 },
               ],
-              internalType: "struct Params.MaxValues",
-              name: "_maxValues",
-              type: "tuple",
-            },
-            {
-              components: [
-                {
-                  internalType: "uint8",
-                  name: "intStateTreeDepth",
-                  type: "uint8",
-                },
-                {
-                  internalType: "uint8",
-                  name: "messageTreeSubDepth",
-                  type: "uint8",
-                },
-                {
-                  internalType: "uint8",
-                  name: "messageTreeDepth",
-                  type: "uint8",
-                },
-                {
-                  internalType: "uint8",
-                  name: "voteOptionTreeDepth",
-                  type: "uint8",
-                },
-              ],
-              internalType: "struct Params.TreeDepths",
-              name: "_treeDepths",
+              internalType: "struct DomainObjs.Message",
+              name: "messageText",
               type: "tuple",
             },
             {
@@ -1683,136 +2430,61 @@ const deployedContracts = {
                 },
               ],
               internalType: "struct DomainObjs.PubKey",
-              name: "_coordinatorPubKey",
+              name: "encPubKey",
               type: "tuple",
             },
             {
-              internalType: "address",
-              name: "_maci",
-              type: "address",
-            },
-            {
-              internalType: "uint256",
-              name: "_emptyBallotRoot",
-              type: "uint256",
+              internalType: "enum SourcePrivote.PayFeesIn",
+              name: "payFeesIn",
+              type: "uint8",
             },
           ],
-          name: "deploy",
-          outputs: [
-            {
-              internalType: "address",
-              name: "pollAddr",
-              type: "address",
-            },
-          ],
+          name: "vote",
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
-      ],
-      deploymentBlockNumber: 15,
-    },
-    PoseidonT3: {
-      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      abi: [
         {
           inputs: [
             {
-              internalType: "uint256[2]",
-              name: "input",
-              type: "uint256[2]",
+              internalType: "address",
+              name: "beneficiary",
+              type: "address",
             },
           ],
-          name: "poseidon",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
-      ],
-      deploymentBlockNumber: 7,
-    },
-    PoseidonT4: {
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      abi: [
         {
           inputs: [
             {
-              internalType: "uint256[3]",
-              name: "input",
-              type: "uint256[3]",
+              internalType: "address",
+              name: "beneficiary",
+              type: "address",
             },
-          ],
-          name: "poseidon",
-          outputs: [
             {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
+              internalType: "address",
+              name: "token",
+              type: "address",
             },
           ],
-          stateMutability: "pure",
+          name: "withdrawToken",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
-      ],
-      deploymentBlockNumber: 9,
-    },
-    PoseidonT5: {
-      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      abi: [
         {
-          inputs: [
-            {
-              internalType: "uint256[4]",
-              name: "input",
-              type: "uint256[4]",
-            },
-          ],
-          name: "poseidon",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
+          stateMutability: "payable",
+          type: "receive",
         },
       ],
-      deploymentBlockNumber: 11,
-    },
-    PoseidonT6: {
-      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      abi: [
-        {
-          inputs: [
-            {
-              internalType: "uint256[5]",
-              name: "input",
-              type: "uint256[5]",
-            },
-          ],
-          name: "poseidon",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-      ],
-      deploymentBlockNumber: 13,
+      inheritedFunctions: {},
+      deploymentBlockNumber: 2377793,
     },
     TallyFactory: {
-      address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      address: "0x206f4513EAc99DdE974B88bcFE5E6a33A213c887",
       abi: [
         {
           inputs: [],
@@ -1872,10 +2544,10 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 19,
+      deploymentBlockNumber: 2377769,
     },
     Verifier: {
-      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      address: "0x52E0aF858339D27272E3c731418eBc7598D3c827",
       abi: [
         {
           inputs: [],
@@ -2015,9 +2687,9 @@ const deployedContracts = {
               type: "tuple",
             },
             {
-              internalType: "uint256",
-              name: "input",
-              type: "uint256",
+              internalType: "uint256[]",
+              name: "inputs",
+              type: "uint256[]",
             },
           ],
           name: "verify",
@@ -2032,10 +2704,10 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 5,
+      deploymentBlockNumber: 2377759,
     },
     VkRegistry: {
-      address: "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+      address: "0x64830c25986CD35c58B4EbADacDFc08f3E3CB76A",
       abi: [
         {
           inputs: [],
@@ -3295,7 +3967,7 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 24,
+      deploymentBlockNumber: 2377789,
     },
   },
 } as const;
