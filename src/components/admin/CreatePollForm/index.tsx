@@ -7,8 +7,9 @@ import { PollType, EMode, VerificationType } from "~~/types/poll";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 import WithoutImageInput from "./components/WithoutImageInput";
-import { Keypair } from "maci-domainobjs";
+import { Keypair, PubKey } from "maci-domainobjs";
 import Button from "~~/components/ui/Button";
+import { parseEther } from "viem";
 
 interface CreatePollFormProps {
   onClose: () => void;
@@ -23,9 +24,11 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     pollType: PollType.NOT_SELECTED,
     mode: EMode.QV,
     options: [""],
-    pubKey: "",
-    authType: "",
+    keyPair: new Keypair(),
+    authType: "none",
     veriMethod: "none",
+    pubKey:
+      "macipk.a26f6f713fdf9ab73e2bf57662977f8f4539552b3ca0fb2a65654472427f601b",
   });
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [candidateSelection, setCandidateSelection] = useState<string>("");
@@ -35,7 +38,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const generateKeyPair = () => {
     const keyPair = new Keypair();
 
-    setPollData((prev) => ({ ...prev, pubKey: keyPair.toJSON().pubKey }));
+    setPollData((prev) => ({
+      ...prev,
+      pubKey: keyPair.toJSON().pubKey,
+    }));
     setShowKeys({ show: true, privKey: keyPair.toJSON().privKey });
   };
 
@@ -48,7 +54,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   };
 
   const handleVeriMehodChange = (e: React.ChangeEvent<any>) => {
-    setPollData({ ...pollData, veriMethod: e.target.value });
+    setPollData({ ...pollData, authType: e.target.value });
   };
 
   const handlePubKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +103,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   );
 
   const { writeAsync } = useScaffoldContractWrite({
-    contractName: "MACIWrapper",
+    contractName: "Privote",
     functionName: "createPoll",
     args: [
       pollData.title,
@@ -105,13 +111,14 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
       pollData.mode,
-      pollData.pubKey,
-      pollData.authType || "wallet",
+      PubKey.deserialize(pollData.pubKey),
+      pollData.authType || "anon",
     ],
   });
 
   async function onSubmit() {
     // validate the inputs
+    console.log("creating poll", pollData);
     for (const option of pollData.options) {
       if (!option) {
         // TODO: throw error that the option cannot be blank
@@ -122,6 +129,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       }
     }
 
+    console.log("pollData.expiry", pollData.expiry);
+
     if (duration < 60) {
       // TODO: throw error that the expiry cannot be before atleast 1 min of creation
       notification.error("Expiry cannot be before atleast 1 min of creation", {
@@ -130,6 +139,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       return;
     }
 
+    console.log("pollData.pollType", pollData.pollType);
     if (pollData.pollType === PollType.NOT_SELECTED) {
       notification.error("Please select a poll type", {
         showCloseButton: false,
@@ -140,13 +150,13 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
 
     try {
-      await writeAsync();
+      await writeAsync({ value: parseEther("0.01") });
       refetchPolls();
     } catch (err) {
       console.log(err);
     }
 
-    onClose();
+    // onClose();
   }
 
   return (
@@ -154,7 +164,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       <button className={styles.back} onClick={onClose}>
         <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
       </button>
-      <form className={styles.form}>
+      <div className={styles.form}>
         <h1 className={styles.heading}>Create a Poll</h1>
         <div className={styles.container}>
           <input
@@ -246,7 +256,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               <button
                 type="button"
                 className={`${styles["veri-box"]} ${
-                  pollData.veriMethod === "none" ? styles.selected : ""
+                  pollData.authType === "none" ? styles.selected : ""
                 }`}
                 value={"none"}
                 onClick={handleVeriMehodChange}
@@ -256,7 +266,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               <button
                 type="button"
                 className={`${styles["veri-box"]} ${
-                  pollData.veriMethod === "anon" ? styles.selected : ""
+                  pollData.authType === "anon" ? styles.selected : ""
                 }`}
                 value={"anon"}
                 onClick={handleVeriMehodChange}
@@ -272,7 +282,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               <button
                 type="button"
                 className={`${styles["veri-box"]} ${
-                  pollData.veriMethod === "wc" ? styles.selected : ""
+                  pollData.authType === "wc" ? styles.selected : ""
                 }`}
                 value={"wc"}
                 onClick={handleVeriMehodChange}
@@ -288,7 +298,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               <button
                 type="button"
                 className={`${styles["veri-box"]} ${
-                  pollData.veriMethod === "nfc" ? styles.selected : ""
+                  pollData.authType === "nfc" ? styles.selected : ""
                 }`}
                 value={"nfc"}
                 onClick={handleVeriMehodChange}
@@ -429,10 +439,14 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             </div>
           </div>
         </div>
-        <Button action={onSubmit} className={styles["submit-btn"]}>
+        <Button
+          type="button"
+          action={onSubmit}
+          className={styles["submit-btn"]}
+        >
           Create Poll
         </Button>
-      </form>
+      </div>
     </div>
   );
 };

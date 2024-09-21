@@ -2,7 +2,7 @@ import { useScaffoldContractRead } from "./scaffold-eth";
 
 export const useFetchPoll = (id: bigint | undefined) =>
   useScaffoldContractRead({
-    contractName: "MACIWrapper",
+    contractName: "Privote",
     functionName: "fetchPoll",
     args: [id],
   });

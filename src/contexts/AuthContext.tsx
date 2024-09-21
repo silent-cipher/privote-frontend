@@ -1,10 +1,20 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Keypair, PrivKey } from "maci-domainobjs";
 import { useAccount, useSignMessage } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
-import { useScaffoldContractRead, useScaffoldEventHistory, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
+import {
+  useScaffoldContractRead,
+  useScaffoldEventHistory,
+  useScaffoldEventSubscriber,
+} from "~~/hooks/scaffold-eth";
 import scaffoldConfig from "~~/scaffold.config";
 
 interface IAuthContext {
@@ -16,7 +26,11 @@ interface IAuthContext {
 
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
-export default function AuthContextProvider({ children }: { children: React.ReactNode }) {
+export default function AuthContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { address } = useAccount();
   const [keypair, setKeyPair] = useState<Keypair | null>(null);
   const [stateIndex, setStateIndex] = useState<bigint | null>(null);
@@ -48,20 +62,21 @@ export default function AuthContextProvider({ children }: { children: React.Reac
     generateKeypair();
   }, [generateKeypair]);
 
-  const { data: isRegistered, refetch: refetchIsRegistered } = useScaffoldContractRead({
-    contractName: "MACIWrapper",
-    functionName: "isPublicKeyRegistered",
-    args: keypair ? keypair.pubKey.rawPubKey : [0n, 0n],
-  });
+  const { data: isRegistered, refetch: refetchIsRegistered } =
+    useScaffoldContractRead({
+      contractName: "Privote",
+      functionName: "isPublicKeyRegistered",
+      args: keypair ? keypair.pubKey.rawPubKey : [0n, 0n],
+    });
 
   const chainId = scaffoldConfig.targetNetworks[0].id;
 
   const {
-    MACIWrapper: { deploymentBlockNumber },
+    Privote: { deploymentBlockNumber },
   } = deployedContracts[chainId];
 
   const { data: SignUpEvents } = useScaffoldEventHistory({
-    contractName: "MACIWrapper",
+    contractName: "Privote",
     eventName: "SignUp",
     filters: {
       _userPubKeyX: BigInt(keypair?.pubKey.asContractParam().x || 0n),
@@ -77,18 +92,19 @@ export default function AuthContextProvider({ children }: { children: React.Reac
     }
 
     const event = SignUpEvents.filter(
-      log =>
-        log.args._userPubKeyX?.toString() === keypair.pubKey.asContractParam().x &&
-        log.args._userPubKeyY?.toString() === keypair.pubKey.asContractParam().y,
+      (log) =>
+        log.args._userPubKeyX?.toString() ===
+          keypair.pubKey.asContractParam().x &&
+        log.args._userPubKeyY?.toString() === keypair.pubKey.asContractParam().y
     )[0];
     setStateIndex(event?.args?._stateIndex || null);
   }, [keypair, SignUpEvents]);
 
   useScaffoldEventSubscriber({
-    contractName: "MACIWrapper",
+    contractName: "Privote",
     eventName: "SignUp",
-    listener: logs => {
-      logs.forEach(log => {
+    listener: (logs) => {
+      logs.forEach((log) => {
         if (
           log.args._userPubKeyX !== keypair?.pubKey.asContractParam().x ||
           log.args._userPubKeyY !== keypair?.pubKey.asContractParam().y
@@ -101,7 +117,14 @@ export default function AuthContextProvider({ children }: { children: React.Reac
   });
 
   return (
-    <AuthContext.Provider value={{ isRegistered: Boolean(isRegistered), keypair, stateIndex, generateKeypair }}>
+    <AuthContext.Provider
+      value={{
+        isRegistered: Boolean(isRegistered),
+        keypair,
+        stateIndex,
+        generateKeypair,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
