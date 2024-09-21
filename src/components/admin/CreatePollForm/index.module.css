@@ -250,7 +250,26 @@
   margin-top: 48px;
   align-self: center;
 }
+.submit-btn.loading {
+  padding-inline: 59px;
+}
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #fff;
+  border-top: 2px solid #c65ec6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .verification {
   display: flex;
   flex-direction: column;
@@ -293,4 +312,14 @@
 
 .veri-box:nth-child(1) {
   padding: 16px 48px;
+}
+
+.candidate-input {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.remove-candi {
+  cursor: pointer;
 }

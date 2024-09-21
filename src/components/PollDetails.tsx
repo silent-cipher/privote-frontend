@@ -266,7 +266,7 @@ export default function PollDetail({ id }: { id: bigint }) {
         <div className="flex flex-row items-center my-5">
           <div className="text-2xl font-bold ">Vote for {poll?.name}</div>
         </div>
-        {poll?.options.map((candidate, index) => (
+        {poll?.options.map((candidate: string, index: number) => (
           <div className="pb-5 flex" key={index}>
             <VoteCard
               pollOpen={status === PollStatus.OPEN}

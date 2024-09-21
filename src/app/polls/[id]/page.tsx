@@ -2,6 +2,7 @@
 import styles from "~~/styles/userPoll.module.css";
 import { useParams } from "next/navigation";
 import PollDetails2 from "~~/components/PollDetails2";
+import PollDetail from "~~/components/PollDetails";
 
 const UserPoll = () => {
   const params = useParams();

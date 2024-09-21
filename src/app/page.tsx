@@ -87,7 +87,7 @@ export default function Home() {
           <div className={styles["polls-container"]}>
             <h2>Polls</h2>
             <ul className={styles["polls-list"]}>
-              {polls &&
+              {polls ? (
                 polls.map((poll, index) => (
                   <li className={styles["polls-list-item"]} key={index}>
                     <Link href={`/polls/${poll.id}`}>
@@ -97,7 +97,7 @@ export default function Home() {
                             ? styles.live
                             : poll.status === PollStatus.NOT_STARTED
                             ? styles.notStarted
-                            : styles.startingSoon
+                            : styles.ended
                         }`}
                       >
                         <Circle />{" "}
@@ -105,7 +105,7 @@ export default function Home() {
                           ? "Live now"
                           : poll.status === PollStatus.NOT_STARTED
                           ? "Not Started"
-                          : "Starting Soon"}
+                          : "Ended"}
                       </div>
                       <div className={styles.container}>
                         <div className={styles.left}>
@@ -119,6 +119,14 @@ export default function Home() {
                             />
                           </h2>
                           <p>{Number(poll.numOfOptions)} Candidates</p>
+                          {poll.status === PollStatus.RESULT_COMPUTED && (
+                            <Link
+                              href={`/polls/${poll.id}`}
+                              className={styles["poll-btn"]}
+                            >
+                              <p>View Results</p>
+                            </Link>
+                          )}
                         </div>
                         <div className={styles.right}>
                           <p>
@@ -145,7 +153,10 @@ export default function Home() {
                       </div>
                     </Link>
                   </li>
-                ))}
+                ))
+              ) : (
+                <p className={styles.loading}>Loading...</p>
+              )}
             </ul>
           </div>
         </div>

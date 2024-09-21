@@ -45,7 +45,7 @@ export default function Admin() {
                                 ? styles.live
                                 : poll.status === PollStatus.NOT_STARTED
                                 ? styles.notStarted
-                                : styles.startingSoon
+                                : styles.ended
                             }`}
                           >
                             <Circle />{" "}
@@ -53,7 +53,7 @@ export default function Admin() {
                               ? "Live now"
                               : poll.status === PollStatus.NOT_STARTED
                               ? "Not Started"
-                              : "Starting Soon"}
+                              : "Ended"}
                           </div>
                           <div className={styles.container}>
                             <div className={styles.left}>
@@ -67,6 +67,14 @@ export default function Admin() {
                                 />
                               </h2>
                               <p>{Number(poll.numOfOptions)} Candidates</p>
+                              {poll.status === PollStatus.CLOSED && (
+                                <Link
+                                  href={`/polls/${poll.id}/publish`}
+                                  className={styles["poll-btn"]}
+                                >
+                                  <p>Publish Results</p>
+                                </Link>
+                              )}
                             </div>
                             <div className={styles.right}>
                               <p>

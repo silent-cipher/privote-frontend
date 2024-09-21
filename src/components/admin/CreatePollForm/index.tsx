@@ -10,6 +10,7 @@ import WithoutImageInput from "./components/WithoutImageInput";
 import { Keypair, PubKey } from "maci-domainobjs";
 import Button from "~~/components/ui/Button";
 import { parseEther } from "viem";
+import { RxCross2 } from "react-icons/rx";
 
 interface CreatePollFormProps {
   onClose: () => void;
@@ -21,7 +22,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     title: "Dummy Title",
     expiry: new Date(),
     maxVotePerPerson: 1,
-    pollType: PollType.NOT_SELECTED,
+    pollType: PollType.SINGLE_VOTE,
     mode: EMode.QV,
     options: [""],
     keyPair: new Keypair(),
@@ -102,7 +103,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     (pollData.expiry.getTime() - new Date().getTime()) / 1000
   );
 
-  const { writeAsync } = useScaffoldContractWrite({
+  const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "Privote",
     functionName: "createPoll",
     args: [
@@ -111,7 +112,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
       pollData.mode,
-      PubKey.deserialize(pollData.pubKey),
+      PubKey.deserialize(pollData.pubKey).asContractParam(),
       pollData.authType || "anon",
     ],
   });
@@ -147,6 +148,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       return;
     }
 
+    console.log("running contract function");
     // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
 
     try {
@@ -357,13 +359,23 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             )}
             {candidateSelection !== "" &&
               pollData.options.map((option, index) => (
-                <WithoutImageInput
-                  key={index}
-                  type="text"
-                  placeholder={`Candidate ${index + 1}`}
-                  value={option}
-                  onChange={(e) => handleOptionChange(index, e.target.value)}
-                />
+                <div className={styles["candidate-input"]}>
+                  <WithoutImageInput
+                    key={index}
+                    type="text"
+                    placeholder={`Candidate ${index + 1}`}
+                    value={option}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                  />
+                  {index !== pollData.options.length - 1 && (
+                    <div
+                      className={styles["remove-candi"]}
+                      onClick={() => removeOptions(index)}
+                    >
+                      <RxCross2 size={20} />
+                    </div>
+                  )}
+                </div>
               ))}
           </div>
           <div className={styles.divider}></div>
@@ -442,9 +454,12 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
         <Button
           type="button"
           action={onSubmit}
-          className={styles["submit-btn"]}
+          className={`${styles["submit-btn"]} ${
+            isLoading ? styles.loading : ""
+          }`}
+          disabled={isLoading}
         >
-          Create Poll
+          {isLoading ? <span className={styles.spinner}></span> : "Create Poll"}
         </Button>
       </div>
     </div>
