@@ -45,6 +45,7 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
   const [totalVotes, setTotalVotes] = useState(0);
   const [status, setStatus] = useState<PollStatus>();
 
+  console.log(result);
   useEffect(() => {
     if (!poll || !poll.metadata) {
       return;
@@ -60,9 +61,15 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
     if (poll.tallyJsonCID) {
       (async () => {
         try {
+          console.log(poll.tallyJsonCID);
+          const response = await getDataFromPinata(poll.tallyJsonCID);
+          //   const {
+          //     results: { tally },
+          //   } = await getDataFromPinata(poll.tallyJsonCID);
+          console.log(response);
           const {
             results: { tally },
-          } = await getDataFromPinata(poll.tallyJsonCID);
+          } = response;
           if (poll.options.length > tally.length) {
             throw new Error("Invalid tally data");
           }
@@ -106,17 +113,19 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
     functionName: "coordinatorPubKey",
   });
 
-  const { writeAsync: publishMessage } = useContractWrite({
-    abi: PollAbi,
-    address: poll?.pollContracts.poll,
-    functionName: "publishMessage",
-  });
+  const { writeAsync: publishMessage, isLoading: isLoadingSingle } =
+    useContractWrite({
+      abi: PollAbi,
+      address: poll?.pollContracts.poll,
+      functionName: "publishMessage",
+    });
 
-  const { writeAsync: publishMessageBatch } = useContractWrite({
-    abi: PollAbi,
-    address: poll?.pollContracts.poll,
-    functionName: "publishMessageBatch",
-  });
+  const { writeAsync: publishMessageBatch, isLoading: isLoadingBatch } =
+    useContractWrite({
+      abi: PollAbi,
+      address: poll?.pollContracts.poll,
+      functionName: "publishMessageBatch",
+    });
 
   const [coordinatorPubKey, setCoordinatorPubKey] = useState<PubKey>();
 
@@ -190,6 +199,7 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
             },
           ],
         });
+        setSelectedCandidate(null);
       } else {
         await publishMessageBatch({
           args: [
@@ -219,6 +229,7 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
             ),
           ],
         });
+        setSelectedCandidate(null);
       }
 
       notification.success("Vote casted successfully");
@@ -277,9 +288,16 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
     }
   }
 
-  if (isLoading) return <div>Loading...</div>;
-
   if (error) return <div>Poll not found</div>;
+
+  if (isLoading)
+    return (
+      <div className={styles.container}>
+        <div className={"spinner-wrapper"}>
+          <span className="spinner large"></span>
+        </div>
+      </div>
+    );
 
   return (
     <div className={styles.container}>
@@ -302,14 +320,18 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
                 title={option}
                 index={index}
                 pollStatus={status}
-                description={"Republican"}
+                description={
+                  option.toLowerCase() === "kamala harris"
+                    ? "Democrat"
+                    : "Republican"
+                }
                 image={
                   option.toLowerCase() === "kamala harris"
                     ? "/kamala.svg"
                     : "/trump.svg"
                 }
                 result={result?.find((r) => r.candidate === option)}
-                totalVotes={totalVotes}
+                totalVotes={2}
                 isWinner={result?.[0]?.candidate === option}
                 clicked={false}
                 pollType={pollType}
@@ -328,7 +350,11 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
           </ul>
           {status === PollStatus.OPEN && (
             <button className={styles["poll-btn"]} onClick={castVote}>
-              <p>Vote Now</p>
+              {isLoadingSingle || isLoadingBatch ? (
+                <span className={`${styles.spinner} spinner`}></span>
+              ) : (
+                <p>Vote Now</p>
+              )}
             </button>
           )}
           {status === PollStatus.CLOSED && address === poll.pollDeployer && (

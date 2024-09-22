@@ -10,10 +10,16 @@ import { Poll, PollStatus } from "~~/types/poll";
 import { Circle } from "../Circle";
 import { Keypair } from "maci-domainobjs";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
+const AuthTypeMapping: { [key: string]: string } = {
+  wc: "worldcoin",
+  anon: "anon-icon",
+  nfc: "nfc-icon",
+};
 export default function Admin() {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
-  const { address } = useAccount();
+  const { address, isDisconnected, isConnected } = useAccount();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
@@ -33,12 +39,24 @@ export default function Admin() {
             <div className={styles["polls-container"]}>
               <h2>Polls</h2>
               <ul className={styles["polls-list"]}>
+                {!polls || polls.length === 0 ? (
+                  <div className={styles["spinner-wrapper"]}>
+                    <div className="spinner large"></div>
+                  </div>
+                ) : (
+                  isDisconnected && (
+                    <div className={styles["spinner-wrapper"]}>
+                      <ConnectButton />
+                    </div>
+                  )
+                )}
+                {/* {isDisconnected && <ConnectButton />} */}
                 {polls &&
                   polls
                     .filter((poll) => poll.pollDeployer === address)
                     .map((poll, index) => (
                       <li className={styles["polls-list-item"]} key={index}>
-                        <Link href={`/admin/poll/${poll.id}`}>
+                        <Link href={`/polls/${poll.id}`}>
                           <div
                             className={`${styles["poll-status"]} ${
                               poll.status === PollStatus.OPEN
@@ -59,12 +77,16 @@ export default function Admin() {
                             <div className={styles.left}>
                               <h2>
                                 {poll.name}{" "}
-                                <Image
-                                  src="/worldcoin.svg"
-                                  width={31}
-                                  height={31}
-                                  alt="icon"
-                                />
+                                {AuthTypeMapping[poll.authType] && (
+                                  <Image
+                                    src={`/${
+                                      AuthTypeMapping[poll.authType]
+                                    }.svg`}
+                                    width={26}
+                                    height={26}
+                                    alt="icon"
+                                  />
+                                )}
                               </h2>
                               <p>{Number(poll.numOfOptions)} Candidates</p>
                               {poll.status === PollStatus.CLOSED && (
@@ -73,6 +95,14 @@ export default function Admin() {
                                   className={styles["poll-btn"]}
                                 >
                                   <p>Publish Results</p>
+                                </Link>
+                              )}
+                              {poll.status === PollStatus.RESULT_COMPUTED && (
+                                <Link
+                                  href={`/polls/${poll.id}`}
+                                  className={styles["poll-btn"]}
+                                >
+                                  <p>View Results</p>
                                 </Link>
                               )}
                             </div>
@@ -107,7 +137,7 @@ export default function Admin() {
           </div>
         )}
         <div className={styles.header}>
-          {!showCreatePoll && (
+          {!showCreatePoll && isConnected && (
             <Button
               className={styles.btn}
               action={() => setShowCreatePoll(true)}

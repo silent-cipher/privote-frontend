@@ -20,15 +20,24 @@
 }
 
 .heading {
+  color: #fff;
   font-size: 24px;
   font-style: normal;
   font-weight: 700;
   line-height: 160%; /* 38.4px */
+  letter-spacing: 0.6px;
 }
 .details {
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+.card-wrapper {
+  align-items: flex-start;
+  margin-top: 24px;
+  display: flex;
+  gap: 20px;
 }
 
 .config-wrapper {
@@ -62,15 +71,43 @@
   border-radius: 60px;
 }
 
+.config-heading {
+  color: #fff;
+  font-size: 16px;
+}
+
 .dot.selected {
   border-color: #c65ec6;
   background-color: #c65ec6;
   outline: 2px solid #000;
   outline-offset: -4px;
 }
+.public-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
 .public-input-container > .pub-key-input {
   border-radius: 8px;
   background: #141414;
+}
+
+.command {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  color: #59775e;
+
+  font-family: "M PLUS 1 Code";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 160%;
+  border-radius: 8px;
+  background: #121813;
+  padding: 6px 12px;
 }
 
 .gen-btn {
@@ -83,4 +120,46 @@
   gap: 10px;
   justify-content: center;
   color: #000;
+}
+
+.bg-card {
+  display: flex;
+  padding: 6px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #121417;
+}
+
+.text {
+  color: #535861;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 160%;
+}
+
+.public-input {
+  border-radius: 8px;
+  background-color: #141414 !important;
+  padding: 8px 16px;
+}
+
+.public-input::placeholder {
+  color: #4e535c;
+}
+
+.publish-btn {
+  border-radius: 8px;
+  border: 1px solid #4e535c;
+  color: #000;
+  padding: 8px 16px;
+  background: #fff;
+}
+
+.publish-btn:disabled {
+  color: #4e535c;
+  background: #141414;
+  cursor: not-allowed;
 }

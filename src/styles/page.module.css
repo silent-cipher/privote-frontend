@@ -188,3 +188,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.reg-spinner {
+  margin-inline: 30px;
+}

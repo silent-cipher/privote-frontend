@@ -10,6 +10,8 @@ import { LogInWithAnonAadhaar, useAnonAadhaar } from "@anon-aadhaar/react";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { Circle } from "./Circle";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 const AuthTypeMapping: { [key: string]: string } = {
   wc: "worldcoin",
@@ -54,8 +56,9 @@ export default function Home() {
     polls,
     refetch: refetchPolls,
   } = useFetchPolls(currentPage, limit);
+  const { address, isDisconnected, isConnected } = useAccount();
 
-  const { writeAsync } = useScaffoldContractWrite({
+  const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "Privote",
     functionName: "signUp",
     args: [
@@ -87,6 +90,17 @@ export default function Home() {
           <div className={styles["polls-container"]}>
             <h2>Polls</h2>
             <ul className={styles["polls-list"]}>
+              {!polls || polls.length === 0 ? (
+                <div className={"spinner-wrapper"}>
+                  <div className="spinner large"></div>
+                </div>
+              ) : (
+                isDisconnected && (
+                  <div className={"spinner-wrapper"}>
+                    <ConnectButton />
+                  </div>
+                )
+              )}
               {polls ? (
                 polls.map((poll, index) => (
                   <li className={styles["polls-list-item"]} key={index}>
@@ -111,12 +125,14 @@ export default function Home() {
                         <div className={styles.left}>
                           <h2>
                             {poll.name}{" "}
-                            <Image
-                              src={`/${AuthTypeMapping[poll.authType]}.svg`}
-                              width={31}
-                              height={31}
-                              alt="icon"
-                            />
+                            {AuthTypeMapping[poll.authType] && (
+                              <Image
+                                src={`/${AuthTypeMapping[poll.authType]}.svg`}
+                                width={26}
+                                height={26}
+                                alt="icon"
+                              />
+                            )}
                           </h2>
                           <p>{Number(poll.numOfOptions)} Candidates</p>
                           {poll.status === PollStatus.RESULT_COMPUTED && (
@@ -163,7 +179,7 @@ export default function Home() {
       ) : (
         <div className={styles.hero}>
           <div className={styles.status}>
-            Pivote: the all new way to create polls
+            Privote: the all new way to create polls
           </div>
           <h1 className={styles.heading}>
             Revolutionizing the Future of Voting
@@ -172,7 +188,13 @@ export default function Home() {
             Register now to create polls, participate in elections, and make
             your voice heard in the decision-making process.
           </p>
-          <Button action={register}>Register</Button>
+          <Button action={register}>
+            {isLoading ? (
+              <div className={`spinner ${styles["reg-spinner"]}`}></div>
+            ) : (
+              "Register"
+            )}
+          </Button>
         </div>
       )}
       {/* {AnonAadhaar.status === "logged-out" && (

@@ -93,12 +93,12 @@ const VoteCard = ({
           }
         />
       )}
-      <div className={styles.image}>
+      {/* <div className={styles.image}>
         <img src={image} alt={title} />
-      </div>
+      </div> */}
       <div className={styles.content}>
         <div className={styles.details}>
-          <Image
+          {/* <Image
             src={
               title.toLowerCase() == "kamala harris"
                 ? "/democrat-icon.svg"
@@ -107,10 +107,10 @@ const VoteCard = ({
             width={36}
             height={36}
             alt="icon"
-          />
+          /> */}
           <div className={styles.content}>
             <h3>{title}</h3>
-            <p>{description}</p>
+            {/* <p>{description}</p> */}
           </div>
         </div>
         {/* {pollStatus == PollStatus.OPEN && (
@@ -141,7 +141,7 @@ const VoteCard = ({
           <div className={styles.result}>
             <p className={styles["vote-number"]}>{result.votes} votes</p>
             <p className={`${isWinner ? styles.winner : styles["not-winner"]}`}>
-              {Math.floor(result.votes / totalVotes) * 100}%
+              {Math.ceil((result.votes / totalVotes) * 100)}%
             </p>
           </div>
         )}

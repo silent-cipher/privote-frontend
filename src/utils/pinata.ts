@@ -14,14 +14,21 @@ export async function uploadToPinata(jsonData: any) {
       headers: {
         Authorization: `Bearer ${pinataJWT}`,
       },
-    },
+    }
   );
 
   return data.IpfsHash;
 }
 
 export async function getDataFromPinata(hash: string) {
-  const url = `${process.env.NEXT_PUBLIC_PINATA_GATEWAY || "https://gateway.pinata.cloud"}/ipfs/${hash}`;
-  const { data } = await axios.get(url);
+  const url = `${
+    process.env.NEXT_PUBLIC_PINATA_GATEWAY || "https://gateway.pinata.cloud"
+  }/ipfs/${hash}`;
+
+  console.log(url);
+  const response = await fetch(url);
+  const data = await response.json();
+
+  console.log("data", data);
   return data;
 }

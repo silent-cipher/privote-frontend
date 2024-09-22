@@ -11,6 +11,7 @@ import { Keypair, PubKey } from "maci-domainobjs";
 import Button from "~~/components/ui/Button";
 import { parseEther } from "viem";
 import { RxCross2 } from "react-icons/rx";
+import { useAccount } from "wagmi";
 
 interface CreatePollFormProps {
   onClose: () => void;
@@ -21,6 +22,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const [pollData, setPollData] = useState({
     title: "Dummy Title",
     expiry: new Date(),
+    startDate: new Date(),
     maxVotePerPerson: 1,
     pollType: PollType.SINGLE_VOTE,
     mode: EMode.QV,
@@ -31,6 +33,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     pubKey:
       "macipk.a26f6f713fdf9ab73e2bf57662977f8f4539552b3ca0fb2a65654472427f601b",
   });
+  const { isConnected } = useAccount();
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [candidateSelection, setCandidateSelection] = useState<string>("");
   const [pollConfig, setPollConfig] = useState(0);
@@ -155,6 +158,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       await writeAsync({ value: parseEther("0.01") });
       refetchPolls();
     } catch (err) {
+      refetchPolls();
+      onClose();
       console.log(err);
     }
 
@@ -175,6 +180,21 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             onChange={handleTitleChange}
           />
           <div className={styles["input-field-container"]}>
+            <label className={styles.label}>Select the start date</label>
+            <input
+              type="datetime-local"
+              className={styles.input}
+              placeholder="Enter the title of the poll"
+              value={pollData.startDate
+                .toLocaleString("sv")
+                .replace(" ", "T")
+                .slice(0, -3)}
+              onChange={(e) =>
+                setPollData({ ...pollData, expiry: new Date(e.target.value) })
+              }
+            />
+          </div>
+          <div className={styles["input-field-container"]}>
             <label className={styles.label}>Select the expiry date</label>
             <input
               type="datetime-local"
@@ -189,6 +209,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               }
             />
           </div>
+
           <div className={styles["input-field-container"]}>
             <label className={styles.label}>Select Poll Type</label>
             <select
@@ -451,16 +472,22 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             </div>
           </div>
         </div>
-        <Button
-          type="button"
-          action={onSubmit}
-          className={`${styles["submit-btn"]} ${
-            isLoading ? styles.loading : ""
-          }`}
-          disabled={isLoading}
-        >
-          {isLoading ? <span className={styles.spinner}></span> : "Create Poll"}
-        </Button>
+        {isConnected && (
+          <Button
+            type="button"
+            action={onSubmit}
+            className={`${styles["submit-btn"]} ${
+              isLoading ? styles.loading : ""
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className={styles.spinner}></span>
+            ) : (
+              "Create Poll"
+            )}
+          </Button>
+        )}
       </div>
     </div>
   );

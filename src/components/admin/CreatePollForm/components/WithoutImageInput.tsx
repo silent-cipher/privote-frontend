@@ -7,6 +7,7 @@ interface WithoutImageInputProps {
   placeholder: string;
   type?: string;
   className?: string;
+  name?: string;
 }
 
 const WithoutImageInput = ({
@@ -15,6 +16,7 @@ const WithoutImageInput = ({
   placeholder,
   type = "text",
   className = "",
+  name = "",
   ...rest
 }: WithoutImageInputProps) => {
   return (
@@ -24,6 +26,7 @@ const WithoutImageInput = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
+      name={name}
       {...rest}
     />
   );
