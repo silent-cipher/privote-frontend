@@ -98,3 +98,14 @@
 .spinner {
   margin-block: 20px;
 }
+
+.end {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.text {
+  color: #8c98a9;
+  font-size: 16px;
+}

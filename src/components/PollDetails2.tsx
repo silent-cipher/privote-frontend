@@ -14,6 +14,7 @@ import { getPollStatus } from "~~/hooks/useFetchPolls";
 import VoteCard from "./Poll/VoteCard";
 import { notification } from "~~/utils/scaffold-eth";
 import { useAccount } from "wagmi";
+import { LogInWithAnonAadhaar, useAnonAadhaar } from "@anon-aadhaar/react";
 
 const PollStatusMapping = {
   [PollStatus.NOT_STARTED]: "Not Started",
@@ -29,6 +30,7 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
   const [selectedCandidate, setSelectedCandidate] = useState<number | null>(
     null
   );
+  const [AnonAadhaar] = useAnonAadhaar();
 
   const { keypair, stateIndex } = useAuthContext();
 
@@ -307,8 +309,16 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
       <div className={styles.details}>
         <div className={styles.header}>
           <h1 className={styles.heading}>{poll?.name}</h1>
-          <div className={styles.status}>
-            {status ? PollStatusMapping[status] : ""}
+          <div className={styles.end}>
+            {poll?.authType === "anon" &&
+              AnonAadhaar.status === "logged-out" && (
+                <LogInWithAnonAadhaar nullifierSeed={1234} />
+              )}
+            {poll?.authType === "anon" &&
+              AnonAadhaar.status === "logging-in" && <p>Logging in....</p>}
+            <div className={styles.status}>
+              {status ? PollStatusMapping[status] : ""}
+            </div>
           </div>
         </div>
 
@@ -348,8 +358,21 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
               />
             ))}
           </ul>
+          {status === PollStatus.OPEN &&
+            poll?.authType === "anon" &&
+            AnonAadhaar.status === "logged-out" && (
+              <div className={styles.text}>Please login to vote</div>
+            )}
           {status === PollStatus.OPEN && (
-            <button className={styles["poll-btn"]} onClick={castVote}>
+            <button
+              className={styles["poll-btn"]}
+              disabled={
+                poll?.authType === "anon"
+                  ? AnonAadhaar.status !== "logged-in"
+                  : false
+              }
+              onClick={castVote}
+            >
               {isLoadingSingle || isLoadingBatch ? (
                 <span className={`${styles.spinner} spinner`}></span>
               ) : (
