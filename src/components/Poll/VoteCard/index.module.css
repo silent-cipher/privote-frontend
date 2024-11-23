@@ -138,3 +138,17 @@
   /* color: #e73d3d; */
   color: #535861;
 }
+
+.input {
+  display: flex;
+  background-color: #b0b0b0;
+  margin-left: 24px;
+  margin-top: 16px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #141414;
+}
+
+.input::placeholder {
+  color: #535861;
+}

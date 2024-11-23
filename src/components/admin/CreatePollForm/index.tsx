@@ -7,6 +7,7 @@ import { PollType, EMode, VerificationType } from "~~/types/poll";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 import WithoutImageInput from "./components/WithoutImageInput";
+import WithImageInput from "./components/WithImageInput";
 import { Keypair, PubKey } from "maci-domainobjs";
 import Button from "~~/components/ui/Button";
 import { parseEther } from "viem";
@@ -21,12 +22,13 @@ interface CreatePollFormProps {
 const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const [pollData, setPollData] = useState({
     title: "Dummy Title",
+    description: "",
     expiry: new Date(),
     startDate: new Date(),
     maxVotePerPerson: 1,
     pollType: PollType.SINGLE_VOTE,
     mode: EMode.QV,
-    options: [""],
+    options: [{ value: "", cid: "" }],
     keyPair: new Keypair(),
     authType: "none",
     veriMethod: "none",
@@ -50,7 +52,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   };
 
   const handleAddOption = () => {
-    setPollData({ ...pollData, options: [...pollData.options, ""] });
+    setPollData({
+      ...pollData,
+      options: [...pollData.options, { value: "", cid: "" }],
+    });
   };
 
   const handlePollTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -72,8 +77,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   };
 
   const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...pollData.options];
-    newOptions[index] = value;
+    const newOptions: { value: string; cid: string }[] = [...pollData.options];
+    newOptions[index] = { value, cid: "" };
     setPollData({ ...pollData, options: newOptions });
   };
 
@@ -179,6 +184,17 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             value={pollData.title}
             onChange={handleTitleChange}
           />
+          <div className={styles["input-field-container"]}>
+            <label className={styles.label}>Description</label>
+            <textarea
+              className={styles.textarea}
+              placeholder="Enter the description of the poll"
+              value={pollData.description}
+              onChange={(e) =>
+                setPollData({ ...pollData, description: e.target.value })
+              }
+            ></textarea>
+          </div>
           <div className={styles["input-field-container"]}>
             <label className={styles.label}>Select the start date</label>
             <input
@@ -363,7 +379,11 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                   onClick={() => {
                     setPollData({
                       ...pollData,
-                      options: ["Candidate 1", "Candidate 2", "Candidate 3"],
+                      options: [
+                        { value: "Candidate 1", cid: "" },
+                        { value: "Candidate 2", cid: "" },
+                        { value: "Candidate 3", cid: "" },
+                      ],
                     });
                     setCandidateSelection("withoutImage");
                   }}
@@ -378,14 +398,34 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 </button>
               </div>
             )}
-            {candidateSelection !== "" &&
+            {candidateSelection === "withoutImage" &&
               pollData.options.map((option, index) => (
                 <div className={styles["candidate-input"]}>
                   <WithoutImageInput
                     key={index}
                     type="text"
                     placeholder={`Candidate ${index + 1}`}
-                    value={option}
+                    value={option.value}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                  />
+                  {index !== pollData.options.length - 1 && (
+                    <div
+                      className={styles["remove-candi"]}
+                      onClick={() => removeOptions(index)}
+                    >
+                      <RxCross2 size={20} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            {candidateSelection === "withImage" &&
+              pollData.options.map((option, index) => (
+                <div className={styles["candidate-input"]}>
+                  <WithImageInput
+                    key={index}
+                    type="text"
+                    placeholder={`Candidate ${index + 1}`}
+                    value={option.value}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
                   />
                   {index !== pollData.options.length - 1 && (

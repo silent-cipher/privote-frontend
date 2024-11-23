@@ -192,3 +192,8 @@
 .reg-spinner {
   margin-inline: 30px;
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+}

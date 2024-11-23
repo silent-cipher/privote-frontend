@@ -82,7 +82,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-top: 16px;
+  /* margin-top: 16px; */
 }
 
 .poll-btn > p {
@@ -95,9 +95,9 @@
   -webkit-text-fill-color: transparent;
 }
 
-.spinner {
+/* .spinner {
   margin-block: 20px;
-}
+} */
 
 .end {
   display: flex;
@@ -108,4 +108,11 @@
 .text {
   color: #8c98a9;
   font-size: 16px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
 }

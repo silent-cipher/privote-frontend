@@ -3,9 +3,33 @@
   padding: 11px 12px;
   color: #fff;
   border-radius: 8px;
-  width: 100%;
+  flex: 1;
 }
 
 .without-img-input::placeholder {
   color: #535861;
+}
+
+.row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.label {
+  color: #535861;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 160%;
+  border: 1px solid #535861;
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.with-img-input {
+  display: none;
 }

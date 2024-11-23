@@ -22,11 +22,12 @@ export default function Admin() {
   const { address, isDisconnected, isConnected } = useAccount();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(25);
   const {
     totalPolls,
     polls,
     refetch: refetchPolls,
+    isLoading,
   } = useFetchPolls(currentPage, limit);
   const [selectedPollForStatusModal, setSelectedPollForStatusModal] =
     useState<Poll>();
@@ -39,7 +40,7 @@ export default function Admin() {
             <div className={styles["polls-container"]}>
               <h2>Polls</h2>
               <ul className={styles["polls-list"]}>
-                {!polls || polls.length === 0 ? (
+                {!polls || isLoading ? (
                   <div className={styles["spinner-wrapper"]}>
                     <div className="spinner large"></div>
                   </div>

@@ -20,7 +20,7 @@ export function getPollStatus(poll: RawPoll) {
   return PollStatus.RESULT_COMPUTED;
 }
 
-export const useFetchPolls = (currentPage = 1, limit = 10, reversed = true) => {
+export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
   const [polls, setPolls] = useState<Poll[]>();
   const { data: totalPolls, refetch: refetchTotalPolls } =
     useScaffoldContractRead({
@@ -28,7 +28,11 @@ export const useFetchPolls = (currentPage = 1, limit = 10, reversed = true) => {
       functionName: "nextPollId",
     });
 
-  const { data: rawPolls, refetch: refetchPolls } = useScaffoldContractRead({
+  const {
+    data: rawPolls,
+    refetch: refetchPolls,
+    isLoading,
+  } = useScaffoldContractRead({
     contractName: "Privote",
     functionName: "fetchPolls",
     args: [BigInt(currentPage), BigInt(limit), reversed],
@@ -71,5 +75,5 @@ export const useFetchPolls = (currentPage = 1, limit = 10, reversed = true) => {
     refetchPolls();
   }
 
-  return { totalPolls: Number(totalPolls || 0n), polls, refetch };
+  return { totalPolls: Number(totalPolls || 0n), polls, refetch, isLoading };
 };

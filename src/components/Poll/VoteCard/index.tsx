@@ -93,24 +93,28 @@ const VoteCard = ({
           }
         />
       )}
-      {/* <div className={styles.image}>
-        <img src={image} alt={title} />
-      </div> */}
+      {(title === "Trump" || title === "Harris") && (
+        <div className={styles.image}>
+          <img src={image} alt={title} />
+        </div>
+      )}
       <div className={styles.content}>
         <div className={styles.details}>
-          {/* <Image
-            src={
-              title.toLowerCase() == "kamala harris"
-                ? "/democrat-icon.svg"
-                : "/republican-icon.svg"
-            }
-            width={36}
-            height={36}
-            alt="icon"
-          /> */}
+          {(title === "Trump" || title === "Harris") && (
+            <Image
+              src={
+                title.toLowerCase() == "harris"
+                  ? "/democrat-icon.svg"
+                  : "/republican-icon.svg"
+              }
+              width={36}
+              height={36}
+              alt="icon"
+            />
+          )}
           <div className={styles.content}>
             <h3>{title}</h3>
-            {/* <p>{description}</p> */}
+            {(title === "Trump" || title === "Harris") && <p>{description}</p>}
           </div>
         </div>
         {/* {pollStatus == PollStatus.OPEN && (
@@ -137,6 +141,31 @@ const VoteCard = ({
               : "Starting Soon"}
           </button>
         )} */}
+        {pollOpen && pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
+          <input
+            ref={votesFieldRef}
+            type="number"
+            className={styles.input + " " + (isInvalid ? styles.invalid : "")}
+            disabled={!selected}
+            placeholder="Votes"
+            min={0}
+            step={1}
+            onChange={function (e) {
+              if (
+                Number(e.currentTarget.value) < 0 ||
+                (selected &&
+                  (e.currentTarget.value === "" ||
+                    Number(e.currentTarget.value) == 0))
+              ) {
+                setIsInvalid(true);
+              } else {
+                setIsInvalid(false);
+                setVotes(Number(e.currentTarget.value));
+                onChange(selected, Number(e.currentTarget.value));
+              }
+            }}
+          />
+        )}
         {result && pollStatus === PollStatus.RESULT_COMPUTED && (
           <div className={styles.result}>
             <p className={styles["vote-number"]}>{result.votes} votes</p>

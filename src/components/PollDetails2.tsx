@@ -1,7 +1,12 @@
 import Image from "next/image";
 import styles from "~~/styles/userPoll.module.css";
 import { genRandomSalt } from "maci-crypto";
-import { useContractWrite, useContractRead } from "wagmi";
+import abi from "~~/abi/ContractAbi.json";
+import {
+  useContractWrite,
+  useContractRead,
+  useWaitForTransaction,
+} from "wagmi";
 import PollAbi from "~~/abi/Poll";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import { useState, useEffect } from "react";
@@ -15,6 +20,8 @@ import VoteCard from "./Poll/VoteCard";
 import { notification } from "~~/utils/scaffold-eth";
 import { useAccount } from "wagmi";
 import { LogInWithAnonAadhaar, useAnonAadhaar } from "@anon-aadhaar/react";
+import { IDKitWidget, ISuccessResult, useIDKit } from "@worldcoin/idkit";
+import { decodeAbiParameters, parseAbiParameters } from "viem";
 
 const PollStatusMapping = {
   [PollStatus.NOT_STARTED]: "Not Started",
@@ -26,7 +33,7 @@ const PollStatusMapping = {
 const PollDetails2 = ({ id }: { id: bigint }) => {
   const { data: poll, error, isLoading } = useFetchPoll(id);
   const [pollType, setPollType] = useState(PollType.NOT_SELECTED);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const [selectedCandidate, setSelectedCandidate] = useState<number | null>(
     null
   );
@@ -40,6 +47,38 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
     {}
   );
 
+  const { setOpen } = useIDKit();
+  const [done, setDone] = useState(false);
+  const {
+    data: hash,
+    writeAsync,
+    isError,
+    isLoading: isPending,
+  } = useContractWrite({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    account: address!,
+    abi,
+    functionName: "verifyAndExecute",
+  });
+
+  const submitTx = async (proof: ISuccessResult) => {
+    try {
+      await writeAsync({
+        args: [
+          address!,
+          BigInt(proof!.merkle_root),
+          BigInt(proof!.nullifier_hash),
+          decodeAbiParameters(
+            parseAbiParameters("uint256[8]"),
+            proof!.proof as `0x${string}`
+          )[0],
+        ],
+      });
+      setDone(true);
+    } catch (error: any) {
+      throw new Error(error.shortMessage);
+    }
+  };
   const isAnyInvalid = Object.values(isVotesInvalid).some((v) => v);
   const [result, setResult] = useState<
     { candidate: string; votes: number }[] | null
@@ -312,10 +351,34 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
           <div className={styles.end}>
             {poll?.authType === "anon" &&
               AnonAadhaar.status === "logged-out" && (
-                <LogInWithAnonAadhaar nullifierSeed={1234} />
+                <LogInWithAnonAadhaar nullifierSeed={4534} />
               )}
             {poll?.authType === "anon" &&
               AnonAadhaar.status === "logging-in" && <p>Logging in....</p>}
+            {poll?.authType === "wc" && (
+              <>
+                {isConnected && (
+                  <>
+                    <IDKitWidget
+                      app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
+                      action={process.env.NEXT_PUBLIC_ACTION as string}
+                      signal={address}
+                      onSuccess={submitTx}
+                      autoClose
+                    />
+
+                    {!done && (
+                      <button onClick={() => setOpen(true)}>
+                        {!hash &&
+                          (isPending
+                            ? "Pending, please check your wallet..."
+                            : "Verify and Execute Transaction")}
+                      </button>
+                    )}
+                  </>
+                )}
+              </>
+            )}
             <div className={styles.status}>
               {status ? PollStatusMapping[status] : ""}
             </div>
@@ -331,12 +394,10 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
                 index={index}
                 pollStatus={status}
                 description={
-                  option.toLowerCase() === "kamala harris"
-                    ? "Democrat"
-                    : "Republican"
+                  option.toLowerCase() === "harris" ? "Democrat" : "Republican"
                 }
                 image={
-                  option.toLowerCase() === "kamala harris"
+                  option.toLowerCase() === "harris"
                     ? "/kamala.svg"
                     : "/trump.svg"
                 }
@@ -358,28 +419,30 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
               />
             ))}
           </ul>
-          {status === PollStatus.OPEN &&
-            poll?.authType === "anon" &&
-            AnonAadhaar.status === "logged-out" && (
-              <div className={styles.text}>Please login to vote</div>
-            )}
-          {status === PollStatus.OPEN && (
-            <button
-              className={styles["poll-btn"]}
-              disabled={
-                poll?.authType === "anon"
-                  ? AnonAadhaar.status !== "logged-in"
-                  : false
-              }
-              onClick={castVote}
-            >
-              {isLoadingSingle || isLoadingBatch ? (
-                <span className={`${styles.spinner} spinner`}></span>
-              ) : (
-                <p>Vote Now</p>
+          <div className={styles.col}>
+            {status === PollStatus.OPEN &&
+              poll?.authType === "anon" &&
+              AnonAadhaar.status === "logged-out" && (
+                <div className={styles.text}>Please login to vote</div>
               )}
-            </button>
-          )}
+            {status === PollStatus.OPEN && (
+              <button
+                className={styles["poll-btn"]}
+                // disabled={
+                //   poll?.authType === "anon"
+                //     ? AnonAadhaar.status !== "logged-in"
+                //     : false
+                // }
+                onClick={castVote}
+              >
+                {isLoadingSingle || isLoadingBatch ? (
+                  <span className={`${styles.spinner} spinner`}></span>
+                ) : (
+                  <p>Vote Now</p>
+                )}
+              </button>
+            )}
+          </div>
           {status === PollStatus.CLOSED && address === poll.pollDeployer && (
             <Link
               className={styles["poll-btn"]}

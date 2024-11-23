@@ -1,0 +1,50 @@
+.pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.pagination > button {
+  border: none;
+  border-radius: 8px;
+  background: #f6e6f6;
+  /* background: linear-gradient(90deg, #7f58b7 0.17%, #c65ec6 99.46%); */
+  display: flex;
+  padding: 6px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination > button > p {
+  background: var(--grd, linear-gradient(90deg, #ff6b81 0%, #ff8779 100%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 160%;
+}
+
+.pagination > button:disabled {
+  background: #f6e6f6;
+  color: #535861;
+  cursor: not-allowed;
+}
+
+.pagination > button:disabled > p {
+  background: #f6e6f6;
+  color: #535861;
+}
+
+.pagination > button:hover {
+  background: #f6e6f6;
+}
+
+.pagination > button:hover > p {
+  background: var(--grd, linear-gradient(90deg, #ff6b81 0%, #ff8779 100%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

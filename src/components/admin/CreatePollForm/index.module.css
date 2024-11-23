@@ -60,7 +60,8 @@
 }
 
 .input-field-container > input,
-.input-field-container > select {
+.input-field-container > select,
+.input-field-container > textarea {
   background: #0b0c0f;
   padding: 11px 12px;
   color: #535861;
