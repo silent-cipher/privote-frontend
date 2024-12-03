@@ -319,7 +319,7 @@ const deployedContracts = {
       deploymentBlockNumber: 7012564,
     },
     DestinationPrivote: {
-      address: "0x9B820b4010aFD43a29FDb6FE39989DDbb73d1A17",
+      address: "0xB3E03AeFaC24cfB40EF3f12BcfcEC2a1995543e6",
       abi: [
         {
           inputs: [
@@ -942,7 +942,7 @@ const deployedContracts = {
       deploymentBlockNumber: 7012571,
     },
     Privote: {
-      address: "0xc68F811165154f3eFb875DeBD263777E4ab892c6",
+      address: "0xA45f91133FFd99b01aa7eCd777cb12E151cb7960",
       abi: [
         {
           inputs: [

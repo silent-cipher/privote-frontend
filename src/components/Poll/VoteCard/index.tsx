@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 
 interface VoteCardProps {
   title: string;
+  bytesCid: string;
   description: string;
   image: string;
   pollStatus: PollStatus | undefined;
@@ -25,6 +26,7 @@ interface VoteCardProps {
 
 const VoteCard = ({
   title,
+  bytesCid,
   description,
   image,
   pollStatus,

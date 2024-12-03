@@ -1,4 +1,4 @@
-.without-img-input {
+.img-input {
   background: #0b0c0f;
   padding: 11px 12px;
   color: #fff;
@@ -6,7 +6,7 @@
   flex: 1;
 }
 
-.without-img-input::placeholder {
+.img-input::placeholder {
   color: #535861;
 }
 

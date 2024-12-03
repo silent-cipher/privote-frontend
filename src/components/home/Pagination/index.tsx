@@ -1,4 +1,4 @@
-import styles from "./Pagination.module.css";
+import styles from "./index.module.css";
 import {
   LuChevronFirst,
   LuChevronLeft,

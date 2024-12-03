@@ -1,15 +1,27 @@
 "use client";
-import styles from "~~/styles/userPoll.module.css";
+import Link from "next/link";
+import Image from "next/image";
+import styles from "~~/styles/pollDetails.module.css";
 import { useParams } from "next/navigation";
-import PollDetails2 from "~~/components/PollDetails2";
-import PollDetail from "~~/components/PollDetails";
+import { PollDetails } from "~~/components/Poll";
+import { useAuthContext } from "~~/contexts/AuthContext";
 import { useAuthUserOnly } from "~~/hooks/useAuthUserOnly";
 
 const UserPoll = () => {
-  useAuthUserOnly({ inverted: false });
+  const { isRegistered } = useAuthContext();
   const params = useParams();
   const pollId = params.id;
-  return <PollDetails2 id={BigInt(Number(pollId))} />;
+  return (
+    <div className={styles.container}>
+      <Link href={"/"} className={styles.back}>
+        <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
+      </Link>
+      <PollDetails
+        id={BigInt(Number(pollId))}
+        isUserRegistered={isRegistered}
+      />
+    </div>
+  );
 };
 
 export default UserPoll;

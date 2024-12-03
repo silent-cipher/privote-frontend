@@ -6,13 +6,13 @@ import { useState } from "react";
 import { PollType, EMode, VerificationType } from "~~/types/poll";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
-import WithoutImageInput from "./components/WithoutImageInput";
-import WithImageInput from "./components/WithImageInput";
+import { WithImageInput, WithoutImageInput } from "./components";
 import { Keypair, PubKey } from "maci-domainobjs";
 import Button from "~~/components/ui/Button";
 import { parseEther } from "viem";
 import { RxCross2 } from "react-icons/rx";
 import { useAccount } from "wagmi";
+import { uploadImageToPinata } from "~~/utils/pinata";
 
 interface CreatePollFormProps {
   onClose: () => void;
@@ -28,13 +28,14 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     maxVotePerPerson: 1,
     pollType: PollType.SINGLE_VOTE,
     mode: EMode.QV,
-    options: [{ value: "", cid: "" }],
+    options: [{ value: "", cid: "", isUploadedToIPFS: false }],
     keyPair: new Keypair(),
     authType: "none",
     veriMethod: "none",
     pubKey:
       "macipk.a26f6f713fdf9ab73e2bf57662977f8f4539552b3ca0fb2a65654472427f601b",
   });
+  const [files, setFiles] = useState<File[] | null>(null);
   const { isConnected } = useAccount();
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [candidateSelection, setCandidateSelection] = useState<string>("");
@@ -54,7 +55,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const handleAddOption = () => {
     setPollData({
       ...pollData,
-      options: [...pollData.options, { value: "", cid: "" }],
+      options: [
+        ...pollData.options,
+        { value: "", cid: "", isUploadedToIPFS: false },
+      ],
     });
   };
 
@@ -76,10 +80,22 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     setPollData({ ...pollData, maxVotePerPerson: parseInt(e.target.value) });
   };
 
-  const handleOptionChange = (index: number, value: string) => {
-    const newOptions: { value: string; cid: string }[] = [...pollData.options];
-    newOptions[index] = { value, cid: "" };
+  const handleOptionChange = (index: number, value: string, file?: File) => {
+    const newOptions: {
+      value: string;
+      cid: string;
+      isUploadedToIPFS: boolean;
+    }[] = [...pollData.options];
+    newOptions[index] = { value, cid: "", isUploadedToIPFS: false };
     setPollData({ ...pollData, options: newOptions });
+
+    if (file) {
+      setFiles((prev) => {
+        const newFiles = prev ? [...prev] : [];
+        newFiles[index] = file;
+        return [...newFiles];
+      });
+    }
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +124,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   }
 
   const duration = Math.round(
-    (pollData.expiry.getTime() - new Date().getTime()) / 1000
+    (pollData.expiry.getTime() - pollData.startDate.getTime()) / 1000
   );
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
@@ -116,7 +132,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     functionName: "createPoll",
     args: [
       pollData.title,
-      pollData.options || [],
+      pollData.options.map((option) => option.value) || [],
+      ["0x", "0x"],
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
       pollData.mode,
@@ -129,11 +146,12 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     // validate the inputs
     console.log("creating poll", pollData);
     for (const option of pollData.options) {
-      if (!option) {
+      if (!option.value) {
         // TODO: throw error that the option cannot be blank
-        notification.error("Option cannot be blank", {
+        notification.error("Option title cannot be blank", {
           showCloseButton: false,
         });
+        console.log(option);
         return;
       }
     }
@@ -160,7 +178,20 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
 
     try {
-      await writeAsync({ value: parseEther("0.01") });
+      console.log(files);
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          if (!files[i]) continue;
+          const file = files[i];
+          const data = await uploadImageToPinata(file);
+          console.log(data);
+          pollData.options[i].cid = data;
+          pollData.options[i].isUploadedToIPFS = true;
+        }
+      }
+
+      console.log("pollData", pollData);
+      await writeAsync({ value: parseEther("0.1") });
       refetchPolls();
     } catch (err) {
       refetchPolls();
@@ -206,7 +237,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 .replace(" ", "T")
                 .slice(0, -3)}
               onChange={(e) =>
-                setPollData({ ...pollData, expiry: new Date(e.target.value) })
+                setPollData({
+                  ...pollData,
+                  startDate: new Date(e.target.value),
+                })
               }
             />
           </div>
@@ -380,9 +414,21 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                     setPollData({
                       ...pollData,
                       options: [
-                        { value: "Candidate 1", cid: "" },
-                        { value: "Candidate 2", cid: "" },
-                        { value: "Candidate 3", cid: "" },
+                        {
+                          value: "Candidate 1",
+                          cid: "",
+                          isUploadedToIPFS: false,
+                        },
+                        {
+                          value: "Candidate 2",
+                          cid: "",
+                          isUploadedToIPFS: false,
+                        },
+                        {
+                          value: "Candidate 3",
+                          cid: "",
+                          isUploadedToIPFS: false,
+                        },
                       ],
                     });
                     setCandidateSelection("withoutImage");
@@ -423,10 +469,19 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 <div className={styles["candidate-input"]}>
                   <WithImageInput
                     key={index}
+                    index={index}
                     type="text"
                     placeholder={`Candidate ${index + 1}`}
                     value={option.value}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
+                    onFileChange={(e: any) => {
+                      console.log(e.target.files[0]);
+                      setFiles((prev) => {
+                        const newFiles = prev ? [...prev] : [];
+                        newFiles[index] = e.target.files[0];
+                        return [...newFiles];
+                      });
+                    }}
                   />
                   {index !== pollData.options.length - 1 && (
                     <div

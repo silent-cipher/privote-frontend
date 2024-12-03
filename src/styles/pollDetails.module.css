@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  color: #fff;
+  max-width: 1155px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 120px;
+  padding-inline: 24px;
+}
+
+.back {
+  display: flex;
+  padding: 3.455px;
+  align-items: center;
+  gap: 8.638px;
+  border-radius: 6.91px;
+  background: #141414;
+}
+
+.heading {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 160%; /* 38.4px */
+}

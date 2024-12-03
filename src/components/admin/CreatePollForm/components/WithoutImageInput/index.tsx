@@ -1,5 +1,4 @@
-import styles from "./index.module.css";
-import Image from "next/image";
+import styles from "../index.module.css";
 
 interface WithoutImageInputProps {
   value: string;
@@ -21,7 +20,7 @@ const WithoutImageInput = ({
 }: WithoutImageInputProps) => {
   return (
     <input
-      className={`${styles["without-img-input"]} ${className}`}
+      className={`${styles["img-input"]} ${className}`}
       type={type}
       value={value}
       onChange={onChange}

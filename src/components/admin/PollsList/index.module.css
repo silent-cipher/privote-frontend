@@ -1,0 +1,33 @@
+.poll-wrapper {
+  width: 100%;
+  flex: 1;
+}
+.polls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1155px;
+  margin-inline: auto;
+  padding: 24px;
+}
+
+.polls-container > h2 {
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 160%;
+}
+
+.polls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
