@@ -25,6 +25,7 @@ import { decodeAbiParameters, parseAbiParameters } from "viem";
 import Button from "~~/components/ui/Button";
 import useUserRegister from "~~/hooks/useUserRegister";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import deployedContracts from "~~/contracts/deployedContracts";
 
 const PollStatusMapping = {
   [PollStatus.NOT_STARTED]: "Not Started",
@@ -357,10 +358,14 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
           {/* {!isUserRegistered && isConnected && (
             <Button action={registerUser}>Register</Button>
           )} */}
-          {!isUserRegistered &&
-            AnonAadhaar.status === "logged-out" &&
-            isConnected && <LogInWithAnonAadhaar nullifierSeed={4534} />}
-          {AnonAadhaar.status === "logging-in" && <p>Logging in....</p>}
+          {/* {!isUserRegistered &&
+            AnonAadhaar.status !== "logged-in" &&
+            isConnected && ( */}
+          <LogInWithAnonAadhaar
+            nullifierSeed={4534}
+            signal={deployedContracts[11155111].Privote.address}
+          />
+
           {!isUserRegistered &&
             AnonAadhaar.status === "logged-in" &&
             isConnected && <Button action={registerUser}>Register</Button>}

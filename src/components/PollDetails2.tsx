@@ -349,12 +349,9 @@ const PollDetails2 = ({ id }: { id: bigint }) => {
         <div className={styles.header}>
           <h1 className={styles.heading}>{poll?.name}</h1>
           <div className={styles.end}>
-            {poll?.authType === "anon" &&
-              AnonAadhaar.status === "logged-out" && (
-                <LogInWithAnonAadhaar nullifierSeed={4534} />
-              )}
-            {poll?.authType === "anon" &&
-              AnonAadhaar.status === "logging-in" && <p>Logging in....</p>}
+            {AnonAadhaar.status !== "logged-in" && (
+              <LogInWithAnonAadhaar nullifierSeed={4534} />
+            )}
             {poll?.authType === "wc" && (
               <>
                 {isConnected && (

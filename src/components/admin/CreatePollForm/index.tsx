@@ -9,10 +9,11 @@ import { notification } from "~~/utils/scaffold-eth";
 import { WithImageInput, WithoutImageInput } from "./components";
 import { Keypair, PubKey } from "maci-domainobjs";
 import Button from "~~/components/ui/Button";
-import { parseEther } from "viem";
+import { bytesToHex, parseEther } from "viem";
 import { RxCross2 } from "react-icons/rx";
 import { useAccount } from "wagmi";
 import { uploadImageToPinata } from "~~/utils/pinata";
+import CID from "cids";
 
 interface CreatePollFormProps {
   onClose: () => void;
@@ -28,7 +29,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     maxVotePerPerson: 1,
     pollType: PollType.SINGLE_VOTE,
     mode: EMode.QV,
-    options: [{ value: "", cid: "", isUploadedToIPFS: false }],
+    options: [{ value: "", cid: "0x", isUploadedToIPFS: false }],
     keyPair: new Keypair(),
     authType: "none",
     veriMethod: "none",
@@ -57,7 +58,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       ...pollData,
       options: [
         ...pollData.options,
-        { value: "", cid: "", isUploadedToIPFS: false },
+        { value: "", cid: "0x", isUploadedToIPFS: false },
       ],
     });
   };
@@ -86,7 +87,11 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       cid: string;
       isUploadedToIPFS: boolean;
     }[] = [...pollData.options];
-    newOptions[index] = { value, cid: "", isUploadedToIPFS: false };
+    newOptions[index] = {
+      value,
+      cid: "0x",
+      isUploadedToIPFS: false,
+    };
     setPollData({ ...pollData, options: newOptions });
 
     if (file) {
@@ -178,24 +183,25 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
 
     try {
-      console.log(files);
-      if (files && files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          if (!files[i]) continue;
-          const file = files[i];
-          const data = await uploadImageToPinata(file);
-          console.log(data);
-          pollData.options[i].cid = data;
-          pollData.options[i].isUploadedToIPFS = true;
-        }
-      }
+      // console.log(files);
+      // if (files && files.length > 0) {
+      //   for (let i = 0; i < files.length; i++) {
+      //     if (!files[i]) continue;
+      //     const file = files[i];
+      //     const data = await uploadImageToPinata(file);
+      //     console.log(data);
+      //     const cid = new CID(data);
+      //     pollData.options[i].cid = bytesToHex(cid.bytes);
+      //     pollData.options[i].isUploadedToIPFS = true;
+      //   }
+      // }
 
       console.log("pollData", pollData);
-      await writeAsync({ value: parseEther("0.1") });
+      await writeAsync({ value: parseEther("0.01") });
       refetchPolls();
     } catch (err) {
       refetchPolls();
-      onClose();
+      // onClose();
       console.log(err);
     }
 
@@ -416,17 +422,17 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                       options: [
                         {
                           value: "Candidate 1",
-                          cid: "",
+                          cid: "0x",
                           isUploadedToIPFS: false,
                         },
                         {
                           value: "Candidate 2",
-                          cid: "",
+                          cid: "0x",
                           isUploadedToIPFS: false,
                         },
                         {
                           value: "Candidate 3",
-                          cid: "",
+                          cid: "0x",
                           isUploadedToIPFS: false,
                         },
                       ],

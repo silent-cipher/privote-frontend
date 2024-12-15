@@ -14,6 +14,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { Pagination, PollsList } from "~~/components/home";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+import useUserRegister from "~~/hooks/useUserRegister";
+import deployedContracts from "~~/contracts/deployedContracts";
 
 const AuthTypeMapping: { [key: string]: string } = {
   wc: "worldcoin",
@@ -50,6 +52,7 @@ const Polls = [
 
 export default function Home() {
   const { keypair, isRegistered, generateKeypair } = useAuthContext();
+  const { registerUser } = useUserRegister();
   const [AnonAadhaar] = useAnonAadhaar();
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
@@ -78,23 +81,13 @@ export default function Home() {
     ],
   });
 
-  async function register() {
-    if (!keypair) return;
-
-    try {
-      await writeAsync({
-        args: [
-          keypair.pubKey.asContractParam() as { x: bigint; y: bigint },
-          "0x",
-          "0x",
-        ],
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
   return (
     <div className={styles["main-page"]}>
+      <LogInWithAnonAadhaar
+        nullifierSeed={4534}
+        signal={deployedContracts[11155111].Privote.address}
+      />
+      <button onClick={registerUser}>Sign up</button>
       <div className={styles["poll-wrapper"]}>
         <div className={styles["polls-container"]}>
           <h2>Polls</h2>
@@ -118,13 +111,13 @@ export default function Home() {
           Register now to create polls, participate in elections, and make your
           voice heard in the decision-making process.
         </p>
-        <Button action={register}>
+        {/* <Button action={register}>
           {isLoading ? (
             <div className={`spinner ${styles["reg-spinner"]}`}></div>
           ) : (
             "Register"
           )}
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

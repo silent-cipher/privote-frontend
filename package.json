@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anon-aadhaar/core": "^2.4.3",
     "@anon-aadhaar/react": "^2.4.0",
     "@ethersproject/providers": "^5.7.2",
     "@headlessui/react": "^1.7.18",
@@ -23,6 +24,7 @@
     "@zk-kit/circuits": "^0.4.0",
     "axios": "^1.6.8",
     "blo": "^1.0.1",
+    "cids": "^1.1.9",
     "circomkit": "^0.0.24",
     "circomlib": "^2.0.5",
     "daisyui": "4.5.0",
