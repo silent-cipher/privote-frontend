@@ -1,11 +1,9 @@
 "use client";
 import Link from "next/link";
 import styles from "./index.module.css";
-import Image from "next/image";
 import { UserIcon, HouseIcon } from "./components";
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { RainbowKitCustomConnectButton } from "../scaffold-eth/RainbowKitCustomConnectButton";
 
 export default function Header() {
   const pathname = usePathname();
@@ -37,7 +35,6 @@ export default function Header() {
         </div>
         <div>
           <ConnectButton />
-          {/* <RainbowKitCustomConnectButton /> */}
         </div>
       </header>
     </div>

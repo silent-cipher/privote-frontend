@@ -1,6 +1,4 @@
-import { Poll, PollStatus } from "~~/types/poll";
-import { useAccount } from "wagmi";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Poll } from "~~/types/poll";
 import { PollsListItem } from "./components";
 import styles from "./index.module.css";
 
@@ -10,15 +8,16 @@ interface PollsListProps {
 }
 
 const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
-  const { address, isDisconnected, isConnected } = useAccount();
-  console.log(polls);
   return (
     <ul className={styles["polls-list"]}>
-      {!polls || isLoadingPolls ? (
+      {!polls && isLoadingPolls ? (
         <div className={styles["spinner-wrapper"]}>
           <div className="spinner large"></div>
         </div>
       ) : null}
+      {!polls && !isLoadingPolls && (
+        <div className={styles.text}>No Polls Found</div>
+      )}
       {polls &&
         polls.map((poll, index) => <PollsListItem key={index} poll={poll} />)}
     </ul>

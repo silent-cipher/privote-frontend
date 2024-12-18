@@ -134,30 +134,7 @@ const VoteCard = ({
             {(title === "Trump" || title === "Harris") && <p>{description}</p>}
           </div>
         </div>
-        {/* {pollStatus == PollStatus.OPEN && (
-          <button
-            className={`${styles.button} ${
-              pollStatus === PollStatus.OPEN
-                ? styles.live
-                : pollStatus === PollStatus.NOT_STARTED
-                ? styles.notStarted
-                : styles.startingSoon
-            }`}
-            disabled={pollStatus !== PollStatus.OPEN}
-            onClick={() => {
-              onChange(true, 1);
-              setTimeout(() => {
-                onVote();
-              }, 5000);
-            }}
-          >
-            {pollStatus === PollStatus.OPEN
-              ? "Vote now"
-              : pollStatus === PollStatus.NOT_STARTED
-              ? "Not Started"
-              : "Starting Soon"}
-          </button>
-        )} */}
+
         {pollOpen && pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
           <input
             ref={votesFieldRef}

@@ -2,24 +2,14 @@
 import { useAuthContext } from "~~/contexts/AuthContext";
 import { useScaffoldContractWrite } from "./scaffold-eth";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
+import { encodeAbiParameters, parseAbiParameters } from "viem";
 import {
-  encodeAbiParameters,
-  encodePacked,
-  hexToBigInt,
-  parseAbiParameters,
-} from "viem";
-import {
-  PackedGroth16Proof,
-  verify,
   artifactUrls,
   InitArgs,
   init,
   ArtifactsOrigin,
-  packGroth16Proof,
 } from "@anon-aadhaar/core";
-import { useAccount, useContractWrite } from "wagmi";
 import { useEffect } from "react";
-import { anonVerifier } from "~~/contracts/anonVerifier";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 const anonAadhaarInitArgs: InitArgs = {
@@ -32,7 +22,6 @@ const anonAadhaarInitArgs: InitArgs = {
 const useUserRegister = () => {
   const { keypair, isRegistered } = useAuthContext();
   const [anonAadhaar] = useAnonAadhaar();
-  const { address } = useAccount();
 
   useEffect(() => {
     init(anonAadhaarInitArgs);
@@ -48,15 +37,8 @@ const useUserRegister = () => {
     ],
   });
 
-  const { writeAsync: verifyAnon } = useContractWrite({
-    address: anonVerifier.address,
-    abi: anonVerifier.abi,
-    functionName: "verifyAnonAadhaarProof",
-  });
-
   const registerUser = async () => {
-    console.log(keypair);
-    if (!keypair || anonAadhaar.status !== "logged-in") return;
+    if (!keypair || anonAadhaar.status !== "logged-in" || isRegistered) return;
 
     const pcd = anonAadhaar.anonAadhaarProofs[0]?.pcd;
 
@@ -68,7 +50,6 @@ const useUserRegister = () => {
       gender,
       pincode,
       state,
-      signalHash,
       nullifier,
       groth16Proof,
       timestamp,
@@ -100,9 +81,6 @@ const useUserRegister = () => {
       BigInt(groth16Proof.pi_c[0]),
       BigInt(groth16Proof.pi_c[1]),
     ];
-    console.log(
-      hexToBigInt(deployedContracts[11155111].Privote.address as `0x${string}`)
-    );
 
     const encodedSignUpGatekeeper = encodeAbiParameters(
       parseAbiParameters(
@@ -118,20 +96,7 @@ const useUserRegister = () => {
       ]
     );
 
-    console.log(encodedSignUpGatekeeper);
-
     try {
-      // const result = await verifyAnon({
-      //   args: [
-      //     providedNullifierSeed,
-      //     nullifier,
-      //     timestamp,
-      //     address,
-      //     revealArray,
-      //     packGroth16Proof(groth16Proof),
-      //   ],
-      // });
-      // console.log(result);
       await writeAsync({
         args: [
           keypair.pubKey.asContractParam() as { x: bigint; y: bigint },
