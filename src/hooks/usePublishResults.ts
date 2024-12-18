@@ -45,7 +45,7 @@ export const usePublishResults = (pollId: string) => {
 
       if (response.ok) {
         await writeAsync({
-          args: [pollId, data.cid],
+          args: [BigInt(pollId), data.cid],
         });
       }
 
@@ -61,7 +61,7 @@ export const usePublishResults = (pollId: string) => {
   const publishWithDocker = async () => {
     try {
       await writeAsync({
-        args: [pollId, form.cid],
+        args: [BigInt(pollId), form.cid],
       });
       router.push("/");
     } catch (error) {

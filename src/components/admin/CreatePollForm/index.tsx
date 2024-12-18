@@ -29,7 +29,9 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     maxVotePerPerson: 1,
     pollType: PollType.SINGLE_VOTE,
     mode: EMode.QV,
-    options: [{ value: "", cid: "0x", isUploadedToIPFS: false }],
+    options: [
+      { value: "", cid: "0x" as `0x${string}`, isUploadedToIPFS: false },
+    ],
     keyPair: new Keypair(),
     authType: "none",
     veriMethod: "none",
@@ -84,7 +86,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const handleOptionChange = (index: number, value: string, file?: File) => {
     const newOptions: {
       value: string;
-      cid: string;
+      cid: `0x${string}`;
       isUploadedToIPFS: boolean;
     }[] = [...pollData.options];
     newOptions[index] = {
@@ -142,7 +144,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
       pollData.mode,
-      PubKey.deserialize(pollData.pubKey).asContractParam(),
+      PubKey.deserialize(pollData.pubKey).asContractParam() as {
+        x: bigint;
+        y: bigint;
+      },
       pollData.authType || "anon",
     ],
   });
@@ -212,7 +217,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
           JSON.stringify({ pollType: pollData.pollType }),
           duration > 0 ? BigInt(duration) : 0n,
           pollData.mode,
-          PubKey.deserialize(pollData.pubKey).asContractParam(),
+          PubKey.deserialize(pollData.pubKey).asContractParam() as {
+            x: bigint;
+            y: bigint;
+          },
           pollData.authType || "anon",
         ],
         value: parseEther("0.01"),

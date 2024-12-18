@@ -19,9 +19,9 @@ export interface RawPoll {
   endTime: bigint;
   numOfOptions: bigint;
   options: readonly string[];
-  optionsInfo: readonly string[];
+  optionInfo: readonly string[];
   tallyJsonCID: string;
-  pollDeployer: `0x${string}`;
+  pollDeployer: string;
   authType: string;
 }
 

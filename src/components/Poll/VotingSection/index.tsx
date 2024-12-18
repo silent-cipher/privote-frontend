@@ -9,8 +9,8 @@ interface VotingSectionProps {
   pollId: bigint;
   pollStatus?: PollStatus;
   pollType: PollType;
-  options: string[];
-  optionInfo: string[];
+  options: readonly string[];
+  optionInfo: readonly string[];
   pollDeployer: string;
   userAddress?: string;
   isConnected: boolean;

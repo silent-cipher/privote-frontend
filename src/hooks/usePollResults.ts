@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getDataFromPinata } from "~~/utils/pinata";
-import { Poll } from "~~/types/poll";
+import { RawPoll } from "~~/types/poll";
 
 interface IResult {
   candidate: string;
@@ -15,7 +15,9 @@ interface UsePollResultsReturn {
   refetch: () => Promise<void>;
 }
 
-export const usePollResults = (poll: Poll | undefined): UsePollResultsReturn => {
+export const usePollResults = (
+  poll: RawPoll | undefined
+): UsePollResultsReturn => {
   const [result, setResult] = useState<IResult[] | null>(null);
   const [totalVotes, setTotalVotes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +57,9 @@ export const usePollResults = (poll: Poll | undefined): UsePollResultsReturn => 
       setResult(results);
       setTotalVotes(total);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to fetch results"));
+      setError(
+        err instanceof Error ? err : new Error("Failed to fetch results")
+      );
       console.error("Error fetching poll results:", err);
     } finally {
       setIsLoading(false);
