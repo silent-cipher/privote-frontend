@@ -10,11 +10,11 @@ export default function Header() {
   return (
     <div className={styles["header-wrapper"]}>
       <header className={styles.header}>
-        <div>
+        <Link href="/">
           <p className={styles["header-logo"]}>
             PRI<span className={styles.highlight}>VOTE</span>
           </p>
-        </div>
+        </Link>
         <div className={styles.middle}>
           <Link
             href="/"

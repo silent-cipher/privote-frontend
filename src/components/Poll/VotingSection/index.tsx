@@ -3,6 +3,7 @@ import styles from "~~/styles/userPoll.module.css";
 import { PollStatus, PollType } from "~~/types/poll";
 import VoteCard from "../VoteCard";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
+import useVotingState from "~~/hooks/useVotingState";
 
 interface VotingSectionProps {
   pollId: bigint;
@@ -48,7 +49,18 @@ export const VotingSection = ({
   onVote,
 }: VotingSectionProps) => {
   const [AnonAadhaar] = useAnonAadhaar();
-  const isAnyInvalid = Object.values(isVotesInvalid).some((v) => v);
+  const votingState = useVotingState({
+    pollStatus,
+    isConnected,
+    isUserRegistered,
+    anonAadhaarStatus: AnonAadhaar.status,
+    isVotesInvalid: Object.values(isVotesInvalid).some((v) => v),
+  });
+
+  const handleOptionSelect = (index: number) => {
+    setSelectedCandidate(index);
+    setIsVotesInvalid({ ...isVotesInvalid, [index]: false });
+  };
 
   return (
     <div className={styles["candidate-container"]}>
@@ -79,27 +91,21 @@ export const VotingSection = ({
             }
             onVote={onVote}
             isSelected={selectedCandidate === index}
-            setSelectedCandidate={setSelectedCandidate}
+            setSelectedCandidate={handleOptionSelect}
           />
         ))}
       </ul>
       <div className={styles.col}>
-        {pollStatus === PollStatus.OPEN && !isConnected && (
-          <div className={styles.text}>Please connect wallet to vote</div>
+        {votingState.message && (
+          <div className={styles.text}>{votingState.message}</div>
         )}
-        {pollStatus === PollStatus.OPEN &&
-          !isUserRegistered &&
-          isConnected &&
-          AnonAadhaar.status === "logged-in" && (
-            <div className={styles.text}>Please register to vote</div>
-          )}
-        {pollStatus === PollStatus.OPEN && isConnected && isUserRegistered && (
+        {votingState.showVoteButton && isConnected && isUserRegistered && (
           <button
             className={styles["poll-btn"]}
             disabled={
               isLoadingSingle ||
               isLoadingBatch ||
-              isAnyInvalid ||
+              Object.values(isVotesInvalid).some((v) => v) ||
               !isUserRegistered ||
               !isConnected
             }

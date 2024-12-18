@@ -8,34 +8,38 @@ import PollAbi from "~~/abi/Poll";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import { PollType, PollStatus } from "~~/types/poll";
 import { useAuthContext } from "~~/contexts/AuthContext";
-import { getDataFromPinata } from "~~/utils/pinata";
 import { getPollStatus } from "~~/hooks/useFetchPolls";
 import useUserRegister from "~~/hooks/useUserRegister";
 import useVoting from "~~/hooks/useVoting";
+import usePollResults from "~~/hooks/usePollResults";
 import PollHeader from "../PollHeader";
 import VotingSection from "../VotingSection";
+import Button from "~~/components/ui/Button";
 
 interface IPollDetails {
   id: bigint;
   isUserRegistered: boolean;
 }
 
-interface IResult {
-  candidate: string;
-  votes: number;
-}
-
 const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
-  const { data: poll, error, isLoading } = useFetchPoll(id);
+  const {
+    data: poll,
+    error: pollError,
+    isLoading: isPollLoading,
+  } = useFetchPoll(id);
   const [pollType, setPollType] = useState(PollType.NOT_SELECTED);
   const { address, isConnected } = useAccount();
   const { registerUser } = useUserRegister();
   const [AnonAadhaar] = useAnonAadhaar();
   const { keypair, stateIndex } = useAuthContext();
-  const [result, setResult] = useState<IResult[] | null>(null);
-  const [totalVotes, setTotalVotes] = useState(0);
   const [status, setStatus] = useState<PollStatus>();
   const [coordinatorPubKey, setCoordinatorPubKey] = useState<PubKey>();
+  const {
+    result,
+    totalVotes,
+    isLoading: isResultsLoading,
+    error: resultsError,
+  } = usePollResults(poll);
 
   const { data: coordinatorPubKeyResult } = useContractRead({
     abi: PollAbi,
@@ -71,76 +75,61 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     } catch (err) {
       console.error("Error parsing poll metadata:", err);
     }
-
-    if (poll.tallyJsonCID) {
-      (async () => {
-        try {
-          const response = await getDataFromPinata(poll.tallyJsonCID);
-          const {
-            results: { tally },
-          } = response;
-
-          if (poll.options.length > tally.length) {
-            throw new Error("Invalid tally data");
-          }
-
-          const tallyCounts: number[] = tally
-            .map((v: string) => Number(v))
-            .slice(0, poll.options.length);
-
-          const result = poll.options.map((candidate: string, i: number) => ({
-            candidate,
-            votes: tallyCounts[i],
-          }));
-
-          result.sort((a: IResult, b: IResult) => b.votes - a.votes);
-          const totalVotes = result.reduce(
-            (acc: number, cur: IResult) => acc + cur.votes,
-            0
-          );
-
-          setTotalVotes(totalVotes);
-          setResult(result);
-        } catch (err) {
-          console.error("Error fetching tally data:", err);
-        }
-      })();
-    }
-
-    const statusUpdateInterval = setInterval(() => {
-      setStatus(getPollStatus(poll));
-    }, 1000);
-
-    return () => clearInterval(statusUpdateInterval);
   }, [poll]);
 
   useEffect(() => {
     if (!coordinatorPubKeyResult) return;
-
-    const coordinatorPubKey_ = new PubKey([
-      BigInt((coordinatorPubKeyResult as any)[0].toString()),
-      BigInt((coordinatorPubKeyResult as any)[1].toString()),
-    ]);
-
-    setCoordinatorPubKey(coordinatorPubKey_);
+    try {
+      const pubKey = new PubKey([
+        BigInt((coordinatorPubKeyResult as any)[0].toString()),
+        BigInt((coordinatorPubKeyResult as any)[1].toString()),
+      ]);
+      setCoordinatorPubKey(pubKey);
+    } catch (err) {
+      console.error("Error setting coordinator public key:", err);
+    }
   }, [coordinatorPubKeyResult]);
 
-  if (error) return <div>Poll not found</div>;
+  useEffect(() => {
+    if (!poll) return;
+    const currentStatus = getPollStatus(poll);
+    setStatus(currentStatus);
+  }, [poll]);
 
-  if (isLoading) {
+  if (pollError) {
     return (
-      <div className={styles.container}>
-        <div className={"spinner-wrapper"}>
-          <span className="spinner large"></span>
-        </div>
+      <div className={styles["error-state"]}>
+        <h3>Error Loading Poll</h3>
+        <p>There was a problem loading the poll details. Please try again.</p>
+        <Button
+          className={styles["retry-btn"]}
+          action={() => window.location.reload()}
+        >
+          Retry
+        </Button>
       </div>
     );
   }
 
-  if (!poll) return null;
+  if (isPollLoading) {
+    return (
+      <div className={styles["loading-state"]}>
+        <div className="spinner large"></div>
+      </div>
+    );
+  }
+
+  if (!poll) {
+    return (
+      <div className={styles["error-state"]}>
+        <h3>Poll Not Found</h3>
+        <p>The poll you're looking for doesn't exist.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.details}>
+    <div className={styles["poll-details"]}>
       <PollHeader
         pollName={poll.name}
         status={status}

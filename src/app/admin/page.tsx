@@ -1,43 +1,46 @@
 "use client";
-import Image from "next/image";
 import { useAccount } from "wagmi";
 import styles from "~~/styles/admin.module.css";
 import Button from "~~/components/ui/Button";
 import { useState } from "react";
 import { CreatePollForm, PollsList } from "~~/components/admin";
 import { useFetchPolls } from "~~/hooks/useFetchPolls";
-import { Poll, PollStatus } from "~~/types/poll";
-import { Circle } from "../Circle";
-import { Keypair } from "maci-domainobjs";
-import Link from "next/link";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Pagination } from "~~/components/home";
+import Image from "next/image";
 
-const AuthTypeMapping: { [key: string]: string } = {
-  wc: "worldcoin",
-  anon: "anon-icon",
-  nfc: "nfc-icon",
-};
 export default function Admin() {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
-  const { address, isDisconnected, isConnected } = useAccount();
+  const { isConnected } = useAccount();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(25);
+  const [limit] = useState(10);
   const {
     totalPolls,
     polls,
     refetch: refetchPolls,
     isLoading,
-  } = useFetchPolls(currentPage, limit);
-  const [selectedPollForStatusModal, setSelectedPollForStatusModal] =
-    useState<Poll>();
+    error,
+  } = useFetchPolls(currentPage, limit, false);
+
+  if (error) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles["admin-page"]}>
+          <div className={styles["error-state"]}>
+            <h3>Something went wrong</h3>
+            <p>Failed to load polls. Please try again later.</p>
+            <Button className={styles["retry-btn"]} action={refetchPolls}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>
       <div className={styles["admin-page"]}>
-        {!showCreatePoll && (
-          <PollsList polls={polls} isLoadingPolls={isLoading} />
-        )}
         <div className={styles.header}>
           {!showCreatePoll && isConnected && (
             <Button
@@ -48,7 +51,21 @@ export default function Admin() {
             </Button>
           )}
         </div>
-        {showCreatePoll && (
+        {!showCreatePoll ? (
+          <>
+            <PollsList polls={polls} isLoadingPolls={isLoading} />
+            {polls && polls.length > 0 && (
+              <div className={styles["pagination-container"]}>
+                <Pagination
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  totalItems={totalPolls}
+                  itemsPerPage={limit}
+                />
+              </div>
+            )}
+          </>
+        ) : (
           <CreatePollForm
             refetchPolls={refetchPolls}
             onClose={() => {

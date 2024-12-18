@@ -32,13 +32,14 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
     data: rawPolls,
     refetch: refetchPolls,
     isLoading,
+    error,
   } = useScaffoldContractRead({
     contractName: "Privote",
     functionName: "fetchPolls",
     args: [BigInt(currentPage), BigInt(limit), reversed],
   });
 
-  const [lastTimer, setLastTimer] = useState<NodeJS.Timer>();
+  const [lastTimer, setLastTimer] = useState<NodeJS.Timeout>();
 
   useEffect(() => {
     if (lastTimer) {
@@ -75,5 +76,11 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
     refetchPolls();
   }
 
-  return { totalPolls: Number(totalPolls || 0n), polls, refetch, isLoading };
+  return {
+    totalPolls: Number(totalPolls || 0n),
+    polls,
+    refetch,
+    isLoading,
+    error,
+  };
 };
