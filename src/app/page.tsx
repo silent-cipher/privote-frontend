@@ -83,11 +83,6 @@ export default function Home() {
 
   return (
     <div className={styles["main-page"]}>
-      <LogInWithAnonAadhaar
-        nullifierSeed={4534}
-        signal={deployedContracts[11155111].Privote.address}
-      />
-      <button onClick={registerUser}>Sign up</button>
       <div className={styles["poll-wrapper"]}>
         <div className={styles["polls-container"]}>
           <h2>Polls</h2>

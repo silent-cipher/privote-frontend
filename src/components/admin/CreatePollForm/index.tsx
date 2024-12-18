@@ -138,7 +138,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     args: [
       pollData.title,
       pollData.options.map((option) => option.value) || [],
-      ["0x", "0x"],
+      pollData.options.map((option) => option.cid) || [],
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
       pollData.mode,
@@ -183,21 +183,40 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
 
     try {
-      // console.log(files);
-      // if (files && files.length > 0) {
-      //   for (let i = 0; i < files.length; i++) {
-      //     if (!files[i]) continue;
-      //     const file = files[i];
-      //     const data = await uploadImageToPinata(file);
-      //     console.log(data);
-      //     const cid = new CID(data);
-      //     pollData.options[i].cid = bytesToHex(cid.bytes);
-      //     pollData.options[i].isUploadedToIPFS = true;
-      //   }
-      // }
+      console.log(files);
+      let cids = pollData.options.map((option) => option.cid);
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          if (!files[i]) {
+            cids[i] = "0x";
+            continue;
+          }
+          const file = files[i];
+          const data = await uploadImageToPinata(file);
+          console.log(data);
+          const cid = new CID(data);
+          cids[i] = bytesToHex(cid.bytes);
+          pollData.options[i].cid = bytesToHex(cid.bytes);
+        }
+      }
+
+      // wait for 5 seconds before sending the transaction
+      await new Promise((resolve) => setTimeout(resolve, 5000));
 
       console.log("pollData", pollData);
-      await writeAsync({ value: parseEther("0.01") });
+      await writeAsync({
+        args: [
+          pollData.title,
+          pollData.options.map((option) => option.value) || [],
+          cids || [],
+          JSON.stringify({ pollType: pollData.pollType }),
+          duration > 0 ? BigInt(duration) : 0n,
+          pollData.mode,
+          PubKey.deserialize(pollData.pubKey).asContractParam(),
+          pollData.authType || "anon",
+        ],
+        value: parseEther("0.01"),
+      });
       refetchPolls();
     } catch (err) {
       refetchPolls();

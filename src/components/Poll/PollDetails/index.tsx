@@ -40,6 +40,7 @@ interface IPollDetails {
 }
 const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
   const { data: poll, error, isLoading } = useFetchPoll(id);
+  console.log(poll);
   const [pollType, setPollType] = useState(PollType.NOT_SELECTED);
   const { address, isConnected } = useAccount();
   const { registerUser } = useUserRegister();
@@ -355,12 +356,6 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
         <h1 className={styles.heading}>{poll?.name}</h1>
         <div className={styles.end}>
           {!isConnected && <ConnectButton />}
-          {/* {!isUserRegistered && isConnected && (
-            <Button action={registerUser}>Register</Button>
-          )} */}
-          {/* {!isUserRegistered &&
-            AnonAadhaar.status !== "logged-in" &&
-            isConnected && ( */}
           <LogInWithAnonAadhaar
             nullifierSeed={4534}
             signal={deployedContracts[11155111].Privote.address}
@@ -369,30 +364,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
           {!isUserRegistered &&
             AnonAadhaar.status === "logged-in" &&
             isConnected && <Button action={registerUser}>Register</Button>}
-          {/* {poll?.authType === "wc" && (
-            <>
-              {isConnected && (
-                <>
-                  <IDKitWidget
-                    app_id={process.env.NEXT_PUBLIC_APP_ID as `app_${string}`}
-                    action={process.env.NEXT_PUBLIC_ACTION as string}
-                    signal={address}
-                    onSuccess={submitTx}
-                    autoClose
-                  />
 
-                  {!done && (
-                    <button onClick={() => setOpen(true)}>
-                      {!hash &&
-                        (isPending
-                          ? "Pending, please check your wallet..."
-                          : "Verify and Execute Transaction")}
-                    </button>
-                  )}
-                </>
-              )}
-            </>
-          )} */}
           <div className={styles.status}>
             {status ? PollStatusMapping[status] : ""}
           </div>
@@ -431,19 +403,26 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
           ))}
         </ul>
         <div className={styles.col}>
-          {status === PollStatus.OPEN &&
-            poll?.authType === "anon" &&
+          {/* {status === PollStatus.OPEN &&
+            isConnected &&
             AnonAadhaar.status === "logged-out" && (
-              <div className={styles.text}>Please login to vote</div>
-            )}
-          {status === PollStatus.OPEN && (
+              <div className={styles.text}>
+                Please login using AnonAadhaar to vote
+              </div>
+            )} */}
+          {status === PollStatus.OPEN && !isConnected && (
+            <div className={styles.text}>Please connect wallet to vote</div>
+          )}
+          {status === PollStatus.OPEN && isConnected && isUserRegistered && (
             <button
               className={styles["poll-btn"]}
-              // disabled={
-              //   poll?.authType === "anon"
-              //     ? AnonAadhaar.status !== "logged-in"
-              //     : false
-              // }
+              disabled={
+                isLoadingSingle ||
+                isLoadingBatch ||
+                isAnyInvalid ||
+                !isUserRegistered ||
+                !isConnected
+              }
               onClick={castVote}
             >
               {isLoadingSingle || isLoadingBatch ? (

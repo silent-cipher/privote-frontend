@@ -2,6 +2,8 @@ import Image from "next/image";
 import { PollStatus, PollType } from "~~/types/poll";
 import styles from "./index.module.css";
 import { useState, useRef } from "react";
+import CID from "cids";
+import { hexToBytes } from "viem";
 
 interface VoteCardProps {
   title: string;
@@ -95,9 +97,22 @@ const VoteCard = ({
           }
         />
       )}
-      {(title === "Trump" || title === "Harris") && (
+      {bytesCid && bytesCid !== "0x" && bytesCid.length > 2 && (
         <div className={styles.image}>
-          <img src={image} alt={title} />
+          <Image
+            src={`https://${
+              process.env.NEXT_PUBLIC_PINATA_GATEWAY
+            }.mypinata.cloud/ipfs/${new CID(
+              hexToBytes(bytesCid as `0x${string}`)
+            ).toString()}`}
+            loading="lazy"
+            loader={(p) => {
+              return `${p.src}?img-width=${p.width}&img-height=${p.width}`;
+            }}
+            height={400}
+            width={400}
+            alt="candidate"
+          />
         </div>
       )}
       <div className={styles.content}>
