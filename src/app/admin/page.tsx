@@ -53,7 +53,7 @@ export default function Admin() {
         </div>
         {!showCreatePoll ? (
           <>
-            <PollsList polls={polls} isLoadingPolls={isLoading} />
+            <PollsList />
             {polls && polls.length > 0 && (
               <div className={styles["pagination-container"]}>
                 <Pagination

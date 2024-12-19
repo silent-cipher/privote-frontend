@@ -58,7 +58,9 @@
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 16px;
   max-width: 1155px;
   width: 100%;

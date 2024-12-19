@@ -3,7 +3,7 @@ import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
 import styles from "~~/styles/userPoll.module.css";
 import Button from "~~/components/ui/Button";
 import { PollStatus } from "~~/types/poll";
-import deployedContracts from "~~/contracts/deployedContracts";
+import { useAccount } from "wagmi";
 
 interface PollHeaderProps {
   pollName: string;
@@ -12,6 +12,7 @@ interface PollHeaderProps {
   isUserRegistered: boolean;
   anonAadhaarStatus: string;
   onRegister: () => void;
+  isRegistering: boolean;
 }
 
 const PollStatusMapping = {
@@ -28,20 +29,29 @@ export const PollHeader = ({
   isUserRegistered,
   anonAadhaarStatus,
   onRegister,
+  isRegistering,
 }: PollHeaderProps) => {
+  const { address } = useAccount();
   return (
     <div className={styles.header}>
       <h1 className={styles.heading}>{pollName}</h1>
       <div className={styles.end}>
         {!isConnected && <ConnectButton />}
-        <LogInWithAnonAadhaar
-          nullifierSeed={4534}
-          signal={deployedContracts[11155111].Privote.address}
-        />
-
-        {!isUserRegistered && anonAadhaarStatus === "logged-in" && isConnected && (
-          <Button action={onRegister}>Register</Button>
+        {isConnected && (
+          <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
         )}
+
+        {!isUserRegistered &&
+          anonAadhaarStatus === "logged-in" &&
+          isConnected && (
+            <Button action={onRegister} disabled={isRegistering}>
+              {isRegistering ? (
+                <span className={`${styles.spinner} spinner`}></span>
+              ) : (
+                "Register"
+              )}
+            </Button>
+          )}
 
         <div className={styles.status}>
           {status ? PollStatusMapping[status] : ""}

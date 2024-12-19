@@ -8838,7 +8838,7 @@ const deployedContracts = {
       deploymentBlockNumber: 7199057,
     },
     Privote: {
-      address: "0x4aA5805b589b418B87cA9d6BaFFa611477cf4507",
+      address: "0x757772b2AdbD3AaCEB6feEf48043a9EaA7F35d35",
       abi: [
         {
           inputs: [
@@ -9475,6 +9475,146 @@ const deployedContracts = {
             },
           ],
           name: "fetchPolls",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "id",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "bytes",
+                  name: "encodedOptions",
+                  type: "bytes",
+                },
+                {
+                  internalType: "string",
+                  name: "metadata",
+                  type: "string",
+                },
+                {
+                  components: [
+                    {
+                      internalType: "address",
+                      name: "poll",
+                      type: "address",
+                    },
+                    {
+                      internalType: "address",
+                      name: "messageProcessor",
+                      type: "address",
+                    },
+                    {
+                      internalType: "address",
+                      name: "tally",
+                      type: "address",
+                    },
+                  ],
+                  internalType: "struct MACI.PollContracts",
+                  name: "pollContracts",
+                  type: "tuple",
+                },
+                {
+                  internalType: "uint256",
+                  name: "startTime",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "endTime",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "numOfOptions",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string[]",
+                  name: "options",
+                  type: "string[]",
+                },
+                {
+                  internalType: "bytes[]",
+                  name: "optionInfo",
+                  type: "bytes[]",
+                },
+                {
+                  internalType: "string",
+                  name: "tallyJsonCID",
+                  type: "string",
+                },
+                {
+                  components: [
+                    {
+                      internalType: "uint256",
+                      name: "x",
+                      type: "uint256",
+                    },
+                    {
+                      internalType: "uint256",
+                      name: "y",
+                      type: "uint256",
+                    },
+                  ],
+                  internalType: "struct DomainObjs.PubKey",
+                  name: "coordinatorPubKey",
+                  type: "tuple",
+                },
+                {
+                  internalType: "address",
+                  name: "pollDeployer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "slashThreshold",
+                  type: "uint256",
+                },
+                {
+                  internalType: "string",
+                  name: "authType",
+                  type: "string",
+                },
+              ],
+              internalType: "struct Privote.PollData[]",
+              name: "polls_",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_page",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_perPage",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "_ascending",
+              type: "bool",
+            },
+          ],
+          name: "fetchUserPolls",
           outputs: [
             {
               components: [
@@ -10399,7 +10539,7 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deploymentBlockNumber: 7199063,
+      deploymentBlockNumber: 7311891,
     },
     SourcePrivote: {
       address: "0x61cc1d3A77c855689327626034d6B3aD2B511458",

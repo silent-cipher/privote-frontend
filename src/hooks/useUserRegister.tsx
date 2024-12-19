@@ -10,7 +10,7 @@ import {
   ArtifactsOrigin,
 } from "@anon-aadhaar/core";
 import { useEffect } from "react";
-import deployedContracts from "~~/contracts/deployedContracts";
+import { useAccount } from "wagmi";
 
 const anonAadhaarInitArgs: InitArgs = {
   wasmURL: artifactUrls.v2.wasm,
@@ -22,6 +22,7 @@ const anonAadhaarInitArgs: InitArgs = {
 const useUserRegister = () => {
   const { keypair, isRegistered } = useAuthContext();
   const [anonAadhaar] = useAnonAadhaar();
+  const { address, isDisconnected } = useAccount();
 
   useEffect(() => {
     init(anonAadhaarInitArgs);
@@ -38,12 +39,17 @@ const useUserRegister = () => {
   });
 
   const registerUser = async () => {
-    if (!keypair || anonAadhaar.status !== "logged-in" || isRegistered) return;
+    if (
+      !keypair ||
+      anonAadhaar.status !== "logged-in" ||
+      isRegistered ||
+      isDisconnected
+    )
+      return;
 
     const pcd = anonAadhaar.anonAadhaarProofs[0]?.pcd;
 
     const parsedPCD = JSON.parse(pcd || "{}");
-    console.log(parsedPCD);
 
     const {
       ageAbove18,
@@ -90,7 +96,7 @@ const useUserRegister = () => {
         BigInt(providedNullifierSeed),
         nullifier,
         timestamp,
-        BigInt(deployedContracts[11155111].Privote.address as `0x${string}`),
+        BigInt(address as `0x${string}`),
         revealArray,
         groth16Proof8,
       ]
@@ -109,7 +115,7 @@ const useUserRegister = () => {
     }
   };
 
-  return { registerUser };
+  return { registerUser, isLoading };
 };
 
 export default useUserRegister;
