@@ -7,7 +7,7 @@ interface PublishForm {
   privKey: string;
 }
 
-const BACKEND_URL = "http://localhost:8080/generate-tally";
+const BACKEND_URL = `${process.env.NEXT_PUBLIC_TALLY_BACKEND_URL}/generate-tally`;
 
 export const usePublishResults = (pollId: string) => {
   const [form, setForm] = useState<PublishForm>({
@@ -53,7 +53,6 @@ export const usePublishResults = (pollId: string) => {
       router.push("/");
     } catch (error) {
       setBtnText("Publish Results");
-      router.push("/");
       console.error("Error publishing results:", error);
     }
   };

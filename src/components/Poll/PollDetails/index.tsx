@@ -29,7 +29,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
   } = useFetchPoll(id);
   const [pollType, setPollType] = useState(PollType.NOT_SELECTED);
   const { address, isConnected } = useAccount();
-  const { registerUser } = useUserRegister();
+  const { registerUser, isLoading: isRegistering } = useUserRegister();
   const [AnonAadhaar] = useAnonAadhaar();
   const { keypair, stateIndex } = useAuthContext();
   const [status, setStatus] = useState<PollStatus>();
@@ -136,6 +136,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
         isConnected={isConnected}
         isUserRegistered={isUserRegistered}
         anonAadhaarStatus={AnonAadhaar.status}
+        isRegistering={isRegistering}
         onRegister={registerUser}
       />
 
