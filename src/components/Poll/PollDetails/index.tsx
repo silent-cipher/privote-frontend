@@ -7,7 +7,7 @@ import styles from "~~/styles/userPoll.module.css";
 import PollAbi from "~~/abi/Poll";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import { PollType, PollStatus } from "~~/types/poll";
-import { useAuthContext } from "~~/contexts/AuthContext";
+import { usePollContext } from "~~/contexts/PollContext";
 import { getPollStatus } from "~~/hooks/useFetchPolls";
 import useUserRegister from "~~/hooks/useUserRegister";
 import useVoting from "~~/hooks/useVoting";
@@ -22,16 +22,19 @@ interface IPollDetails {
 }
 
 const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
-  const {
-    data: poll,
-    error: pollError,
-    isLoading: isPollLoading,
-  } = useFetchPoll(id);
   const [pollType, setPollType] = useState(PollType.NOT_SELECTED);
   const { address, isConnected } = useAccount();
-  const { registerUser, isLoading: isRegistering } = useUserRegister();
   const [AnonAadhaar] = useAnonAadhaar();
-  const { keypair, stateIndex } = useAuthContext();
+  const {
+    keypair,
+    stateIndex,
+    poll,
+    isLoading: isPollLoading,
+    isError: pollError,
+  } = usePollContext();
+  const { registerUser, isLoading: isRegistering } = useUserRegister(
+    poll?.authType
+  );
   const [status, setStatus] = useState<PollStatus>();
   const [coordinatorPubKey, setCoordinatorPubKey] = useState<PubKey>();
   const {
@@ -132,6 +135,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     <div className={styles["poll-details"]}>
       <PollHeader
         pollName={poll.name}
+        authType={poll.authType}
         status={status}
         isConnected={isConnected}
         isUserRegistered={isUserRegistered}
@@ -144,6 +148,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
         pollId={id}
         pollStatus={status}
         pollType={pollType}
+        authType={poll.authType}
         options={poll.options}
         optionInfo={poll.optionInfo}
         pollDeployer={poll.pollDeployer}

@@ -4,6 +4,9 @@ import { useFetchPolls } from "~~/hooks/useFetchPolls";
 import styles from "~~/styles/page.module.css";
 import { Pagination, PollsList } from "~~/components/home";
 import Button from "~~/components/ui/Button";
+import { useAnonAadhaar } from "@anon-aadhaar/react";
+import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
+import { Poll } from "~~/types/poll";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,6 +18,12 @@ export default function Home() {
     isLoading: isPollsLoading,
     error,
   } = useFetchPolls(currentPage, limit, false);
+  const [anonAadhaar] = useAnonAadhaar();
+  // const polls: Poll[] = [];
+  // const totalPolls = 0;
+  // const isPollsLoading = false;
+  // const error = null;
+  // const refetchPolls = () => {};
 
   if (error) {
     return (

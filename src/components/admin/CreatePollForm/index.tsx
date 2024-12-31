@@ -40,6 +40,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   });
   const [files, setFiles] = useState<File[] | null>(null);
   const { isConnected } = useAccount();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [candidateSelection, setCandidateSelection] = useState<string>("");
   const [pollConfig, setPollConfig] = useState(0);
@@ -128,14 +129,20 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     const newOptions = [...pollData.options];
     newOptions.splice(index, 1);
     setPollData({ ...pollData, options: newOptions });
+    setFiles((prev) => {
+      const newFiles = prev ? [...prev] : [];
+      newFiles.splice(index, 1);
+      return [...newFiles];
+    });
   }
 
   const duration = Math.round(
     (pollData.expiry.getTime() - pollData.startDate.getTime()) / 1000
   );
 
-  const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName: "Privote",
+  const { writeAsync } = useScaffoldContractWrite({
+    contractName:
+      pollData.authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
     functionName: "createPoll",
     args: [
       pollData.title,
@@ -148,13 +155,14 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
         x: bigint;
         y: bigint;
       },
-      pollData.authType || "anon",
+      pollData.authType || "none",
     ],
+    value: parseEther("0.01"),
   });
 
   async function onSubmit() {
     // validate the inputs
-    console.log("creating poll", pollData);
+    console.log("creating poll", pollData, duration);
     for (const option of pollData.options) {
       if (!option.value) {
         // TODO: throw error that the option cannot be blank
@@ -188,7 +196,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
 
     try {
-      console.log(files);
+      setIsLoading(true);
       let cids = pollData.options.map((option) => option.cid);
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
@@ -205,10 +213,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
         }
       }
 
-      // wait for 5 seconds before sending the transaction
       await new Promise((resolve) => setTimeout(resolve, 5000));
-
-      console.log("pollData", pollData);
       await writeAsync({
         args: [
           pollData.title,
@@ -221,18 +226,18 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             x: bigint;
             y: bigint;
           },
-          pollData.authType || "anon",
+          pollData.authType || "none",
         ],
         value: parseEther("0.01"),
       });
+      setIsLoading(false);
       refetchPolls();
+      onClose();
     } catch (err) {
+      setIsLoading(false);
       refetchPolls();
-      // onClose();
       console.log(err);
     }
-
-    // onClose();
   }
 
   return (
@@ -384,38 +389,6 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                   src={"/anon-icon.svg"}
                 />
                 Anon - aadhaar
-              </button>
-              <button
-                type="button"
-                className={`${styles["veri-box"]} ${
-                  pollData.authType === "wc" ? styles.selected : ""
-                }`}
-                value={"wc"}
-                onClick={handleVeriMehodChange}
-              >
-                <Image
-                  width={31}
-                  height={31}
-                  alt="icon"
-                  src={"/worldcoin.svg"}
-                />
-                Worldcoin-orb
-              </button>
-              <button
-                type="button"
-                className={`${styles["veri-box"]} ${
-                  pollData.authType === "nfc" ? styles.selected : ""
-                }`}
-                value={"nfc"}
-                onClick={handleVeriMehodChange}
-              >
-                <Image
-                  width={31}
-                  height={31}
-                  alt="icon"
-                  src={"/nfc-icon.svg"}
-                />
-                NFC
               </button>
             </div>
           </div>

@@ -29,7 +29,7 @@ const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
     <div className={styles["polls-container"]}>
       <ul className={styles["polls-list"]}>
         {polls.map((poll) => (
-          <PollsListItem key={poll.id} poll={poll} />
+          <PollsListItem key={poll.pollContracts.poll} poll={poll} />
         ))}
       </ul>
     </div>

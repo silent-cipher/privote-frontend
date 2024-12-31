@@ -1,8 +1,13 @@
 import { useScaffoldContractRead } from "./scaffold-eth";
 
-export const useFetchPoll = (id: bigint | undefined) =>
+type ContractName = "PrivoteFreeForAll" | "PrivoteAnonAadhaar";
+
+export const useFetchPoll = (
+  id: bigint | undefined,
+  contractName: ContractName
+) =>
   useScaffoldContractRead({
-    contractName: "Privote",
+    contractName,
     functionName: "fetchPoll",
     args: [id],
   });

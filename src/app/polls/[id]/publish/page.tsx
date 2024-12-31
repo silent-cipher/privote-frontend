@@ -1,17 +1,40 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import styles from "~~/styles/publish.module.css";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import usePublishResults from "~~/hooks/usePublishResults";
 import { DockerConfig, BackendConfig } from "~~/components/Poll/PublishConfig";
+import MessageProcessor from "~~/abi/MessageProcessor";
+import { useContractRead } from "wagmi";
+import { EMode } from "~~/types/poll";
 
 export default function Publish() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const pollId = params.id as string;
-  const { data: poll, error, isLoading } = useFetchPoll(BigInt(Number(pollId)));
-  
+  const authType = searchParams.get("authType") as string;
+  const {
+    data: poll,
+    error,
+    isLoading,
+  } = useFetchPoll(
+    BigInt(Number(pollId)),
+    authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar"
+  );
+  const {
+    data: mode,
+    error: modeError,
+    isLoading: modeLoading,
+  } = useContractRead({
+    abi: MessageProcessor,
+    address: poll?.pollContracts.messageProcessor,
+    functionName: "mode",
+  });
+
+  console.log("poll", mode);
+
   const {
     form,
     btnText,
@@ -20,7 +43,13 @@ export default function Publish() {
     handleFormChange,
     publishWithBackend,
     publishWithDocker,
-  } = usePublishResults(pollId);
+  } = usePublishResults(
+    pollId,
+    authType,
+    mode as EMode,
+    modeLoading,
+    modeError
+  );
 
   if (error) {
     return <div>Error loading poll details</div>;

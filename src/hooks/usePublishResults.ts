@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useScaffoldContractWrite } from "./scaffold-eth";
+import { EMode } from "~~/types/poll";
 
 interface PublishForm {
   cid: string;
@@ -9,7 +10,13 @@ interface PublishForm {
 
 const BACKEND_URL = `${process.env.NEXT_PUBLIC_TALLY_BACKEND_URL}/generate-tally`;
 
-export const usePublishResults = (pollId: string) => {
+export const usePublishResults = (
+  pollId: string,
+  authType: string,
+  mode: EMode,
+  modeLoading: boolean,
+  modeError: any
+) => {
   const [form, setForm] = useState<PublishForm>({
     cid: "",
     privKey: "",
@@ -19,7 +26,8 @@ export const usePublishResults = (pollId: string) => {
   const router = useRouter();
 
   const { writeAsync } = useScaffoldContractWrite({
-    contractName: "Privote",
+    contractName:
+      authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
     functionName: "updatePollTallyCID",
     args: [undefined, undefined],
   });
@@ -36,6 +44,7 @@ export const usePublishResults = (pollId: string) => {
         body: JSON.stringify({
           pollId: pollId,
           coordinatoreKey: form.privKey,
+          isQV: mode === EMode.NON_QV ? false : true,
         }),
         headers: {
           "Content-Type": "application/json",

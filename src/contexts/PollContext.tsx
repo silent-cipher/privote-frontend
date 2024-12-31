@@ -7,34 +7,57 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Keypair, PrivKey } from "maci-domainobjs";
+import { Keypair, PrivKey, PubKey } from "maci-domainobjs";
 import { useAccount, useSignMessage } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 import {
   useScaffoldContractRead,
   useScaffoldEventHistory,
   useScaffoldEventSubscriber,
+  useTargetNetwork,
 } from "~~/hooks/scaffold-eth";
 import scaffoldConfig from "~~/scaffold.config";
+import { useParams, useSearchParams } from "next/navigation";
+import { useFetchPoll } from "~~/hooks/useFetchPoll";
+import { RawPoll } from "~~/types/poll";
 
-interface IAuthContext {
+interface IPollContext {
+  authType: string | null;
+  poll: RawPoll | undefined;
+  isLoading: boolean;
+  isError: boolean;
   isRegistered: boolean;
   keypair: Keypair | null;
   stateIndex: bigint | null;
   generateKeypair: () => void;
 }
 
-export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
+export const PollContext = createContext<IPollContext>({} as IPollContext);
 
-export default function AuthContextProvider({
+export default function PollContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const pollId = params.id;
+  const authType = searchParams.get("authType");
   const { address } = useAccount();
   const [keypair, setKeyPair] = useState<Keypair | null>(null);
   const [stateIndex, setStateIndex] = useState<bigint | null>(null);
   const [signatureMessage, setSignatureMessage] = useState<string>("");
+  const { targetNetwork } = useTargetNetwork();
+
+  const contractName =
+    authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar";
+  console.log("contractName", contractName);
+  const {
+    data: poll,
+    isLoading,
+    isError,
+  } = useFetchPoll(BigInt(pollId as string), contractName);
+  console.log("stateIndex", stateIndex);
 
   const { signMessageAsync } = useSignMessage({ message: signatureMessage });
 
@@ -64,26 +87,32 @@ export default function AuthContextProvider({
 
   const { data: isRegistered, refetch: refetchIsRegistered } =
     useScaffoldContractRead({
-      contractName: "Privote",
+      contractName,
       functionName: "isPublicKeyRegistered",
       args: keypair ? keypair.pubKey.rawPubKey : [0n, 0n],
     });
 
-  const chainId = scaffoldConfig.targetNetworks[0].id;
-
-  const {
-    Privote: { deploymentBlockNumber },
-  } = deployedContracts[chainId];
+  const deployedContract =
+    poll?.authType === "none"
+      ? deployedContracts[targetNetwork.id as keyof typeof deployedContracts]
+          .PrivoteFreeForAll
+      : deployedContracts[targetNetwork.id as keyof typeof deployedContracts]
+          .PrivoteAnonAadhaar;
 
   const { data: SignUpEvents } = useScaffoldEventHistory({
-    contractName: "Privote",
+    contractName,
     eventName: "SignUp",
     filters: {
       _userPubKeyX: BigInt(keypair?.pubKey.asContractParam().x || 0n),
       _userPubKeyY: BigInt(keypair?.pubKey.asContractParam().y || 0n),
     },
-    fromBlock: BigInt(deploymentBlockNumber),
+    fromBlock: BigInt(deployedContract.deploymentBlockNumber),
   });
+
+  console.log("SignUpEvents", SignUpEvents);
+  console.log("stateIndex", stateIndex);
+  console.log("keypair", keypair?.pubKey.asContractParam());
+  console.log(deployedContract.deploymentBlockNumber);
 
   useEffect(() => {
     if (!keypair || !SignUpEvents || !SignUpEvents.length) {
@@ -101,7 +130,7 @@ export default function AuthContextProvider({
   }, [keypair, SignUpEvents]);
 
   useScaffoldEventSubscriber({
-    contractName: "Privote",
+    contractName,
     eventName: "SignUp",
     listener: (logs) => {
       logs.forEach((log) => {
@@ -116,18 +145,28 @@ export default function AuthContextProvider({
     },
   });
 
+  const privKey = PrivKey.deserialize(
+    "macisk.9d2db4830bb38a015d94341105c84de0729eaee9e821cbeb09e2fa3c44c36ec5"
+  );
+  const keyPair = new Keypair(privKey);
+  console.log(keyPair.pubKey.toJSON());
+
   return (
-    <AuthContext.Provider
+    <PollContext.Provider
       value={{
         isRegistered: Boolean(isRegistered),
+        poll,
+        isLoading,
+        isError,
         keypair,
         stateIndex,
         generateKeypair,
+        authType,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </PollContext.Provider>
   );
 }
 
-export const useAuthContext = () => useContext(AuthContext);
+export const usePollContext = () => useContext(PollContext);

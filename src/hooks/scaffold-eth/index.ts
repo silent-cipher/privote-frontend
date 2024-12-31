@@ -10,6 +10,7 @@ export * from "./useScaffoldContractRead";
 export * from "./useScaffoldContractWrite";
 export * from "./useScaffoldEventSubscriber";
 export * from "./useScaffoldEventHistory";
+export * from "./useTargetNetwork";
 export * from "./useTransactor";
 export * from "./useFetchBlocks";
 export * from "./useContractLogs";

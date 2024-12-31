@@ -12,7 +12,7 @@ import { useTheme } from "next-themes";
 import { WagmiConfig } from "wagmi";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { ProgressBar } from "~~/components/scaffold-eth/ProgressBar";
-import AuthContextProvider from "~~/contexts/AuthContext";
+import AuthContextProvider from "~~/contexts/PollContext";
 import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
@@ -50,9 +50,7 @@ export const ScaffoldEthAppWithProviders = ({
         avatar={BlockieAvatar}
         theme={customTheme}
       >
-        <AnonAadhaarProvider _useTestAadhaar>
-          <AuthContextProvider>{children}</AuthContextProvider>
-        </AnonAadhaarProvider>
+        <AnonAadhaarProvider _useTestAadhaar>{children}</AnonAadhaarProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );

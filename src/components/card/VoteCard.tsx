@@ -34,7 +34,6 @@ const VoteCard = ({
             className="mr-2"
             value={index}
             onChange={(e) => {
-              console.log(e.target.checked);
               setSelected(e.target.checked);
               if (e.target.checked) {
                 switch (pollType) {

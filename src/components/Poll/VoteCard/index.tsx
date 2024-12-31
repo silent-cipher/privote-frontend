@@ -63,7 +63,6 @@ const VoteCard = ({
           value={index}
           style={{ display: "none" }}
           onChange={(e) => {
-            console.log(e.target.checked);
             setSelected(e.target.checked);
             if (e.target.checked) {
               switch (pollType) {

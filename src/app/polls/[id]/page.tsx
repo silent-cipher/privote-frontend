@@ -4,21 +4,33 @@ import Image from "next/image";
 import styles from "~~/styles/pollDetails.module.css";
 import { useParams } from "next/navigation";
 import { PollDetails } from "~~/components/Poll";
-import { useAuthContext } from "~~/contexts/AuthContext";
-import { useFetchPoll } from "~~/hooks/useFetchPoll";
+import PollContextProvider, { usePollContext } from "~~/contexts/PollContext";
 import Button from "~~/components/ui/Button";
 
+const Page = () => {
+  return (
+    <PollContextProvider>
+      <UserPoll />
+    </PollContextProvider>
+  );
+};
+
 const UserPoll = () => {
-  const { isRegistered } = useAuthContext();
+  const { isRegistered, isError, isLoading, keypair } = usePollContext();
   const params = useParams();
   const pollId = params.id;
-  const { error, isLoading } = useFetchPoll(BigInt(Number(pollId)));
 
-  if (error) {
+  console.log("keypair", keypair?.privKey.toJSON());
+  if (isError) {
     return (
       <div className={styles.container}>
         <Link href={"/"} className={styles.back}>
-          <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
+          <Image
+            src="/arrow-left.svg"
+            alt="arrow left"
+            width={27}
+            height={27}
+          />
         </Link>
         <div className={styles["error-state"]}>
           <h3>Failed to Load Poll</h3>
@@ -38,7 +50,12 @@ const UserPoll = () => {
     return (
       <div className={styles.container}>
         <Link href={"/"} className={styles.back}>
-          <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
+          <Image
+            src="/arrow-left.svg"
+            alt="arrow left"
+            width={27}
+            height={27}
+          />
         </Link>
         <div className={styles["loading-state"]}>
           <div className="spinner large"></div>
@@ -60,4 +77,4 @@ const UserPoll = () => {
   );
 };
 
-export default UserPoll;
+export default Page;

@@ -1,5 +1,5 @@
 "use client";
-import { useAuthContext } from "~~/contexts/AuthContext";
+import { usePollContext } from "~~/contexts/PollContext";
 import { useScaffoldContractWrite } from "./scaffold-eth";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
 import { encodeAbiParameters, parseAbiParameters } from "viem";
@@ -19,8 +19,8 @@ const anonAadhaarInitArgs: InitArgs = {
   artifactsOrigin: ArtifactsOrigin.server,
 };
 
-const useUserRegister = () => {
-  const { keypair, isRegistered } = useAuthContext();
+const useUserRegister = (authType?: string) => {
+  const { keypair, isRegistered } = usePollContext();
   const [anonAadhaar] = useAnonAadhaar();
   const { address, isDisconnected } = useAccount();
 
@@ -29,7 +29,8 @@ const useUserRegister = () => {
   }, []);
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName: "Privote",
+    contractName:
+      authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
     functionName: "signUp",
     args: [
       keypair?.pubKey.asContractParam() as { x: bigint; y: bigint },
@@ -38,7 +39,23 @@ const useUserRegister = () => {
     ],
   });
 
-  const registerUser = async () => {
+  const registerUserForFreeForAll = async () => {
+    if (!keypair || isRegistered || isDisconnected) return;
+
+    try {
+      await writeAsync({
+        args: [
+          keypair.pubKey.asContractParam() as { x: bigint; y: bigint },
+          "0x",
+          "0x",
+        ],
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const registerUserForAnonAadhaar = async () => {
     if (
       !keypair ||
       anonAadhaar.status !== "logged-in" ||
@@ -112,6 +129,14 @@ const useUserRegister = () => {
       });
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const registerUser = async () => {
+    if (authType === "none") {
+      await registerUserForFreeForAll();
+    } else {
+      await registerUserForAnonAadhaar();
     }
   };
 

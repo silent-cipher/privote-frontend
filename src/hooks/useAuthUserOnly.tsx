@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
-import { useAuthContext } from "~~/contexts/AuthContext";
+import { useAuthContext } from "~~/contexts/PollContext";
 
 export function useAuthUserOnly({ inverted }: { inverted?: boolean }) {
   const { isRegistered } = useAuthContext();

@@ -6,6 +6,7 @@ import { PollStatus } from "~~/types/poll";
 import { useAccount } from "wagmi";
 
 interface PollHeaderProps {
+  authType: string;
   pollName: string;
   status?: PollStatus;
   isConnected: boolean;
@@ -23,6 +24,7 @@ const PollStatusMapping = {
 };
 
 export const PollHeader = ({
+  authType,
   pollName,
   status,
   isConnected,
@@ -41,7 +43,8 @@ export const PollHeader = ({
           <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
         )}
 
-        {!isUserRegistered &&
+        {authType === "anon" &&
+          !isUserRegistered &&
           anonAadhaarStatus === "logged-in" &&
           isConnected && (
             <Button action={onRegister} disabled={isRegistering}>
@@ -52,6 +55,15 @@ export const PollHeader = ({
               )}
             </Button>
           )}
+        {authType === "none" && !isUserRegistered && isConnected && (
+          <Button action={onRegister} disabled={isRegistering}>
+            {isRegistering ? (
+              <span className={`${styles.spinner} spinner`}></span>
+            ) : (
+              "Register"
+            )}
+          </Button>
+        )}
 
         <div className={styles.status}>
           {status ? PollStatusMapping[status] : ""}

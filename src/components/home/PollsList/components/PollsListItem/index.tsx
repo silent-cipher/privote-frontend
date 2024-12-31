@@ -17,7 +17,7 @@ const AuthTypeMapping: { [key: string]: string } = {
 const PollsListItem = ({ poll }: PollsListItemProps) => {
   return (
     <li className={styles["polls-list-item"]}>
-      <Link href={`/polls/${Number(poll.id)}`}>
+      <Link href={`/polls/${Number(poll.id)}?authType=${poll.authType}`}>
         <div
           className={`${styles["poll-status"]} ${
             poll.status === PollStatus.OPEN

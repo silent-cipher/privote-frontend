@@ -20,8 +20,14 @@ export function getPollStatus(poll: RawPoll) {
   return PollStatus.RESULT_COMPUTED;
 }
 
-export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
+export const useFetchUserPolls = (
+  currentPage = 1,
+  limit = 25,
+  reversed = true,
+  address?: string
+) => {
   const [polls, setPolls] = useState<Poll[]>();
+  const [lastTimer, setLastTimer] = useState<NodeJS.Timeout>();
   const { data: totalFreePolls, refetch: refetchTotalFreePolls } =
     useScaffoldContractRead({
       contractName: "PrivoteFreeForAll",
@@ -56,8 +62,13 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
     error: errorAllFreePolls,
   } = useScaffoldContractRead({
     contractName: "PrivoteFreeForAll",
-    functionName: "fetchPolls",
-    args: [BigInt(currentPage), BigInt(Math.ceil(freeLimit)), reversed],
+    functionName: "fetchUserPolls",
+    args: [
+      address,
+      BigInt(currentPage),
+      BigInt(Math.ceil(freeLimit)),
+      reversed,
+    ],
   });
 
   const {
@@ -67,8 +78,13 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
     error: errorAllAnonPolls,
   } = useScaffoldContractRead({
     contractName: "PrivoteAnonAadhaar",
-    functionName: "fetchPolls",
-    args: [BigInt(currentPage), BigInt(Math.ceil(anonLimit)), reversed],
+    functionName: "fetchUserPolls",
+    args: [
+      address,
+      BigInt(currentPage),
+      BigInt(Math.ceil(anonLimit)),
+      reversed,
+    ],
   });
 
   const refetchTotalPolls = () => {
@@ -76,17 +92,8 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
     refetchTotalAnonPolls();
   };
 
-  const refetchAllPolls = () => {
-    refetchAllFreePolls();
-    refetchAllAnonPolls();
-  };
-
-  // const rawPolls = rawAllFreePolls?.concat(rawAllAnonPolls || []);
-  const refetchPolls = refetchAllPolls;
   const isLoading = isLoadingAllFreePolls || isLoadingAllAnonPolls;
   const error = errorAllFreePolls || errorAllAnonPolls;
-
-  const [lastTimer, setLastTimer] = useState<NodeJS.Timeout>();
 
   useEffect(() => {
     if (lastTimer) {
@@ -127,9 +134,18 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
 
   function refetch() {
     refetchTotalPolls();
-    refetchPolls();
+    refetchAllFreePolls();
+    refetchAllAnonPolls();
   }
 
+  if (!address) {
+    return {
+      data: [],
+      refetch: () => {},
+      isLoading: false,
+      error: null,
+    };
+  }
   return {
     totalPolls: Number(totalFreePolls || 0n) + Number(totalAnonPolls || 0n),
     polls,

@@ -4,13 +4,12 @@ import styles from "~~/styles/admin.module.css";
 import Button from "~~/components/ui/Button";
 import { useState } from "react";
 import { CreatePollForm, PollsList } from "~~/components/admin";
-import { useFetchPolls } from "~~/hooks/useFetchPolls";
+import { useFetchUserPolls } from "~~/hooks/useFetchUserPolls";
 import { Pagination } from "~~/components/home";
-import Image from "next/image";
 
 export default function Admin() {
   const [showCreatePoll, setShowCreatePoll] = useState(false);
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
@@ -20,7 +19,7 @@ export default function Admin() {
     refetch: refetchPolls,
     isLoading,
     error,
-  } = useFetchPolls(currentPage, limit, false);
+  } = useFetchUserPolls(currentPage, limit, false, address);
 
   if (error) {
     return (
@@ -53,7 +52,12 @@ export default function Admin() {
         </div>
         {!showCreatePoll ? (
           <>
-            <PollsList />
+            <PollsList
+              polls={polls}
+              isLoading={isLoading}
+              refetch={refetchPolls}
+              error={error}
+            />
             {polls && polls.length > 0 && (
               <div className={styles["pagination-container"]}>
                 <Pagination

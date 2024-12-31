@@ -2,12 +2,17 @@ import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { PollsListItem } from "./components";
 import styles from "./index.module.css";
-import { useFetchPolls } from "~~/hooks/useFetchPolls";
+import { Poll } from "~~/types/poll";
 
-const PollsList = () => {
-  const { address, isDisconnected } = useAccount();
+interface IPollsList {
+  polls: Poll[] | undefined;
+  isLoading: boolean;
+  error: any;
+  refetch: () => void;
+}
 
-  const { polls, isLoading } = useFetchPolls(1, 10, false, address);
+const PollsList = ({ polls, isLoading, error, refetch }: IPollsList) => {
+  const { isDisconnected } = useAccount();
 
   if (isDisconnected) {
     return (
@@ -44,8 +49,8 @@ const PollsList = () => {
         <h2>Polls</h2>
         <ul className={styles["polls-list"]}>
           {polls &&
-            polls.map((poll, index) => (
-              <PollsListItem key={poll.id || index} poll={poll} />
+            polls.map((poll) => (
+              <PollsListItem key={poll.pollContracts.poll} poll={poll} />
             ))}
         </ul>
       </div>

@@ -9,6 +9,7 @@ interface VotingSectionProps {
   pollId: bigint;
   pollStatus?: PollStatus;
   pollType: PollType;
+  authType: string;
   options: readonly string[];
   optionInfo: readonly string[];
   pollDeployer: string;
@@ -31,6 +32,7 @@ export const VotingSection = ({
   pollId,
   pollStatus,
   pollType,
+  authType,
   options,
   optionInfo,
   pollDeployer,
@@ -50,6 +52,7 @@ export const VotingSection = ({
 }: VotingSectionProps) => {
   const [AnonAadhaar] = useAnonAadhaar();
   const votingState = useVotingState({
+    authType,
     pollStatus,
     isConnected,
     isUserRegistered,

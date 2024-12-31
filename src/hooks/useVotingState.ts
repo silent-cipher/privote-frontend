@@ -2,6 +2,7 @@ import { PollStatus } from "~~/types/poll";
 import { AnonAadhaarProof } from "@anon-aadhaar/react";
 
 interface VotingStateProps {
+  authType: string;
   pollStatus: PollStatus | undefined;
   isConnected: boolean;
   isUserRegistered: boolean;
@@ -19,6 +20,7 @@ interface VotingState {
 }
 
 export const useVotingState = ({
+  authType,
   pollStatus,
   isConnected,
   isUserRegistered,
@@ -69,26 +71,39 @@ export const useVotingState = ({
     };
   }
 
-  if (anonAadhaarStatus === "logged-out") {
-    return {
-      canVote: false,
-      message: "Please login using AnonAadhaar to vote",
-      showRegisterButton: false,
-      showVoteButton: false,
-      showLoginButton: true,
-      showConnectWallet: false,
-    };
-  }
+  if (authType === "none") {
+    if (!isUserRegistered) {
+      return {
+        canVote: false,
+        message: "Please register to vote",
+        showRegisterButton: true,
+        showVoteButton: false,
+        showLoginButton: false,
+        showConnectWallet: false,
+      };
+    }
+  } else if (authType === "anon") {
+    if (anonAadhaarStatus === "logged-out") {
+      return {
+        canVote: false,
+        message: "Please login using AnonAadhaar to vote",
+        showRegisterButton: false,
+        showVoteButton: false,
+        showLoginButton: true,
+        showConnectWallet: false,
+      };
+    }
 
-  if (!isUserRegistered && anonAadhaarStatus === "logged-in") {
-    return {
-      canVote: false,
-      message: "Please register to vote",
-      showRegisterButton: true,
-      showVoteButton: false,
-      showLoginButton: false,
-      showConnectWallet: false,
-    };
+    if (!isUserRegistered && anonAadhaarStatus === "logged-in") {
+      return {
+        canVote: false,
+        message: "Please register to vote",
+        showRegisterButton: true,
+        showVoteButton: false,
+        showLoginButton: false,
+        showConnectWallet: false,
+      };
+    }
   }
 
   if (isVotesInvalid) {

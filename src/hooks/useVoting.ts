@@ -56,6 +56,7 @@ export const useVoting = ({
     coordinatorPubKey: PubKey,
     keypair: Keypair
   ) => {
+    console.log("stateIndex", stateIndex);
     const command: PCommand = new PCommand(
       stateIndex,
       keypair.pubKey,
@@ -95,7 +96,14 @@ export const useVoting = ({
   };
 
   const castVote = async () => {
-    if (!pollId || stateIndex == null || !coordinatorPubKey || !keypair) return;
+    if (
+      pollId == null ||
+      stateIndex == null ||
+      stateIndex <= 0 ||
+      !coordinatorPubKey ||
+      !keypair
+    )
+      return;
 
     if (Object.values(isVotesInvalid).some((v) => v)) {
       notification.error("Please enter a valid number of votes");
