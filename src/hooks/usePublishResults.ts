@@ -15,9 +15,7 @@ const BACKEND_URL = `${process.env.NEXT_PUBLIC_TALLY_BACKEND_URL}/api/generate-p
 export const usePublishResults = (
   pollId: string,
   authType: string,
-  mode: EMode,
-  modeLoading: boolean,
-  modeError: any
+  mode: EMode
 ) => {
   const [form, setForm] = useState<PublishForm>({
     cid: "",
@@ -54,7 +52,7 @@ export const usePublishResults = (
           pollId: pollId,
           coordinatorPrivKey: form.privKey,
           maciAddress: contract.address,
-          isQV: mode === EMode.NON_QV ? false : true,
+          useQuadraticVoting: mode === EMode.NON_QV ? false : true,
           startBlock: contract.deploymentBlockNumber,
           chainId: chainId,
         }),

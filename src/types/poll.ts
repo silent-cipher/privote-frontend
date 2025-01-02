@@ -23,6 +23,7 @@ export interface RawPoll {
   tallyJsonCID: string;
   pollDeployer: string;
   authType: string;
+  isQv: EMode;
 }
 
 export interface Poll extends RawPoll {

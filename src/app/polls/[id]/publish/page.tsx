@@ -23,15 +23,6 @@ export default function Publish() {
     BigInt(Number(pollId)),
     authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar"
   );
-  const {
-    data: mode,
-    error: modeError,
-    isLoading: modeLoading,
-  } = useContractRead({
-    abi: MessageProcessor,
-    address: poll?.pollContracts.messageProcessor,
-    functionName: "mode",
-  });
 
   const {
     form,
@@ -41,13 +32,7 @@ export default function Publish() {
     handleFormChange,
     publishWithBackend,
     publishWithDocker,
-  } = usePublishResults(
-    pollId,
-    authType,
-    mode as EMode,
-    modeLoading,
-    modeError
-  );
+  } = usePublishResults(pollId, authType, poll?.isQv as EMode);
 
   if (error) {
     return <div>Error loading poll details</div>;
