@@ -33,8 +33,6 @@ export default function Publish() {
     functionName: "mode",
   });
 
-  console.log("poll", mode);
-
   const {
     form,
     btnText,

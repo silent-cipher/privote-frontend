@@ -20,7 +20,6 @@ const UserPoll = () => {
   const params = useParams();
   const pollId = params.id;
 
-  console.log("keypair", keypair?.privKey.toJSON());
   if (isError) {
     return (
       <div className={styles.container}>

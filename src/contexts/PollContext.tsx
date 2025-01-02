@@ -51,13 +51,11 @@ export default function PollContextProvider({
 
   const contractName =
     authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar";
-  console.log("contractName", contractName);
   const {
     data: poll,
     isLoading,
     isError,
   } = useFetchPoll(BigInt(pollId as string), contractName);
-  console.log("stateIndex", stateIndex);
 
   const { signMessageAsync } = useSignMessage({ message: signatureMessage });
 
@@ -109,11 +107,6 @@ export default function PollContextProvider({
     fromBlock: BigInt(deployedContract.deploymentBlockNumber),
   });
 
-  console.log("SignUpEvents", SignUpEvents);
-  console.log("stateIndex", stateIndex);
-  console.log("keypair", keypair?.pubKey.asContractParam());
-  console.log(deployedContract.deploymentBlockNumber);
-
   useEffect(() => {
     if (!keypair || !SignUpEvents || !SignUpEvents.length) {
       setStateIndex(null);
@@ -144,12 +137,6 @@ export default function PollContextProvider({
       });
     },
   });
-
-  const privKey = PrivKey.deserialize(
-    "macisk.9d2db4830bb38a015d94341105c84de0729eaee9e821cbeb09e2fa3c44c36ec5"
-  );
-  const keyPair = new Keypair(privKey);
-  console.log(keyPair.pubKey.toJSON());
 
   return (
     <PollContext.Provider

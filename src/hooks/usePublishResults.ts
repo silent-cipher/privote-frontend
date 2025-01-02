@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useScaffoldContractWrite } from "./scaffold-eth";
 import { EMode } from "~~/types/poll";
+import deployedContracts from "~~/contracts/deployedContracts";
+import { useChainId } from "wagmi";
 
 interface PublishForm {
   cid: string;
   privKey: string;
 }
 
-const BACKEND_URL = `${process.env.NEXT_PUBLIC_TALLY_BACKEND_URL}/generate-tally`;
+const BACKEND_URL = `${process.env.NEXT_PUBLIC_TALLY_BACKEND_URL}/api/generate-proof`;
 
 export const usePublishResults = (
   pollId: string,
@@ -24,6 +26,7 @@ export const usePublishResults = (
   const [btnText, setBtnText] = useState("Publish Results");
   const [dockerConfig, setDockerConfig] = useState(0);
   const router = useRouter();
+  const chainId = useChainId();
 
   const { writeAsync } = useScaffoldContractWrite({
     contractName:
@@ -39,12 +42,21 @@ export const usePublishResults = (
   const publishWithBackend = async () => {
     try {
       setBtnText("Publishing...");
+      const contracts =
+        deployedContracts[chainId as keyof typeof deployedContracts];
+      const contract =
+        authType === "none"
+          ? contracts["PrivoteFreeForAll"]
+          : contracts["PrivoteAnonAadhaar"];
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         body: JSON.stringify({
           pollId: pollId,
-          coordinatoreKey: form.privKey,
+          coordinatorPrivKey: form.privKey,
+          maciAddress: contract.address,
           isQV: mode === EMode.NON_QV ? false : true,
+          startBlock: contract.deploymentBlockNumber,
+          chainId: chainId,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -53,13 +65,14 @@ export const usePublishResults = (
       const data = await response.json();
 
       if (response.ok) {
+        console.log("Tally CID", data.data);
         await writeAsync({
-          args: [BigInt(pollId), data.cid],
+          args: [BigInt(pollId), data.data],
         });
+        router.push("/admin");
       }
 
       setBtnText("Publish Results");
-      router.push("/");
     } catch (error) {
       setBtnText("Publish Results");
       console.error("Error publishing results:", error);

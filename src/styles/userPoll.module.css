@@ -53,6 +53,33 @@
   line-height: 24px;
 }
 
+.error-state {
+  max-width: 600px;
+  margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  background: var(--background-secondary);
+  border-radius: 12px;
+  min-height: 300px;
+}
+
+.error-state h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.error-state p {
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
 .candidate-container {
   width: 100%;
   display: flex;

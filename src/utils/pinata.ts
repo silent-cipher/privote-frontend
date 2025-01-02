@@ -40,10 +40,8 @@ export async function uploadImageToPinata(file: File) {
 export async function getDataFromPinata(hash: string) {
   const url = `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}.mypinata.cloud/ipfs/${hash}`;
 
-  console.log(url);
   const response = await fetch(url);
   const data = await response.json();
 
-  console.log("data", data);
   return data;
 }
