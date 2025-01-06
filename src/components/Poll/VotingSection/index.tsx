@@ -123,7 +123,10 @@ export const VotingSection = ({
         )}
       </div>
       {pollStatus === PollStatus.CLOSED && userAddress === pollDeployer && (
-        <Link className={styles["poll-btn"]} href={`/polls/${pollId}/publish`}>
+        <Link
+          className={styles["poll-btn"]}
+          href={`/polls/${pollId}/publish?authType=${authType}`}
+        >
           <p>Publish Result</p>
         </Link>
       )}

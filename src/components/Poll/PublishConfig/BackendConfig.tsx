@@ -42,7 +42,7 @@ export const BackendConfig = ({
               />
               <button
                 className={styles["publish-btn"]}
-                disabled={!privKeyValue}
+                disabled={!privKeyValue || btnText === "Publishing..."}
                 onClick={onPublish}
               >
                 {btnText}
