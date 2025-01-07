@@ -61,6 +61,7 @@ export const usePublishResults = (
           chainId: chainId,
           userId: address,
           quiet: true,
+          useWasm: true,
         },
         {
           onComplete: async (data) => {
@@ -68,6 +69,7 @@ export const usePublishResults = (
               await writeAsync({
                 args: [BigInt(pollId), data.data.cid],
               });
+              router.push("/admin");
               setBtnText("Publish Results");
             } catch (error) {
               console.error("Error updating contract:", error);

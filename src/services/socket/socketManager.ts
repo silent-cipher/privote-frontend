@@ -22,6 +22,7 @@ interface ProofGenerationRequest {
   startBlock: number;
   chainId: number;
   userId: string;
+  useWasm: boolean;
   quiet?: boolean;
 }
 
@@ -61,12 +62,12 @@ class SocketManager {
     if (!this.socket) return;
 
     this.socket.on("connect", () => {
-      console.log("Connected to proof generation server");
+      console.log("Connected!");
       this.reconnectAttempts = 0;
     });
 
     this.socket.on("disconnect", () => {
-      console.log("Disconnected from proof generation server");
+      console.log("Connection lost!");
     });
 
     this.socket.on("proofComplete", (data: ProofCompleteResponse) => {
@@ -125,7 +126,6 @@ class SocketManager {
     socket.once(
       "proofRequestAccepted",
       (response: ProofRequestAcceptedResponse) => {
-        console.log("Proof request accepted", response);
         if (response.jobId) {
           // Move callback from latest to proofCallbacks map
           if (this.latestCallback) {
