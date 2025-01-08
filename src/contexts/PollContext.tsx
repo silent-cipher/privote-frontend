@@ -42,7 +42,7 @@ export default function PollContextProvider({
   const params = useParams();
   const searchParams = useSearchParams();
   const pollId = params.id;
-  const authType = searchParams.get("authType");
+  const authType = searchParams.get("authType") || "none";
   const { address } = useAccount();
   const [keypair, setKeyPair] = useState<Keypair | null>(null);
   const [stateIndex, setStateIndex] = useState<bigint | null>(null);

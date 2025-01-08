@@ -8,19 +8,10 @@ interface PollsListProps {
 }
 
 const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
-  if (isLoadingPolls) {
+  if (!polls || polls.length === 0 || isLoadingPolls) {
     return (
       <div className={styles["spinner-wrapper"]}>
         <div className="spinner large"></div>
-      </div>
-    );
-  }
-
-  if (!polls || polls.length === 0) {
-    return (
-      <div className={styles["empty-state"]}>
-        <h3>No Polls Found</h3>
-        <p>There are no polls available at the moment.</p>
       </div>
     );
   }

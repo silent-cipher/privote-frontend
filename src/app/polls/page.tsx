@@ -2,11 +2,8 @@
 import { useState } from "react";
 import { useFetchPolls } from "~~/hooks/useFetchPolls";
 import styles from "~~/styles/page.module.css";
-import { Hero, Pagination, PollsList } from "~~/components/home";
+import { Pagination, PollsList } from "~~/components/home";
 import Button from "~~/components/ui/Button";
-import { useAnonAadhaar } from "@anon-aadhaar/react";
-import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
-import { Poll } from "~~/types/poll";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,12 +15,6 @@ export default function Home() {
     isLoading: isPollsLoading,
     error,
   } = useFetchPolls(currentPage, limit, false);
-  const [anonAadhaar] = useAnonAadhaar();
-  // const polls: Poll[] = [];
-  // const totalPolls = 0;
-  // const isPollsLoading = false;
-  // const error = null;
-  // const refetchPolls = () => {};
 
   if (error) {
     return (
@@ -43,7 +34,22 @@ export default function Home() {
 
   return (
     <div className={styles["main-page"]}>
-      <Hero />
+      <div className={styles["poll-wrapper"]}>
+        <div className={styles["polls-container"]}>
+          <h2>Polls</h2>
+          <PollsList polls={polls} isLoadingPolls={isPollsLoading} />
+          {showPagination && (
+            <div className={styles["pagination-container"]}>
+              <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalItems={totalPolls}
+                itemsPerPage={limit}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

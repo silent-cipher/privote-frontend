@@ -4,6 +4,7 @@ import styles from "./index.module.css";
 import { UserIcon, HouseIcon } from "./components";
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { MdOutlinePoll } from "react-icons/md";
 
 export default function Header() {
   const pathname = usePathname();
@@ -22,6 +23,18 @@ export default function Header() {
           >
             <HouseIcon isActive={pathname === "/"} />
             Home
+          </Link>
+          <Link
+            href="/polls"
+            className={`${styles.row} ${
+              pathname === "/polls" ? styles.active : ""
+            }`}
+          >
+            <MdOutlinePoll
+              fill={pathname === "/polls" ? "#C45EC6" : "#dadada"}
+              size={21}
+            />
+            Polls
           </Link>
           <Link
             href="/admin"

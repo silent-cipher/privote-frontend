@@ -13,6 +13,7 @@ import { bytesToHex, parseEther } from "viem";
 import { RxCross2 } from "react-icons/rx";
 import { useAccount } from "wagmi";
 import { uploadImageToPinata } from "~~/utils/pinata";
+import { uploadFileToLighthouse } from "~~/utils/lighthouse";
 import CID from "cids";
 
 interface CreatePollFormProps {
@@ -198,6 +199,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     try {
       setIsLoading(true);
       let cids = pollData.options.map((option) => option.cid);
+      console.log(files);
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           if (!files[i]) {
@@ -205,9 +207,9 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             continue;
           }
           const file = files[i];
-          const data = await uploadImageToPinata(file);
+          const data = await uploadFileToLighthouse([file]);
           console.log(data);
-          const cid = new CID(data);
+          const cid = new CID(data.Hash);
           cids[i] = bytesToHex(cid.bytes);
           pollData.options[i].cid = bytesToHex(cid.bytes);
         }

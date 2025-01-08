@@ -114,23 +114,13 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     );
   }
 
-  if (isPollLoading) {
+  if (!poll || isPollLoading) {
     return (
       <div className={styles["loading-state"]}>
         <div className="spinner large"></div>
       </div>
     );
   }
-
-  if (!poll) {
-    return (
-      <div className={styles["error-state"]}>
-        <h3>Poll Not Found</h3>
-        <p>The poll you're looking for doesn't exist.</p>
-      </div>
-    );
-  }
-
   return (
     <div className={styles["poll-details"]}>
       <PollHeader

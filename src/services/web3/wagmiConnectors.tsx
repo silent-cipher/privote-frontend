@@ -20,7 +20,7 @@ const targetNetworks = getTargetNetworks();
 const { onlyLocalBurnerWallet } = scaffoldConfig;
 
 // We always want to have mainnet enabled (ENS resolution, ETH price, etc). But only once.
-const enabledChains = targetNetworks.find(network => network.id === 1)
+const enabledChains = targetNetworks.find((network) => network.id === 1)
   ? targetNetworks
   : [...targetNetworks, chains.mainnet];
 
@@ -39,15 +39,18 @@ export const appChains = configureChains(
     // We might not need this checkout https://github.com/scaffold-eth/scaffold-eth-2/pull/45#discussion_r1024496359, will test and remove this before merging
     stallTimeout: 3_000,
     // Sets pollingInterval if using chains other than local hardhat chain
-    ...(targetNetworks.find(network => network.id !== chains.hardhat.id)
+    ...(targetNetworks.find((network) => network.id !== chains.hardhat.id)
       ? {
           pollingInterval: scaffoldConfig.pollingInterval,
         }
       : {}),
-  },
+  }
 );
 
-const walletsOptions = { chains: appChains.chains, projectId: scaffoldConfig.walletConnectProjectId };
+const walletsOptions = {
+  chains: appChains.chains,
+  projectId: scaffoldConfig.walletConnectProjectId,
+};
 const wallets = [
   metaMaskWallet({ ...walletsOptions, shimDisconnect: true }),
   walletConnectWallet(walletsOptions),
@@ -55,10 +58,13 @@ const wallets = [
   braveWallet(walletsOptions),
   coinbaseWallet({ ...walletsOptions, appName: "scaffold-eth-2" }),
   rainbowWallet(walletsOptions),
-  ...(!targetNetworks.some(network => network.id !== chains.hardhat.id) || !onlyLocalBurnerWallet
+  ...(!targetNetworks.some((network) => network.id !== chains.hardhat.id) ||
+  !onlyLocalBurnerWallet
     ? [
         burnerWalletConfig({
-          chains: appChains.chains.filter(chain => targetNetworks.map(({ id }) => id).includes(chain.id)),
+          chains: appChains.chains.filter((chain) =>
+            targetNetworks.map(({ id }) => id).includes(chain.id)
+          ),
         }),
       ]
     : []),

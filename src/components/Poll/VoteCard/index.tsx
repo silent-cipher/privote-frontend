@@ -99,9 +99,7 @@ const VoteCard = ({
       {bytesCid && bytesCid !== "0x" && bytesCid.length > 2 && (
         <div className={styles.image}>
           <Image
-            src={`https://${
-              process.env.NEXT_PUBLIC_PINATA_GATEWAY
-            }.mypinata.cloud/ipfs/${new CID(
+            src={`${process.env.NEXT_PUBLIC_LH_GATEWAY}/ipfs/${new CID(
               hexToBytes(bytesCid as `0x${string}`)
             ).toString()}`}
             loading="lazy"

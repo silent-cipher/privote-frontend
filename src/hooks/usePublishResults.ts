@@ -60,7 +60,7 @@ export const usePublishResults = (
           startBlock: contract.deploymentBlockNumber,
           chainId: chainId,
           userId: address,
-          quiet: true,
+          quiet: false,
           useWasm: true,
         },
         {

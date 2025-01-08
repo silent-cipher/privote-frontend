@@ -8,7 +8,7 @@ interface HeroProps {
 
 export const Hero = ({
   title = "Revolutionizing the Future of Voting",
-  description = "Register now to create polls, participate in elections, and make your voice heard in the decision-making process.",
+  description = "Create polls, participate in elections, and make your voice heard in the decision-making process.",
   status = "Privote: the all new way to create polls",
 }: HeroProps) => {
   return (

@@ -14,7 +14,7 @@ export default function Publish() {
   const params = useParams();
   const searchParams = useSearchParams();
   const pollId = params.id as string;
-  const authType = searchParams.get("authType") as string;
+  const authType = (searchParams.get("authType") as string) || "none";
   const {
     data: poll,
     error,

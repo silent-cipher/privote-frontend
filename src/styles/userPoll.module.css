@@ -53,6 +53,13 @@
   line-height: 24px;
 }
 
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
 .error-state {
   max-width: 600px;
   margin: 100px auto;

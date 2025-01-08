@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDataFromPinata } from "~~/utils/pinata";
+import { getDataFromLighthouse } from "~~/utils/lighthouse";
 import { RawPoll } from "~~/types/poll";
 
 interface IResult {
@@ -30,7 +30,7 @@ export const usePollResults = (
     setError(null);
 
     try {
-      const response = await getDataFromPinata(poll.tallyJsonCID);
+      const response = await getDataFromLighthouse(poll.tallyJsonCID);
       const {
         results: { tally },
       } = response;

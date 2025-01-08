@@ -60,6 +60,7 @@ export const VotingSection = ({
     isVotesInvalid: Object.values(isVotesInvalid).some((v) => v),
   });
 
+  console.log(isUserRegistered);
   const handleOptionSelect = (index: number) => {
     setSelectedCandidate(index);
     setIsVotesInvalid({ ...isVotesInvalid, [index]: false });
