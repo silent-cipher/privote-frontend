@@ -39,11 +39,12 @@ export const PollHeader = ({
       <h1 className={styles.heading}>{pollName}</h1>
       <div className={styles.end}>
         {!isConnected && <ConnectButton />}
-        {isConnected && (
+        {isConnected && authType === "anon" && status === PollStatus.OPEN && (
           <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
         )}
 
         {authType === "anon" &&
+          status === PollStatus.OPEN &&
           !isUserRegistered &&
           anonAadhaarStatus === "logged-in" &&
           isConnected && (
@@ -55,15 +56,18 @@ export const PollHeader = ({
               )}
             </Button>
           )}
-        {authType === "none" && !isUserRegistered && isConnected && (
-          <Button action={onRegister} disabled={isRegistering}>
-            {isRegistering ? (
-              <span className={`${styles.spinner} spinner`}></span>
-            ) : (
-              "Register"
-            )}
-          </Button>
-        )}
+        {authType === "none" &&
+          status === PollStatus.OPEN &&
+          !isUserRegistered &&
+          isConnected && (
+            <Button action={onRegister} disabled={isRegistering}>
+              {isRegistering ? (
+                <span className={`${styles.spinner} spinner`}></span>
+              ) : (
+                "Register"
+              )}
+            </Button>
+          )}
 
         <div className={styles.status}>
           {status ? PollStatusMapping[status] : ""}
