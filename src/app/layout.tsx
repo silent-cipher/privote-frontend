@@ -24,7 +24,10 @@ const satoshiRegular = localFont({
 
 export const metadata: Metadata = {
   title: "Privote",
-  description: "Privote",
+  description: "Privote: The all new way of voting through MACI",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

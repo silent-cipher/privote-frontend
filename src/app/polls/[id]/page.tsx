@@ -65,7 +65,7 @@ const UserPoll = () => {
 
   return (
     <div className={styles.container}>
-      <Link href={"/"} className={styles.back}>
+      <Link href={"/polls"} className={styles.back}>
         <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
       </Link>
       <PollDetails

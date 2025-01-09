@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./index.module.css";
 import { UserIcon, HouseIcon } from "./components";
 import { usePathname } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { MdOutlinePoll } from "react-icons/md";
+import Logo from "../../../public/logo.svg";
 
 export default function Header() {
   const pathname = usePathname();
@@ -12,9 +14,12 @@ export default function Header() {
     <div className={styles["header-wrapper"]}>
       <header className={styles.header}>
         <Link href="/">
-          <p className={styles["header-logo"]}>
-            PRI<span className={styles.highlight}>VOTE</span>
-          </p>
+          <div className={styles["header-logo"]}>
+            <Image src={Logo} alt="logo" width={30} height={30} />
+            <p>
+              PRI<span className={styles.highlight}>VOTE</span>
+            </p>
+          </div>
         </Link>
         <div className={styles.middle}>
           <Link

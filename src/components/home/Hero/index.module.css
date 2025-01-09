@@ -15,6 +15,11 @@
   background: #141414;
 }
 
+.status > a {
+  color: #c45ec6;
+  text-decoration: underline;
+}
+
 .heading {
   background: radial-gradient(
     70.54% 70.54% at 50% 50%,

@@ -26,10 +26,19 @@ const PollsList = ({ polls, isLoading, error, refetch }: IPollsList) => {
     );
   }
 
-  if (isLoading || (polls && polls.length === 0)) {
+  if (isLoading || error) {
     return (
       <div className={styles["spinner-wrapper"]}>
         <div className="spinner large"></div>
+      </div>
+    );
+  }
+
+  if (!isLoading && !error && polls && polls.length === 0) {
+    return (
+      <div className={styles["empty-state"]}>
+        <h3>No Polls Found</h3>
+        <p>There are no polls created by you</p>
       </div>
     );
   }

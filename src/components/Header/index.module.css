@@ -19,6 +19,9 @@
 }
 
 .header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-transform: uppercase;
   font-weight: 400;
   line-height: 29px;

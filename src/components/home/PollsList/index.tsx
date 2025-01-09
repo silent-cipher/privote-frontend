@@ -16,6 +16,15 @@ const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
     );
   }
 
+  if (!isLoadingPolls && polls && polls.length === 0) {
+    return (
+      <div className={styles["empty-state"]}>
+        <h3>No Polls Found</h3>
+        <p>There are no polls for you</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles["polls-container"]}>
       <ul className={styles["polls-list"]}>
