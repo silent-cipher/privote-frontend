@@ -16,6 +16,7 @@ import AuthContextProvider from "~~/contexts/PollContext";
 import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
+import { Toaster } from "react-hot-toast";
 
 const customTheme: Theme = merge(midnightTheme(), {
   colors: {
@@ -50,7 +51,10 @@ export const ScaffoldEthAppWithProviders = ({
         avatar={BlockieAvatar}
         theme={customTheme}
       >
-        <AnonAadhaarProvider _useTestAadhaar>{children}</AnonAadhaarProvider>
+        <AnonAadhaarProvider _useTestAadhaar>
+          <Toaster />
+          {children}
+        </AnonAadhaarProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );

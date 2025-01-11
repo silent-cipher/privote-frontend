@@ -1,48 +1,63 @@
+import React from "react";
 import styles from "../index.module.css";
-import { LuPlus } from "react-icons/lu";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 
 interface WithImageInputProps {
-  index: number;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFileRemove: () => void;
   placeholder: string;
   type?: string;
   className?: string;
+  file: File | null;
 }
 
 const WithImageInput = ({
-  index,
-  value,
   onChange,
+  onFileChange,
+  onFileRemove,
   placeholder,
   type = "text",
   className = "",
+  file,
   ...rest
 }: WithImageInputProps) => {
   return (
-    <>
-      {" "}
+    <div className={`${styles["with-img-input"]} ${className}`}>
       <input
-        className={`${styles["img-input"]} ${className}`}
         type={type}
-        value={value}
         onChange={onChange}
         placeholder={placeholder}
+        className={styles["input-field"]}
         {...rest}
-      />{" "}
-      <label className={styles.label} htmlFor={`file-${index}`}>
-        <LuPlus />
-        Upload File
-      </label>
-      <input
-        type="file"
-        id={`file-${index}`}
-        className={styles["with-img-input"]}
-        accept="image/*"
-        onChange={rest.onFileChange}
       />
-    </>
+      <div className={styles["file-input-container"]}>
+        {file ? (
+          <div className={styles["selected-file"]}>
+            <span className={styles["file-name"]}>{file.name}</span>
+            <button 
+              onClick={onFileRemove}
+              className={styles["remove-file-btn"]}
+              type="button"
+            >
+              <IoMdClose size={20} />
+            </button>
+          </div>
+        ) : (
+          <label className={styles["file-input-label"]}>
+            <input
+              type="file"
+              onChange={onFileChange}
+              accept="image/*"
+              className={styles["hidden-file-input"]}
+            />
+            <MdOutlineAddPhotoAlternate size={24} />
+          </label>
+        )}
+      </div>
+    </div>
   );
 };
 

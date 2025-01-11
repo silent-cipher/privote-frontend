@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./utils/**/*.{js,ts,jsx,tsx}",
+    // "./src/app/**/*.{js,ts,jsx,tsx}",
+    // "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/utils/**/*.{js,ts,jsx,tsx}",
   ],
   plugins: [require("daisyui")],
   darkTheme: "dark",
@@ -13,7 +13,7 @@ module.exports = {
       {
         light: {
           primary: "#93BBFB",
-          "primary-content": "#212638",
+          "primary-content": "#ffffff",
           secondary: "#DAE8FF",
           "secondary-content": "#212638",
           accent: "#93BBFB",
@@ -44,15 +44,15 @@ module.exports = {
       },
       {
         dark: {
-          primary: "#212638",
-          "primary-content": "#F9FBFF",
+          primary: "#c65ec6",
+          "primary-content": "#ffffff",
           secondary: "#323f61",
           "secondary-content": "#F9FBFF",
           accent: "#4969A6",
           "accent-content": "#F9FBFF",
           neutral: "#F9FBFF",
           "neutral-content": "#385183",
-          "base-100": "#385183",
+          "base-100": "#000",
           "base-200": "#2A3655",
           "base-300": "#212638",
           "base-content": "#F9FBFF",
@@ -80,7 +80,7 @@ module.exports = {
   theme: {
     extend: {
       boxShadow: {
-        center: "0 0 12px -2px rgb(0 0 0 / 0.05)",
+        center: "0 0 12px -2px rgb(255 255 255 / 0.05)",
       },
       animation: {
         "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",

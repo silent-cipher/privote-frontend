@@ -64,8 +64,12 @@
 .input-field-container > textarea {
   background: #0b0c0f;
   padding: 11px 12px;
-  color: #535861;
+  color: #fff;
   border-radius: 8px;
+}
+
+.input-field-container > input[type="datetime-local"] {
+  color-scheme: dark;
 }
 
 .input-field-container-row {
@@ -121,6 +125,7 @@
 }
 .add-candidate-btn {
   display: flex;
+  align-items: center;
   gap: 8px;
   background: var(
     --grd,

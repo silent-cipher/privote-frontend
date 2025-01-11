@@ -22,9 +22,43 @@ const satoshiRegular = localFont({
   weight: "400",
 });
 
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : `http://localhost:${process.env.PORT || 3000}`;
+const imageUrl = `${baseUrl}/logo.svg`;
+
+const title = "Privote";
+const titleTemplate = "%s | Privote";
+const description = "Privote: The all new way of voting through MACI";
+
 export const metadata: Metadata = {
-  title: "Privote",
-  description: "Privote: The all new way of voting through MACI",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: title,
+    template: titleTemplate,
+  },
+  description,
+  openGraph: {
+    title: {
+      default: title,
+      template: titleTemplate,
+    },
+    description,
+    images: [
+      {
+        url: imageUrl,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [imageUrl],
+    title: {
+      default: title,
+      template: titleTemplate,
+    },
+    description,
+  },
   icons: {
     icon: "/logo.svg",
   },

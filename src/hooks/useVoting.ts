@@ -56,7 +56,6 @@ export const useVoting = ({
     coordinatorPubKey: PubKey,
     keypair: Keypair
   ) => {
-    console.log("stateIndex", stateIndex);
     const command: PCommand = new PCommand(
       stateIndex,
       keypair.pubKey,
@@ -102,8 +101,12 @@ export const useVoting = ({
       stateIndex <= 0 ||
       !coordinatorPubKey ||
       !keypair
-    )
+    ) {
+      notification.error(
+        "Error casting vote. Please refresh the page and try again."
+      );
       return;
+    }
 
     if (Object.values(isVotesInvalid).some((v) => v)) {
       notification.error("Please enter a valid number of votes");

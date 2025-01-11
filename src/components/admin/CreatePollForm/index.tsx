@@ -35,10 +35,9 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     keyPair: new Keypair(),
     authType: "none",
     veriMethod: "none",
-    pubKey:
-      "macipk.a26f6f713fdf9ab73e2bf57662977f8f4539552b3ca0fb2a65654472427f601b",
+    pubKey: "",
   });
-  const [files, setFiles] = useState<File[] | null>(null);
+  const [files, setFiles] = useState<(File | null)[] | null>(null);
   const { isConnected } = useAccount();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -162,38 +161,30 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
 
   async function onSubmit() {
     // validate the inputs
-    console.log("creating poll", pollData, duration);
     for (const option of pollData.options) {
       if (!option.value) {
         // TODO: throw error that the option cannot be blank
-        notification.error("Option title cannot be blank", {
-          showCloseButton: false,
-        });
+        notification.error("Poll Candidates cannot be blank");
         console.log(option);
         return;
       }
     }
 
-    console.log("pollData.expiry", pollData.expiry);
-
     if (duration < 60) {
       // TODO: throw error that the expiry cannot be before atleast 1 min of creation
-      notification.error("Expiry cannot be before atleast 1 min of creation", {
-        showCloseButton: false,
-      });
+      notification.error("Expiry cannot be before atleast 1 min of creation");
       return;
     }
 
-    console.log("pollData.pollType", pollData.pollType);
     if (pollData.pollType === PollType.NOT_SELECTED) {
-      notification.error("Please select a poll type", {
-        showCloseButton: false,
-      });
+      notification.error("Please select a poll type");
       return;
     }
 
-    console.log("running contract function");
-    // save the poll data to ipfs or find another way for saving the poll type on the smart contract.
+    if (!PubKey.isValidSerializedPubKey(pollData.pubKey)) {
+      notification.error("Please enter a valid public key");
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -201,11 +192,12 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       console.log(files);
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
-          if (!files[i]) {
+          const file = files[i];
+
+          if (!file) {
             cids[i] = "0x";
             continue;
           }
-          const file = files[i];
           const data = await uploadFileToLighthouse([file]);
           console.log(data);
           const cid = new CID(data.Hash);
@@ -250,6 +242,9 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
         <h1 className={styles.heading}>Create a Poll</h1>
         <div className={styles.container}>
           <input
+            type="text"
+            placeholder="Enter the title of the poll"
+            id="poll-title"
             className={styles.title}
             value={pollData.title}
             onChange={handleTitleChange}
@@ -287,6 +282,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
             <label className={styles.label}>Select Poll expiry date</label>
             <input
               type="datetime-local"
+              id="expiry-date"
               className={styles.input}
               placeholder="Enter the title of the poll"
               value={pollData.expiry
@@ -302,7 +298,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
           <div className={styles["input-field-container"]}>
             <label className={styles.label}>Select Poll Type</label>
             <select
-              className="select bg-secondary text-neutral w-full rounded-xl"
+              className="select bg-secondary text-white w-full rounded-xl"
               value={pollData.pollType}
               onChange={handlePollTypeChange}
             >
@@ -353,7 +349,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
           <div className={styles["input-field-container"]}>
             <label className={styles.label}>Select Vote Type</label>
             <select
-              className="select bg-secondary text-neutral w-full rounded-xl"
+              className="select bg-secondary w-full rounded-xl text-white"
               value={pollData.mode}
               onChange={handleModeChange}
             >
@@ -418,26 +414,6 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setPollData({
-                      ...pollData,
-                      options: [
-                        {
-                          value: "Candidate 1",
-                          cid: "0x",
-                          isUploadedToIPFS: false,
-                        },
-                        {
-                          value: "Candidate 2",
-                          cid: "0x",
-                          isUploadedToIPFS: false,
-                        },
-                        {
-                          value: "Candidate 3",
-                          cid: "0x",
-                          isUploadedToIPFS: false,
-                        },
-                      ],
-                    });
                     setCandidateSelection("withoutImage");
                   }}
                 >
@@ -476,13 +452,19 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 <div className={styles["candidate-input"]}>
                   <WithImageInput
                     key={index}
-                    index={index}
                     type="text"
                     placeholder={`Candidate ${index + 1}`}
                     value={option.value}
+                    file={files?.[index] || null}
                     onChange={(e) => handleOptionChange(index, e.target.value)}
+                    onFileRemove={() => {
+                      setFiles((prev) => {
+                        const newFiles = prev ? [...prev] : [];
+                        newFiles[index] = null;
+                        return [...newFiles];
+                      });
+                    }}
                     onFileChange={(e: any) => {
-                      console.log(e.target.files[0]);
                       setFiles((prev) => {
                         const newFiles = prev ? [...prev] : [];
                         newFiles[index] = e.target.files[0];
@@ -524,7 +506,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                         <WithoutImageInput
                           onChange={handlePubKeyChange}
                           value={pollData.pubKey}
-                          placeholder="Enter public key..."
+                          placeholder="macipk.a26f6f713fdf9ab73e2bf57662977f8f4539552b3ca0fb2a65654472427f601b"
                           className={styles["pub-key-input"]}
                         />
                         <div className={styles["key-gen"]}>
