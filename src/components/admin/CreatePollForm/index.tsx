@@ -1,6 +1,6 @@
 "use client";
 import styles from "./index.module.css";
-
+import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { PollType, EMode } from "~~/types/poll";
@@ -527,6 +527,16 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                           placeholder="Enter public key..."
                           className={styles["pub-key-input"]}
                         />
+                        <div className={styles["key-gen"]}>
+                          You can generate maci key pair from{" "}
+                          <Link
+                            href="https://maci.pse.dev/docs/core-concepts/maci-keys#generate-maci-keys)"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            here
+                          </Link>
+                        </div>
                       </div>
                     )}
                   </div>
