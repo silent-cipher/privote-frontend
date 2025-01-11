@@ -3,7 +3,7 @@ import styles from "./index.module.css";
 
 import Image from "next/image";
 import { useState } from "react";
-import { PollType, EMode, VerificationType } from "~~/types/poll";
+import { PollType, EMode } from "~~/types/poll";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
 import { WithImageInput, WithoutImageInput } from "./components";
@@ -12,7 +12,6 @@ import Button from "~~/components/ui/Button";
 import { bytesToHex, parseEther } from "viem";
 import { RxCross2 } from "react-icons/rx";
 import { useAccount } from "wagmi";
-import { uploadImageToPinata } from "~~/utils/pinata";
 import { uploadFileToLighthouse } from "~~/utils/lighthouse";
 import CID from "cids";
 
@@ -137,9 +136,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     });
   }
 
-  const duration = Math.round(
-    (pollData.expiry.getTime() - pollData.startDate.getTime()) / 1000
-  );
+  const duration = Math.round((pollData.expiry.getTime() - Date.now()) / 1000);
 
   const { writeAsync } = useScaffoldContractWrite({
     contractName:
@@ -152,10 +149,12 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
       pollData.mode,
-      PubKey.deserialize(pollData.pubKey).asContractParam() as {
-        x: bigint;
-        y: bigint;
-      },
+      PubKey.isValidSerializedPubKey(pollData.pubKey)
+        ? (PubKey.deserialize(pollData.pubKey).asContractParam() as {
+            x: bigint;
+            y: bigint;
+          })
+        : { x: 0n, y: 0n },
       pollData.authType || "none",
     ],
     value: parseEther("0.01"),
@@ -266,7 +265,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               }
             ></textarea>
           </div>
-          <div className={styles["input-field-container"]}>
+          {/* <div className={styles["input-field-container"]}>
             <label className={styles.label}>Select the start date</label>
             <input
               type="datetime-local"
@@ -283,9 +282,9 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 })
               }
             />
-          </div>
+          </div> */}
           <div className={styles["input-field-container"]}>
-            <label className={styles.label}>Select the expiry date</label>
+            <label className={styles.label}>Select Poll expiry date</label>
             <input
               type="datetime-local"
               className={styles.input}
@@ -518,7 +517,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                   ></div>
                   <div className={styles["gen-container"]}>
                     <p className={styles.text}>
-                      We dont trust you, we have coordinator public key
+                      We dont trust you 🤨, we have coordinator public key
                     </p>
                     {pollConfig === 1 && (
                       <div className={styles["public-input-container"]}>

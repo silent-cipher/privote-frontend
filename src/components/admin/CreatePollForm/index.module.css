@@ -207,6 +207,7 @@
 .public-input-container > .pub-key-input {
   border-radius: 8px;
   background: #141414;
+  width: 100%;
 }
 
 .gen-btn {

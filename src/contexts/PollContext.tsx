@@ -19,7 +19,8 @@ import {
 import scaffoldConfig from "~~/scaffold.config";
 import { useParams, useSearchParams } from "next/navigation";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
-import { RawPoll } from "~~/types/poll";
+import { PollStatus, RawPoll } from "~~/types/poll";
+import { getPollStatus } from "~~/hooks/useFetchPolls";
 
 interface IPollContext {
   authType: string | null;
@@ -79,9 +80,8 @@ export default function PollContextProvider({
 
   useEffect(() => {
     setKeyPair(null);
-
-    generateKeypair();
-  }, [generateKeypair]);
+    if (poll && getPollStatus(poll) === PollStatus.OPEN) generateKeypair();
+  }, [generateKeypair, poll]);
 
   const { data: isRegistered, refetch: refetchIsRegistered } =
     useScaffoldContractRead({

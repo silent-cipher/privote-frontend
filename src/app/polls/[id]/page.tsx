@@ -1,13 +1,27 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "~~/styles/pollDetails.module.css";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useChainId } from "wagmi";
 import { PollDetails } from "~~/components/Poll";
 import PollContextProvider, { usePollContext } from "~~/contexts/PollContext";
 import Button from "~~/components/ui/Button";
 
 const Page = () => {
+  const router = useRouter();
+  const chainId = useChainId();
+  const [firstRender, setFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false);
+      return;
+    }
+    router.push("/polls");
+  }, [chainId]);
+
   return (
     <PollContextProvider>
       <UserPoll />
@@ -23,7 +37,7 @@ const UserPoll = () => {
   if (isError) {
     return (
       <div className={styles.container}>
-        <Link href={"/"} className={styles.back}>
+        <Link href={"/polls"} className={styles.back}>
           <Image
             src="/arrow-left.svg"
             alt="arrow left"

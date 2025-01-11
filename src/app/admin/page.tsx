@@ -1,13 +1,15 @@
 "use client";
 import { useAccount } from "wagmi";
+import { useSearchParams } from "next/navigation";
 import styles from "~~/styles/admin.module.css";
 import Button from "~~/components/ui/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreatePollForm, PollsList } from "~~/components/admin";
 import { useFetchUserPolls } from "~~/hooks/useFetchUserPolls";
 import { Pagination } from "~~/components/home";
 
 export default function Admin() {
+  const searchParams = useSearchParams();
   const [showCreatePoll, setShowCreatePoll] = useState(false);
   const { address, isConnected } = useAccount();
 
@@ -20,6 +22,14 @@ export default function Admin() {
     isLoading,
     error,
   } = useFetchUserPolls(currentPage, limit, false, address);
+
+  useEffect(() => {
+    if (isConnected) {
+      if (searchParams.get("action") === "create") {
+        setShowCreatePoll(true);
+      }
+    }
+  }, [isConnected]);
 
   if (error) {
     return (
