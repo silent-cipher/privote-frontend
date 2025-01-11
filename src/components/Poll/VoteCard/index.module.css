@@ -141,12 +141,17 @@
 
 .input {
   display: flex;
-  background-color: #b0b0b0;
+  background-color: #0b0c0f;
   margin-left: 24px;
   margin-top: 16px;
   border-radius: 8px;
   padding: 8px 12px;
-  color: #141414;
+  color: #fff;
+  outline: 1px solid #535861;
+}
+
+.input:focus {
+  outline-color: #c65ec6;
 }
 
 .input::placeholder {

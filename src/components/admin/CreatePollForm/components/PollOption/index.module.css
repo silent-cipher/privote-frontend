@@ -1,0 +1,9 @@
+.candidate-input {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.remove-option-btn {
+  cursor: pointer;
+}

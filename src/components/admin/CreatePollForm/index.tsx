@@ -1,236 +1,48 @@
-"use client";
-import styles from "./index.module.css";
-import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-import { PollType, EMode } from "~~/types/poll";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
-import { WithImageInput, WithoutImageInput } from "./components";
-import { Keypair, PubKey } from "maci-domainobjs";
-import Button from "~~/components/ui/Button";
-import { bytesToHex, parseEther } from "viem";
-import { RxCross2 } from "react-icons/rx";
 import { useAccount } from "wagmi";
-import { uploadFileToLighthouse } from "~~/utils/lighthouse";
-import CID from "cids";
-
-interface CreatePollFormProps {
-  onClose: () => void;
-  refetchPolls: () => void;
-}
+import Image from "next/image";
+import styles from "./index.module.css";
+import { CreatePollFormProps } from "./types";
+import { PollOption } from "./components/PollOption";
+import { PollSettings } from "./components/PollSettings";
+import { useCreatePollForm } from "./hooks/useCreatePollForm";
+import { LuPlus } from "react-icons/lu";
+import {
+  Divider,
+  CandidateSelection,
+  Verification,
+  PollConfiguration,
+} from "./components";
+import Button from "~~/components/ui/Button";
 
 const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
-  const [pollData, setPollData] = useState({
-    title: "Dummy Title",
-    description: "",
-    expiry: new Date(),
-    startDate: new Date(),
-    maxVotePerPerson: 1,
-    pollType: PollType.SINGLE_VOTE,
-    mode: EMode.QV,
-    options: [
-      { value: "", cid: "0x" as `0x${string}`, isUploadedToIPFS: false },
-    ],
-    keyPair: new Keypair(),
-    authType: "none",
-    veriMethod: "none",
-    pubKey: "",
-  });
-  const [files, setFiles] = useState<(File | null)[] | null>(null);
   const { isConnected } = useAccount();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
-  const [candidateSelection, setCandidateSelection] = useState<string>("");
-  const [pollConfig, setPollConfig] = useState(0);
-  const [showKeys, setShowKeys] = useState({ show: false, privKey: "" });
+  const {
+    pollData,
+    setPollData,
+    files,
+    isLoading,
+    showKeys,
+    setPollConfig,
+    pollConfig,
+    setShowKeys,
+    generateKeyPair,
+    candidateSelection,
+    setCandidateSelection,
+    handleOptionChange,
+    handleFileChange,
+    handleFileRemove,
+    handleAddOption,
+    handleRemoveOption,
+    handleSubmit,
+    handleVeriMethodChange,
+  } = useCreatePollForm(onClose, refetchPolls);
 
-  const generateKeyPair = () => {
-    const keyPair = new Keypair();
-
-    setPollData((prev) => ({
-      ...prev,
-      pubKey: keyPair.toJSON().pubKey,
-    }));
-    setShowKeys({ show: true, privKey: keyPair.toJSON().privKey });
-  };
-
-  const handleAddOption = () => {
-    setPollData({
-      ...pollData,
-      options: [
-        ...pollData.options,
-        { value: "", cid: "0x", isUploadedToIPFS: false },
-      ],
-    });
-  };
-
-  const handlePollTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPollData({ ...pollData, pollType: parseInt(e.target.value) });
-  };
-
-  const handleVeriMehodChange = (e: React.ChangeEvent<any>) => {
-    setPollData({ ...pollData, authType: e.target.value });
-  };
-
-  const handlePubKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPollData({ ...pollData, pubKey: e.target.value });
-  };
-
-  const handleMaxVotePerPersonChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setPollData({ ...pollData, maxVotePerPerson: parseInt(e.target.value) });
-  };
-
-  const handleOptionChange = (index: number, value: string, file?: File) => {
-    const newOptions: {
-      value: string;
-      cid: `0x${string}`;
-      isUploadedToIPFS: boolean;
-    }[] = [...pollData.options];
-    newOptions[index] = {
-      value,
-      cid: "0x",
-      isUploadedToIPFS: false,
-    };
-    setPollData({ ...pollData, options: newOptions });
-
-    if (file) {
-      setFiles((prev) => {
-        const newFiles = prev ? [...prev] : [];
-        newFiles[index] = file;
-        return [...newFiles];
-      });
-    }
-  };
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPollData({ ...pollData, title: e.target.value });
-  };
-
-  const handleModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPollData({
-      ...pollData,
-      mode: e.target.value === "0" ? EMode.QV : EMode.NON_QV,
-    });
-  };
-
-  const handleEditTitleClick = () => {
-    setIsEditingTitle(true);
-  };
-
-  const handleSaveTitleClick = () => {
-    setIsEditingTitle(false);
-  };
-
-  function removeOptions(index: number): void {
-    const newOptions = [...pollData.options];
-    newOptions.splice(index, 1);
-    setPollData({ ...pollData, options: newOptions });
-    setFiles((prev) => {
-      const newFiles = prev ? [...prev] : [];
-      newFiles.splice(index, 1);
-      return [...newFiles];
-    });
-  }
-
-  const duration = Math.round((pollData.expiry.getTime() - Date.now()) / 1000);
-
-  const { writeAsync } = useScaffoldContractWrite({
-    contractName:
-      pollData.authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
-    functionName: "createPoll",
-    args: [
-      pollData.title,
-      pollData.options.map((option) => option.value) || [],
-      pollData.options.map((option) => option.cid) || [],
-      JSON.stringify({ pollType: pollData.pollType }),
-      duration > 0 ? BigInt(duration) : 0n,
-      pollData.mode,
-      PubKey.isValidSerializedPubKey(pollData.pubKey)
-        ? (PubKey.deserialize(pollData.pubKey).asContractParam() as {
-            x: bigint;
-            y: bigint;
-          })
-        : { x: 0n, y: 0n },
-      pollData.authType || "none",
-    ],
-    value: parseEther("0.01"),
-  });
-
-  async function onSubmit() {
-    // validate the inputs
-    for (const option of pollData.options) {
-      if (!option.value) {
-        // TODO: throw error that the option cannot be blank
-        notification.error("Poll Candidates cannot be blank");
-        console.log(option);
-        return;
-      }
-    }
-
-    if (duration < 60) {
-      // TODO: throw error that the expiry cannot be before atleast 1 min of creation
-      notification.error("Expiry cannot be before atleast 1 min of creation");
-      return;
-    }
-
-    if (pollData.pollType === PollType.NOT_SELECTED) {
-      notification.error("Please select a poll type");
-      return;
-    }
-
-    if (!PubKey.isValidSerializedPubKey(pollData.pubKey)) {
-      notification.error("Please enter a valid public key");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      let cids = pollData.options.map((option) => option.cid);
-      console.log(files);
-      if (files && files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-
-          if (!file) {
-            cids[i] = "0x";
-            continue;
-          }
-          const data = await uploadFileToLighthouse([file]);
-          console.log(data);
-          const cid = new CID(data.Hash);
-          cids[i] = bytesToHex(cid.bytes);
-          pollData.options[i].cid = bytesToHex(cid.bytes);
-        }
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      await writeAsync({
-        args: [
-          pollData.title,
-          pollData.options.map((option) => option.value) || [],
-          cids || [],
-          JSON.stringify({ pollType: pollData.pollType }),
-          duration > 0 ? BigInt(duration) : 0n,
-          pollData.mode,
-          PubKey.deserialize(pollData.pubKey).asContractParam() as {
-            x: bigint;
-            y: bigint;
-          },
-          pollData.authType || "none",
-        ],
-        value: parseEther("0.01"),
-      });
-      setIsLoading(false);
-      refetchPolls();
-      onClose();
-    } catch (err) {
-      setIsLoading(false);
-      refetchPolls();
-      console.log(err);
-    }
+  if (!isConnected) {
+    return (
+      <div className={styles.container}>
+        <h1>Please connect your wallet</h1>
+      </div>
+    );
   }
 
   return (
@@ -238,338 +50,120 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
       <button className={styles.back} onClick={onClose}>
         <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
       </button>
-      <div className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <h1 className={styles.heading}>Create a Poll</h1>
-        <div className={styles.container}>
+        <div className={styles["input-field-container"]}>
+          <label className={styles.label}>Title</label>
           <input
             type="text"
-            placeholder="Enter the title of the poll"
-            id="poll-title"
-            className={styles.title}
             value={pollData.title}
-            onChange={handleTitleChange}
+            onChange={(e) =>
+              setPollData((prev) => ({ ...prev, title: e.target.value }))
+            }
+            placeholder="Enter poll title"
           />
-          <div className={styles["input-field-container"]}>
-            <label className={styles.label}>Description</label>
-            <textarea
-              className={styles.textarea}
-              placeholder="Enter the description of the poll"
-              value={pollData.description}
-              onChange={(e) =>
-                setPollData({ ...pollData, description: e.target.value })
-              }
-            ></textarea>
-          </div>
-          {/* <div className={styles["input-field-container"]}>
-            <label className={styles.label}>Select the start date</label>
-            <input
-              type="datetime-local"
-              className={styles.input}
-              placeholder="Enter the title of the poll"
-              value={pollData.startDate
-                .toLocaleString("sv")
-                .replace(" ", "T")
-                .slice(0, -3)}
-              onChange={(e) =>
-                setPollData({
-                  ...pollData,
-                  startDate: new Date(e.target.value),
-                })
-              }
-            />
-          </div> */}
-          <div className={styles["input-field-container"]}>
-            <label className={styles.label}>Select Poll expiry date</label>
-            <input
-              type="datetime-local"
-              id="expiry-date"
-              className={styles.input}
-              placeholder="Enter the title of the poll"
-              value={pollData.expiry
-                .toLocaleString("sv")
-                .replace(" ", "T")
-                .slice(0, -3)}
-              onChange={(e) =>
-                setPollData({ ...pollData, expiry: new Date(e.target.value) })
-              }
-            />
-          </div>
-
-          <div className={styles["input-field-container"]}>
-            <label className={styles.label}>Select Poll Type</label>
-            <select
-              className="select bg-secondary text-white w-full rounded-xl"
-              value={pollData.pollType}
-              onChange={handlePollTypeChange}
-            >
-              <option disabled value={PollType.NOT_SELECTED}>
-                Select Poll Type
-              </option>
-              <option value={PollType.SINGLE_VOTE}>
-                Single Candidate Select
-              </option>
-              <option value={PollType.MULTIPLE_VOTE}>
-                Multiple Candidate Select
-              </option>
-              <option value={PollType.WEIGHTED_MULTIPLE_VOTE}>
-                Weighted-Multiple Candidate Select
-              </option>
-            </select>
-          </div>
-          <div className={styles["input-field-container-row"]}>
-            <label className={styles.label}>Max. vote per person</label>
-            <div className={styles.box}>
-              <button
-                type="button"
-                onClick={() => {
-                  if (pollData.maxVotePerPerson > 1) {
-                    setPollData({
-                      ...pollData,
-                      maxVotePerPerson: pollData.maxVotePerPerson - 1,
-                    });
-                  }
-                }}
-              >
-                <Image src="/minus.svg" alt="minus" width={14} height={14} />
-              </button>
-              <p>{pollData.maxVotePerPerson}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setPollData({
-                    ...pollData,
-                    maxVotePerPerson: pollData.maxVotePerPerson + 1,
-                  });
-                }}
-              >
-                <Image src="/plus.svg" alt="plus" width={14} height={14} />
-              </button>
-            </div>
-          </div>
-          <div className={styles["input-field-container"]}>
-            <label className={styles.label}>Select Vote Type</label>
-            <select
-              className="select bg-secondary w-full rounded-xl text-white"
-              value={pollData.mode}
-              onChange={handleModeChange}
-            >
-              <option value={EMode.QV}>Quadratic Vote</option>
-              <option value={EMode.NON_QV}>Non Quadratic Vote</option>
-            </select>
-          </div>
-          <div className={styles.divider}></div>
-          <div className={styles.verification}>
-            <h1>Verification</h1>
-            <div className={styles["veri-row"]}>
-              <button
-                type="button"
-                className={`${styles["veri-box"]} ${
-                  pollData.authType === "none" ? styles.selected : ""
-                }`}
-                value={"none"}
-                onClick={handleVeriMehodChange}
-              >
-                None
-              </button>
-              <button
-                type="button"
-                className={`${styles["veri-box"]} ${
-                  pollData.authType === "anon" ? styles.selected : ""
-                }`}
-                value={"anon"}
-                onClick={handleVeriMehodChange}
-              >
-                <Image
-                  width={31}
-                  height={31}
-                  alt="icon"
-                  src={"/anon-icon.svg"}
-                />
-                Anon - aadhaar
-              </button>
-            </div>
-          </div>
-          <div className={styles.divider}></div>
-          <div className={styles["candidate-box"]}>
-            <div className={styles["candidate-header"]}>
-              <h1>Add your candidates</h1>
-              {candidateSelection !== "" && (
-                <button
-                  type="button"
-                  className={styles["add-candidate-btn"]}
-                  onClick={handleAddOption}
-                >
-                  <Image
-                    src={"/plus-circle.svg"}
-                    width={32}
-                    height={32}
-                    alt="plus circle"
-                  ></Image>
-                  Add candidate
-                </button>
-              )}
-            </div>
-            {candidateSelection === "" && (
-              <div className={styles.actions}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCandidateSelection("withoutImage");
-                  }}
-                >
-                  Add candidates
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCandidateSelection("withImage")}
-                >
-                  Add candidates with image
-                </button>
-              </div>
-            )}
-            {candidateSelection === "withoutImage" &&
-              pollData.options.map((option, index) => (
-                <div className={styles["candidate-input"]}>
-                  <WithoutImageInput
-                    key={index}
-                    type="text"
-                    placeholder={`Candidate ${index + 1}`}
-                    value={option.value}
-                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                  />
-                  {index !== pollData.options.length - 1 && (
-                    <div
-                      className={styles["remove-candi"]}
-                      onClick={() => removeOptions(index)}
-                    >
-                      <RxCross2 size={20} />
-                    </div>
-                  )}
-                </div>
-              ))}
-            {candidateSelection === "withImage" &&
-              pollData.options.map((option, index) => (
-                <div className={styles["candidate-input"]}>
-                  <WithImageInput
-                    key={index}
-                    type="text"
-                    placeholder={`Candidate ${index + 1}`}
-                    value={option.value}
-                    file={files?.[index] || null}
-                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                    onFileRemove={() => {
-                      setFiles((prev) => {
-                        const newFiles = prev ? [...prev] : [];
-                        newFiles[index] = null;
-                        return [...newFiles];
-                      });
-                    }}
-                    onFileChange={(e: any) => {
-                      setFiles((prev) => {
-                        const newFiles = prev ? [...prev] : [];
-                        newFiles[index] = e.target.files[0];
-                        return [...newFiles];
-                      });
-                    }}
-                  />
-                  {index !== pollData.options.length - 1 && (
-                    <div
-                      className={styles["remove-candi"]}
-                      onClick={() => removeOptions(index)}
-                    >
-                      <RxCross2 size={20} />
-                    </div>
-                  )}
-                </div>
-              ))}
-          </div>
-          <div className={styles.divider}></div>
-          <div className={styles["poll-config-wrapper"]}>
-            <h1>Poll Configuration</h1>
-            <div className={styles["poll-config"]}>
-              <div className={styles["config-wrapper"]}>
-                <div
-                  className={styles["config-option"]}
-                  onClick={() => setPollConfig(1)}
-                >
-                  <div
-                    className={`${styles.dot} ${
-                      pollConfig === 1 ? styles.selected : ""
-                    }`}
-                  ></div>
-                  <div className={styles["gen-container"]}>
-                    <p className={styles.text}>
-                      We dont trust you 🤨, we have coordinator public key
-                    </p>
-                    {pollConfig === 1 && (
-                      <div className={styles["public-input-container"]}>
-                        <WithoutImageInput
-                          onChange={handlePubKeyChange}
-                          value={pollData.pubKey}
-                          placeholder="macipk.a26f6f713fdf9ab73e2bf57662977f8f4539552b3ca0fb2a65654472427f601b"
-                          className={styles["pub-key-input"]}
-                        />
-                        <div className={styles["key-gen"]}>
-                          You can generate maci key pair from{" "}
-                          <Link
-                            href="https://maci.pse.dev/docs/core-concepts/maci-keys#generate-maci-keys)"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            here
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className={styles["config-wrapper"]}>
-                <div
-                  className={styles["config-option"]}
-                  onClick={() => setPollConfig(2)}
-                >
-                  <div
-                    className={`${styles.dot} ${
-                      pollConfig === 2 ? styles.selected : ""
-                    }`}
-                  ></div>
-                  <div className={styles["gen-container"]}>
-                    <p className={styles.text}>Generate Public Key</p>
-                    {pollConfig === 2 && (
-                      <div className={styles["public-input-container"]}>
-                        <button
-                          type="button"
-                          className={styles["gen-btn"]}
-                          onClick={generateKeyPair}
-                          disabled={showKeys.show}
-                        >
-                          {showKeys.show ? "Keys Generated!" : "Generate Key"}
-                        </button>
-                        {showKeys.show && (
-                          <div className={styles["key-details"]}>
-                            <div className={styles["key-container"]}>
-                              <p>Public Key: ${pollData.pubKey}</p>
-                              <p>Private Key: ${showKeys.privKey}</p>
-                            </div>
-                            <p className={styles["priv-warning"]}>
-                              Please store the private key securely. It will not
-                              be stored here.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-        {isConnected && (
-          <Button
+
+        <div className={styles["input-field-container"]}>
+          <label className={styles.label}>Description</label>
+          <textarea
+            value={pollData.description}
+            onChange={(e) =>
+              setPollData((prev) => ({ ...prev, description: e.target.value }))
+            }
+            placeholder="Enter poll description"
+          />
+        </div>
+
+        <div className={styles["input-field-container"]}>
+          <label className={styles.label}>End Date</label>
+          <input
+            type="datetime-local"
+            value={pollData.expiry.toISOString().slice(0, 16)}
+            onChange={(e) =>
+              setPollData((prev) => ({
+                ...prev,
+                expiry: new Date(e.target.value),
+              }))
+            }
+          />
+        </div>
+
+        <PollSettings
+          pollData={pollData}
+          onPollTypeChange={(e) =>
+            setPollData((prev) => ({
+              ...prev,
+              pollType: e.target.value as any,
+            }))
+          }
+          onModeChange={(e) =>
+            setPollData((prev) => ({ ...prev, mode: e.target.value as any }))
+          }
+          onMaxVoteChange={(e, action?: "add" | "remove") => {
+            if (action === "add") {
+              setPollData((prev) => ({
+                ...prev,
+                maxVotePerPerson: prev.maxVotePerPerson + 1,
+              }));
+            } else if (action === "remove") {
+              setPollData((prev) => ({
+                ...prev,
+                maxVotePerPerson: prev.maxVotePerPerson - 1,
+              }));
+            } else {
+              setPollData((prev) => ({
+                ...prev,
+                maxVotePerPerson: parseInt(e.target.value),
+              }));
+            }
+          }}
+        />
+
+        <Divider />
+
+        <Verification
+          handleVeriMethodChange={handleVeriMethodChange}
+          authType={pollData.authType}
+        />
+
+        <Divider />
+
+        <CandidateSelection
+          options={pollData.options}
+          files={files}
+          handleOptionChange={handleOptionChange}
+          handleAddOption={handleAddOption}
+          onFileChange={handleFileChange}
+          onFileRemove={handleFileRemove}
+          onRemoveOption={handleRemoveOption}
+          candidateSelection={candidateSelection}
+          setCandidateSelection={setCandidateSelection}
+        />
+
+        <PollConfiguration
+          setPollConfig={setPollConfig}
+          pollConfig={pollConfig}
+          pubKey={pollData.pubKey}
+          handlePubKeyChange={(e) =>
+            setPollData((prev) => ({ ...prev, pubKey: e.target.value }))
+          }
+          generateKeyPair={generateKeyPair}
+          showKeys={showKeys}
+        />
+
+        <div className={styles["actions"]}>
+          <button
             type="button"
-            action={onSubmit}
+            className={styles["cancel-btn"]}
+            onClick={onClose}
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
+          <Button
+            type="submit"
+            action={() => {}}
             className={`${styles["submit-btn"]} ${
               isLoading ? styles.loading : ""
             }`}
@@ -581,8 +175,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               "Create Poll"
             )}
           </Button>
-        )}
-      </div>
+        </div>
+      </form>
     </div>
   );
 };

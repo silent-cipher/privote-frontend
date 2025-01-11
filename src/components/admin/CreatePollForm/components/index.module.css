@@ -4,10 +4,14 @@
   color: #fff;
   border-radius: 8px;
   flex: 1;
+  outline: 1px solid #535861;
 }
 
 .img-input::placeholder {
   color: #535861;
+}
+.img-input:focus {
+  outline-color: #c65ec6;
 }
 
 .row {
@@ -42,17 +46,16 @@
 .input-field {
   flex: 1;
   padding: 8px 12px;
-  border: 1px solid #2a2a2a;
   border-radius: 8px;
   background-color: transparent;
   color: #fff;
   font-size: 14px;
-  outline: none;
+  outline: 1px solid #535861;
   transition: all 0.2s ease;
 }
 
 .input-field:focus {
-  border-color: #c65ec6;
+  outline-color: #c65ec6;
   box-shadow: 0 0 0 2px rgba(198, 94, 198, 0.1);
 }
 

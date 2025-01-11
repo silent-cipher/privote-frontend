@@ -161,7 +161,7 @@ const VoteCard = ({
           <div className={styles.result}>
             <p className={styles["vote-number"]}>{result.votes} votes</p>
             <p className={`${isWinner ? styles.winner : styles["not-winner"]}`}>
-              {Math.ceil((result.votes / totalVotes) * 100)}%
+              {Math.ceil((result.votes / totalVotes) * 100) || 0}%
             </p>
           </div>
         )}

@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    // "./src/app/**/*.{js,ts,jsx,tsx}",
-    // "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/utils/**/*.{js,ts,jsx,tsx}",
   ],
   plugins: [require("daisyui")],
@@ -44,17 +44,17 @@ module.exports = {
       },
       {
         dark: {
-          primary: "#c65ec6",
+          primary: "#000000",
           "primary-content": "#ffffff",
-          secondary: "#323f61",
-          "secondary-content": "#F9FBFF",
+          secondary: "#0b0c0f",
+          "secondary-content": "#ffffff",
           accent: "#4969A6",
           "accent-content": "#F9FBFF",
           neutral: "#F9FBFF",
           "neutral-content": "#385183",
           "base-100": "#000",
           "base-200": "#2A3655",
-          "base-300": "#212638",
+          "base-300": "#0b0c0f",
           "base-content": "#F9FBFF",
           info: "#385183",
           success: "#34EEB6",
