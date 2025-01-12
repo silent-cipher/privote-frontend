@@ -5,10 +5,11 @@ import styles from "./index.module.css";
 interface PollsListProps {
   polls: Poll[] | undefined;
   isLoadingPolls: boolean;
+  error: any;
 }
 
-const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
-  if (isLoadingPolls) {
+const PollsList = ({ polls, isLoadingPolls, error }: PollsListProps) => {
+  if (isLoadingPolls || error) {
     return (
       <div className={styles["spinner-wrapper"]}>
         <div className="spinner large"></div>
@@ -16,7 +17,7 @@ const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
     );
   }
 
-  if (!isLoadingPolls && polls && polls.length === 0) {
+  if (!isLoadingPolls && !error && polls && polls.length === 0) {
     return (
       <div className={styles["empty-state"]}>
         <h3>No Polls Found</h3>

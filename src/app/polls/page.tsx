@@ -37,7 +37,11 @@ export default function Home() {
       <div className={styles["poll-wrapper"]}>
         <div className={styles["polls-container"]}>
           <h2>Polls</h2>
-          <PollsList polls={polls} isLoadingPolls={isPollsLoading} />
+          <PollsList
+            polls={polls}
+            isLoadingPolls={isPollsLoading}
+            error={error}
+          />
           {showPagination && (
             <div className={styles["pagination-container"]}>
               <Pagination
