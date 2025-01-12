@@ -12,6 +12,7 @@ import {
   PollConfiguration,
 } from "./components";
 import Button from "~~/components/ui/Button";
+import { EMode } from "~~/types/poll";
 
 const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const { isConnected } = useAccount();
@@ -78,7 +79,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
           <label className={styles.label}>End Date</label>
           <input
             type="datetime-local"
-            value={pollData.expiry.toISOString().slice(0, 16)}
+            value={pollData.expiry
+              .toLocaleString("sv")
+              .replace(" ", "T")
+              .slice(0, -3)}
             onChange={(e) =>
               setPollData((prev) => ({
                 ...prev,
@@ -93,11 +97,14 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
           onPollTypeChange={(e) =>
             setPollData((prev) => ({
               ...prev,
-              pollType: e.target.value as any,
+              pollType: parseInt(e.target.value),
             }))
           }
           onModeChange={(e) =>
-            setPollData((prev) => ({ ...prev, mode: e.target.value as any }))
+            setPollData((prev) => ({
+              ...prev,
+              mode: e.target.value === "0" ? EMode.QV : EMode.NON_QV,
+            }))
           }
           onMaxVoteChange={(e, action?: "add" | "remove") => {
             if (action === "add") {

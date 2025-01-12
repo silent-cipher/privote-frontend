@@ -5,7 +5,6 @@ import { useAnonAadhaar } from "@anon-aadhaar/react";
 import { PubKey } from "maci-domainobjs";
 import styles from "~~/styles/userPoll.module.css";
 import PollAbi from "~~/abi/Poll";
-import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import { PollType, PollStatus } from "~~/types/poll";
 import { usePollContext } from "~~/contexts/PollContext";
 import { getPollStatus } from "~~/hooks/useFetchPolls";
@@ -15,6 +14,7 @@ import usePollResults from "~~/hooks/usePollResults";
 import PollHeader from "../PollHeader";
 import VotingSection from "../VotingSection";
 import Button from "~~/components/ui/Button";
+import { useSigContext } from "~~/contexts/SigContext";
 
 interface IPollDetails {
   id: bigint;
@@ -26,12 +26,12 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
   const { address, isConnected } = useAccount();
   const [AnonAadhaar] = useAnonAadhaar();
   const {
-    keypair,
     stateIndex,
     poll,
     isLoading: isPollLoading,
     isError: pollError,
   } = usePollContext();
+  const { keypair } = useSigContext();
   const { registerUser, isLoading: isRegistering } = useUserRegister(
     poll?.authType
   );
@@ -74,7 +74,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
 
     try {
       const { pollType } = JSON.parse(poll.metadata);
-      setPollType(pollType);
+      setPollType(pollType as PollType);
     } catch (err) {
       console.error("Error parsing poll metadata:", err);
     }

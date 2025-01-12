@@ -77,6 +77,7 @@ export const useVoting = ({
   };
 
   const voteUpdated = (index: number, checked: boolean, voteCounts: number) => {
+    console.log("voteUpdated", index, checked, voteCounts, pollType, votes);
     if (pollType === PollType.SINGLE_VOTE) {
       if (checked) {
         setVotes([{ index, votes: voteCounts }]);
@@ -95,6 +96,18 @@ export const useVoting = ({
   };
 
   const castVote = async () => {
+    console.log(
+      "pollId",
+      pollId,
+      "stateIndex",
+      stateIndex,
+      "coordinatorPubKey",
+      coordinatorPubKey,
+      "keypair",
+      keypair,
+      "votes",
+      votes
+    );
     if (
       pollId == null ||
       stateIndex == null ||

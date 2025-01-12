@@ -48,6 +48,8 @@ const VoteCard = ({
   const [selected, setSelected] = useState(false);
   const [votes, setVotes] = useState(0);
   const votesFieldRef = useRef<HTMLInputElement>(null);
+
+  console.log(Number(pollType) === PollType.SINGLE_VOTE);
   return (
     <label
       htmlFor={`candidate-votes-${index}`}
@@ -59,13 +61,14 @@ const VoteCard = ({
       {pollOpen && (
         <input
           id={`candidate-votes-${index}`}
-          type={pollType === PollType.SINGLE_VOTE ? "radio" : "checkbox"}
-          value={index}
+          type={
+            Number(pollType) === PollType.SINGLE_VOTE ? "radio" : "checkbox"
+          }
           style={{ display: "none" }}
           onChange={(e) => {
             setSelected(e.target.checked);
             if (e.target.checked) {
-              switch (pollType) {
+              switch (Number(pollType)) {
                 case PollType.SINGLE_VOTE:
                   onChange(true, 1);
                   break;

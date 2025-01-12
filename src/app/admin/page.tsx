@@ -31,7 +31,7 @@ const AdminPoll = () => {
     refetch: refetchPolls,
     isLoading,
     error,
-  } = useFetchUserPolls(currentPage, limit, false, address);
+  } = useFetchUserPolls(currentPage, limit, true, address);
 
   useEffect(() => {
     if (isConnected) {

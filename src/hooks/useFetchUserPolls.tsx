@@ -31,13 +31,15 @@ export const useFetchUserPolls = (
   const { data: totalFreePolls, refetch: refetchTotalFreePolls } =
     useScaffoldContractRead({
       contractName: "PrivoteFreeForAll",
-      functionName: "nextPollId",
+      functionName: "userTotalPolls",
+      args: [address],
     });
 
   const { data: totalAnonPolls, refetch: refetchTotalAnonPolls } =
     useScaffoldContractRead({
       contractName: "PrivoteAnonAadhaar",
-      functionName: "nextPollId",
+      functionName: "userTotalPolls",
+      args: [address],
     });
 
   const freeLimit =

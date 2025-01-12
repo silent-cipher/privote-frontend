@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 const deployedContracts = {
   17000: {
     PrivoteFreeForAll: {
-      address: "0x2369A840F656311B1fd4792B3d9cb3F6A0Bf61FD",
+      address: "0x028e9fB3B5Ff39f8aCE2fB53510a136A24Ce53bE",
       abi: [
         {
           inputs: [
@@ -918,25 +918,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "fetchUserTotalPolls",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "_pollId",
               type: "uint256",
@@ -1207,30 +1188,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "isPublicKeyRegistered",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "lazyIMTData",
           outputs: [
@@ -1417,6 +1374,30 @@ const deployedContracts = {
               internalType: "address",
               name: "tally",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "pubKeyToStateIndex",
+          outputs: [
+            {
+              internalType: "uint40",
+              name: "",
+              type: "uint40",
             },
           ],
           stateMutability: "view",
@@ -1685,6 +1666,25 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "userTotalPolls",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "verifier",
           outputs: [
@@ -1711,10 +1711,10 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 3065185,
+      deploymentBlockNumber: 3131952,
     },
     PrivoteAnonAadhaar: {
-      address: "0x353ed1BD9FbdaC48D50c7817Cf05bFD5574a4647",
+      address: "0x2F736f44dCcffB2BA5889509D1080f22683a93c1",
       abi: [
         {
           inputs: [
@@ -2625,25 +2625,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "fetchUserTotalPolls",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "_pollId",
               type: "uint256",
@@ -2914,30 +2895,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "isPublicKeyRegistered",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "lazyIMTData",
           outputs: [
@@ -3124,6 +3081,30 @@ const deployedContracts = {
               internalType: "address",
               name: "tally",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "pubKeyToStateIndex",
+          outputs: [
+            {
+              internalType: "uint40",
+              name: "",
+              type: "uint40",
             },
           ],
           stateMutability: "view",
@@ -3392,6 +3373,25 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "userTotalPolls",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "verifier",
           outputs: [
@@ -3418,12 +3418,12 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 3065236,
+      deploymentBlockNumber: 3132249,
     },
   },
   11155111: {
     PrivoteFreeForAll: {
-      address: "0xd990D9FFb4fFD1A0cF0Cb45e7D2ECfDB9A036E43",
+      address: "0x947b5A16d199154B0C075AD28A94f4e6a600e668",
       abi: [
         {
           inputs: [
@@ -4334,25 +4334,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "fetchUserTotalPolls",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "_pollId",
               type: "uint256",
@@ -4623,30 +4604,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "isPublicKeyRegistered",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "lazyIMTData",
           outputs: [
@@ -4833,6 +4790,30 @@ const deployedContracts = {
               internalType: "address",
               name: "tally",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "pubKeyToStateIndex",
+          outputs: [
+            {
+              internalType: "uint40",
+              name: "",
+              type: "uint40",
             },
           ],
           stateMutability: "view",
@@ -5101,6 +5082,25 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "userTotalPolls",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "verifier",
           outputs: [
@@ -5127,10 +5127,10 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 7408591,
+      deploymentBlockNumber: 7477649,
     },
     PrivoteAnonAadhaar: {
-      address: "0xF2554363cD29d09B3cb380de8357162653Bc6580",
+      address: "0xf88A3efcBF4E3339b63cF610F5873CF37B08760b",
       abi: [
         {
           inputs: [
@@ -6041,25 +6041,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "fetchUserTotalPolls",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "_pollId",
               type: "uint256",
@@ -6330,30 +6311,6 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          name: "isPublicKeyRegistered",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
           inputs: [],
           name: "lazyIMTData",
           outputs: [
@@ -6540,6 +6497,30 @@ const deployedContracts = {
               internalType: "address",
               name: "tally",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "pubKeyToStateIndex",
+          outputs: [
+            {
+              internalType: "uint40",
+              name: "",
+              type: "uint40",
             },
           ],
           stateMutability: "view",
@@ -6808,6 +6789,25 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "userTotalPolls",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "verifier",
           outputs: [
@@ -6834,7 +6834,7 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 7408640,
+      deploymentBlockNumber: 7477681,
     },
   },
 } as const;

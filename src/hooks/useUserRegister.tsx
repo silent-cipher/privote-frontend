@@ -11,6 +11,7 @@ import {
 } from "@anon-aadhaar/core";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
+import { useSigContext } from "~~/contexts/SigContext";
 
 const anonAadhaarInitArgs: InitArgs = {
   wasmURL: artifactUrls.v2.wasm,
@@ -20,7 +21,8 @@ const anonAadhaarInitArgs: InitArgs = {
 };
 
 const useUserRegister = (authType?: string) => {
-  const { keypair, isRegistered } = usePollContext();
+  const { isRegistered } = usePollContext();
+  const { keypair } = useSigContext();
   const [anonAadhaar] = useAnonAadhaar();
   const { address, isDisconnected } = useAccount();
 

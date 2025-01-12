@@ -4,7 +4,6 @@ import merge from "lodash.merge";
 import { useEffect, useState } from "react";
 import {
   RainbowKitProvider,
-  darkTheme,
   Theme,
   midnightTheme,
 } from "@rainbow-me/rainbowkit";
@@ -12,11 +11,11 @@ import { useTheme } from "next-themes";
 import { WagmiConfig } from "wagmi";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { ProgressBar } from "~~/components/scaffold-eth/ProgressBar";
-import AuthContextProvider from "~~/contexts/PollContext";
 import { AnonAadhaarProvider } from "@anon-aadhaar/react";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import { Toaster } from "react-hot-toast";
+import SigContextProvider from "~~/contexts/SigContext";
 
 const customTheme: Theme = merge(midnightTheme(), {
   colors: {
@@ -51,10 +50,12 @@ export const ScaffoldEthAppWithProviders = ({
         avatar={BlockieAvatar}
         theme={customTheme}
       >
-        <AnonAadhaarProvider _useTestAadhaar>
-          <Toaster />
-          {children}
-        </AnonAadhaarProvider>
+        <SigContextProvider>
+          <AnonAadhaarProvider _useTestAadhaar>
+            <Toaster />
+            {children}
+          </AnonAadhaarProvider>
+        </SigContextProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   );

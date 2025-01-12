@@ -23,6 +23,9 @@ export const PollSettings = ({
           <option value={PollType.MULTIPLE_VOTE}>
             Multiple Candidate Select
           </option>
+          <option value={PollType.WEIGHTED_MULTIPLE_VOTE}>
+            Weighted-Multiple Candidate Select
+          </option>
         </select>
       </div>
 

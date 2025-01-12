@@ -8,7 +8,7 @@ interface PollsListProps {
 }
 
 const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
-  if (!polls || polls.length === 0 || isLoadingPolls) {
+  if (isLoadingPolls) {
     return (
       <div className={styles["spinner-wrapper"]}>
         <div className="spinner large"></div>
@@ -28,9 +28,10 @@ const PollsList = ({ polls, isLoadingPolls }: PollsListProps) => {
   return (
     <div className={styles["polls-container"]}>
       <ul className={styles["polls-list"]}>
-        {polls.map((poll) => (
-          <PollsListItem key={poll.pollContracts.poll} poll={poll} />
-        ))}
+        {polls &&
+          polls.map((poll) => (
+            <PollsListItem key={poll.pollContracts.poll} poll={poll} />
+          ))}
       </ul>
     </div>
   );
