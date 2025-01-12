@@ -27,7 +27,7 @@ export const useCreatePollForm = (
 ) => {
   const [pollData, setPollData] = useState<IPollData>(initialPollData);
   const [files, setFiles] = useState<(File | null)[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [candidateSelection, setCandidateSelection] = useState<
     "none" | "withImage" | "withoutImage"
   >("none");

@@ -2,7 +2,6 @@ import { useAccount } from "wagmi";
 import Image from "next/image";
 import styles from "./index.module.css";
 import { CreatePollFormProps } from "./types";
-import { PollOption } from "./components/PollOption";
 import { PollSettings } from "./components/PollSettings";
 import { useCreatePollForm } from "./hooks/useCreatePollForm";
 import { LuPlus } from "react-icons/lu";
