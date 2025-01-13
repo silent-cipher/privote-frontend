@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../index.module.css";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -24,6 +24,20 @@ const WithImageInput = ({
   file,
   ...rest
 }: WithImageInputProps) => {
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
+  }, [file]);
+
   return (
     <div className={`${styles["with-img-input"]} ${className}`}>
       <input
@@ -36,6 +50,7 @@ const WithImageInput = ({
       <div className={styles["file-input-container"]}>
         {file ? (
           <div className={styles["selected-file"]}>
+            {preview && <img src={preview} alt="Preview" className={styles["image-preview"]} />}
             <span className={styles["file-name"]}>{file.name}</span>
             <button 
               onClick={onFileRemove}
