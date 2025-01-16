@@ -18,7 +18,7 @@ const CandidateSelection = ({
   return (
     <div className={styles["candidate-box"]}>
       <div className={styles["candidate-header"]}>
-        <h1>Add your candidates</h1>
+        <h1>Add your options</h1>
         {(candidateSelection === "withImage" ||
           candidateSelection === "withoutImage") && (
           <div className={styles["candidate-add"]}>
@@ -41,8 +41,8 @@ const CandidateSelection = ({
                 width={32}
                 height={32}
                 alt="plus circle"
-              ></Image>
-              Add candidate
+              />
+              Add option
             </button>
           </div>
         )}
@@ -51,35 +51,37 @@ const CandidateSelection = ({
         <div className={styles.actions}>
           <button
             type="button"
-            onClick={() => {
-              setCandidateSelection("withoutImage");
-            }}
+            className={styles["selection-btn"]}
+            onClick={() => setCandidateSelection("withoutImage")}
           >
-            Add candidates
+            <p>Add Candidate</p>
           </button>
           <button
             type="button"
+            className={styles["selection-btn"]}
             onClick={() => setCandidateSelection("withImage")}
           >
-            Add candidates with image
+            <p>Add Candidate with Image</p>
           </button>
         </div>
       ) : (
-        <>
-          {options.map((option, index) => (
-            <PollOption
-              key={index}
-              option={option}
-              index={index}
-              file={files?.[index] || null}
-              onOptionChange={handleOptionChange}
-              onFileChange={onFileChange}
-              onFileRemove={onFileRemove}
-              onRemoveOption={onRemoveOption}
-              candidateSelection={candidateSelection}
-            />
-          ))}
-        </>
+        <div>
+          <div className={styles["candidates-list"]}>
+            {options.map((option, index) => (
+              <PollOption
+                key={index}
+                option={option}
+                index={index}
+                file={files?.[index] || null}
+                onOptionChange={handleOptionChange}
+                onFileChange={onFileChange}
+                onFileRemove={onFileRemove}
+                onRemoveOption={onRemoveOption}
+                candidateSelection={candidateSelection}
+              />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

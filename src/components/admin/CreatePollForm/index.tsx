@@ -103,10 +103,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
           onModeChange={(e) =>
             setPollData((prev) => ({
               ...prev,
-              mode: e.target.value === "0" ? EMode.QV : EMode.NON_QV,
+              mode: parseInt(e.target.value),
             }))
           }
-          onMaxVoteChange={(e, action?: "add" | "remove") => {
+          onMaxVoteChange={(e: number | React.ChangeEvent<HTMLInputElement>, action?: "add" | "remove") => {
             if (action === "add") {
               setPollData((prev) => ({
                 ...prev,
@@ -118,9 +118,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 maxVotePerPerson: prev.maxVotePerPerson - 1,
               }));
             } else {
+              const value = typeof e === 'number' ? e : parseInt(e.target.value);
               setPollData((prev) => ({
                 ...prev,
-                maxVotePerPerson: parseInt(e.target.value),
+                maxVotePerPerson: value,
               }));
             }
           }}

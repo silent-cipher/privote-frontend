@@ -106,17 +106,6 @@ export const useVotingState = ({
     }
   }
 
-  if (isVotesInvalid) {
-    return {
-      canVote: false,
-      message: "Invalid vote selection",
-      showRegisterButton: false,
-      showVoteButton: false,
-      showLoginButton: false,
-      showConnectWallet: false,
-    };
-  }
-
   if (isUserRegistered && pollStatus === PollStatus.OPEN) {
     return {
       canVote: true,

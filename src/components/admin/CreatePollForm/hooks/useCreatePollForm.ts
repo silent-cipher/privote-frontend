@@ -6,6 +6,7 @@ import { uploadFileToLighthouse } from "~~/utils/lighthouse";
 import CID from "cids";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { parseEther } from "viem";
+import { decodeOptionInfo, encodeOptionInfo } from "~~/utils/optionInfo";
 
 const initialPollData: IPollData = {
   title: "",
@@ -14,7 +15,14 @@ const initialPollData: IPollData = {
   maxVotePerPerson: 1,
   pollType: null,
   mode: null,
-  options: [{ value: "", cid: "0x" as `0x${string}`, isUploadedToIPFS: false }],
+  options: [
+    {
+      title: "",
+      description: "",
+      cid: "0x" as `0x${string}`,
+      isUploadedToIPFS: false,
+    },
+  ],
   keyPair: new Keypair(),
   authType: "none",
   veriMethod: "none",
@@ -42,7 +50,7 @@ export const useCreatePollForm = (
     functionName: "createPoll",
     args: [
       pollData.title,
-      pollData.options.map((option) => option.value) || [],
+      pollData.options.map((option) => option.title) || [],
       pollData.options.map((option) => option.cid) || [],
       JSON.stringify({ pollType: pollData.pollType }),
       duration > 0 ? BigInt(duration) : 0n,
@@ -89,7 +97,7 @@ export const useCreatePollForm = (
       return false;
     }
 
-    if (pollData.options.filter((opt) => !opt.value.trim()).length > 0) {
+    if (pollData.options.filter((opt) => !opt.title?.trim()).length > 0) {
       notification.error("Please add at least 1 option");
       return false;
     }
@@ -102,11 +110,11 @@ export const useCreatePollForm = (
     return true;
   };
 
-  const handleOptionChange = (index: number, value: string) => {
+  const handleOptionChange = (index: number, value: string, field: string) => {
     setPollData((prev) => ({
       ...prev,
       options: prev.options.map((opt, i) =>
-        i === index ? { ...opt, value } : opt
+        i === index ? { ...opt, [field]: value } : opt
       ),
     }));
   };
@@ -185,12 +193,26 @@ export const useCreatePollForm = (
         options: updatedOptions,
       };
 
+      const encodedOptions = await Promise.all(
+        finalPollData.options.map(async (option) => {
+          // Always include description, but only include CID if file is uploaded
+          return encodeOptionInfo({
+            cid: option.isUploadedToIPFS ? option.cid : ("0x" as `0x${string}`),
+            description: option.description,
+          });
+        })
+      );
+
       await writeAsync({
         args: [
           finalPollData.title,
-          finalPollData.options.map((option) => option.value) || [],
-          cids || [],
-          JSON.stringify({ pollType: finalPollData.pollType }),
+          finalPollData.options.map((option) => option.title) || [],
+          encodedOptions || [],
+          JSON.stringify({
+            pollType: finalPollData.pollType,
+            maxVotePerPerson: finalPollData.maxVotePerPerson,
+            description: finalPollData.description,
+          }),
           duration > 0 ? BigInt(duration) : 0n,
           finalPollData.mode,
           PubKey.deserialize(finalPollData.pubKey).asContractParam() as {

@@ -4,12 +4,15 @@ import { PollStatus, PollType } from "~~/types/poll";
 import VoteCard from "../VoteCard";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
 import useVotingState from "~~/hooks/useVotingState";
+import { useCallback } from "react";
 
 interface VotingSectionProps {
+  votes: { index: number; votes: number }[];
   pollId: bigint;
   pollStatus?: PollStatus;
   pollType: PollType;
   authType: string;
+  maxVotePerPerson?: number;
   options: readonly string[];
   optionInfo: readonly string[];
   pollDeployer: string;
@@ -29,7 +32,9 @@ interface VotingSectionProps {
 }
 
 export const VotingSection = ({
+  votes,
   pollId,
+  maxVotePerPerson,
   pollStatus,
   pollType,
   authType,
@@ -60,11 +65,39 @@ export const VotingSection = ({
     isVotesInvalid: Object.values(isVotesInvalid).some((v) => v),
   });
 
-  console.log(isUserRegistered);
-  const handleOptionSelect = (index: number) => {
-    setSelectedCandidate(index);
-    setIsVotesInvalid({ ...isVotesInvalid, [index]: false });
-  };
+  const handleVoteChange = useCallback(
+    (index: number, votes: number) => {
+      const isChecked = votes > 0;
+      onVoteUpdate(index, isChecked, votes);
+    },
+    [onVoteUpdate]
+  );
+
+  const handleInvalidStatusChange = useCallback(
+    (index: number, status: boolean) => {
+      setIsVotesInvalid({ ...isVotesInvalid, [index]: status });
+    },
+    [isVotesInvalid, setIsVotesInvalid]
+  );
+
+  const handleSelect = useCallback(
+    (index: number) => {
+      if (pollType === PollType.SINGLE_VOTE) {
+        setSelectedCandidate(index);
+        // Reset invalid status for all options when selecting in single vote mode
+        setIsVotesInvalid(
+          Object.keys(isVotesInvalid).reduce(
+            (acc, key) => ({ ...acc, [key]: false }),
+            {}
+          )
+        );
+      } else {
+        setSelectedCandidate(index);
+        setIsVotesInvalid({ ...isVotesInvalid, [index]: false });
+      }
+    },
+    [pollType, setSelectedCandidate, setIsVotesInvalid, isVotesInvalid]
+  );
 
   return (
     <div className={styles["candidate-container"]}>
@@ -72,48 +105,41 @@ export const VotingSection = ({
         {options.map((option: string, index: number) => (
           <VoteCard
             key={index}
+            votes={votes.find((v) => v.index === index)?.votes || 0}
             pollOpen={pollStatus === PollStatus.OPEN}
+            maxVotePerPerson={maxVotePerPerson}
             title={option}
             bytesCid={optionInfo[index]}
             index={index}
-            pollStatus={pollStatus}
-            description={
-              option.toLowerCase() === "harris" ? "Democrat" : "Republican"
-            }
-            image={
-              option.toLowerCase() === "harris" ? "/kamala.svg" : "/trump.svg"
-            }
             result={result?.find((r) => r.candidate === option)}
             totalVotes={totalVotes}
+            currentTotalVotes={votes
+              .filter((v) => v.index !== index)
+              .reduce((acc, v) => acc + v.votes, 0)}
             isWinner={result?.[0]?.candidate === option}
-            clicked={false}
             pollType={pollType}
-            onChange={(checked, votes) => onVoteUpdate(index, checked, votes)}
             isInvalid={Boolean(isVotesInvalid[index])}
-            setIsInvalid={(status) =>
-              setIsVotesInvalid({ ...isVotesInvalid, [index]: status })
+            onVoteChange={(index, votes) => {
+              handleVoteChange(index, votes);
+            }}
+            onInvalidStatusChange={(status) =>
+              handleInvalidStatusChange(index, status)
             }
-            onVote={onVote}
+            onSelect={() => handleSelect(index)}
             isSelected={selectedCandidate === index}
-            setSelectedCandidate={handleOptionSelect}
           />
         ))}
       </ul>
-      <div className={styles.col}>
-        {votingState.message && (
-          <div className={styles.text}>{votingState.message}</div>
-        )}
-        {votingState.showVoteButton && isConnected && isUserRegistered && (
+      {votingState.canVote && (
+        <div className={styles.col}>
           <button
             className={styles["poll-btn"]}
+            onClick={onVote}
             disabled={
               isLoadingSingle ||
               isLoadingBatch ||
-              Object.values(isVotesInvalid).some((v) => v) ||
-              !isUserRegistered ||
-              !isConnected
+              Object.values(isVotesInvalid).some((v) => v)
             }
-            onClick={onVote}
           >
             {isLoadingSingle || isLoadingBatch ? (
               <span className={`${styles.spinner} spinner`}></span>
@@ -121,15 +147,7 @@ export const VotingSection = ({
               <p>Vote Now</p>
             )}
           </button>
-        )}
-      </div>
-      {pollStatus === PollStatus.CLOSED && userAddress === pollDeployer && (
-        <Link
-          className={styles["poll-btn"]}
-          href={`/polls/${pollId}/publish?authType=${authType}`}
-        >
-          <p>Publish Result</p>
-        </Link>
+        </div>
       )}
     </div>
   );

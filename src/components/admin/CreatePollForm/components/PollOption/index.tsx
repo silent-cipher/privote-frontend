@@ -16,28 +16,52 @@ const PollOption = ({
 }: PollOptionProps) => {
   return (
     <div className={styles["candidate-input"]}>
-      {candidateSelection === "withoutImage" && (
-        <WithoutImageInput
-          type="text"
-          placeholder={`Candidate ${index + 1}`}
-          value={option.value}
-          onChange={(e) => onOptionChange(index, e.target.value)}
-        />
-      )}
-      {candidateSelection === "withImage" && (
-        <WithImageInput
-          type="text"
-          placeholder={`Candidate ${index + 1}`}
-          value={option.value}
-          file={file}
-          onChange={(e) => onOptionChange(index, e.target.value)}
-          onFileRemove={() => onFileRemove(index)}
-          onFileChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) onFileChange(index, file);
-          }}
-        />
-      )}
+      <div className={styles["option-fields"]}>
+        {candidateSelection === "withoutImage" && (
+          <>
+            <WithoutImageInput
+              type="text"
+              placeholder={`Candidate ${index + 1} Title`}
+              value={option.title || ""}
+              onChange={(e) => onOptionChange(index, e.target.value, "title")}
+            />
+            {/* <WithoutImageInput
+              type="text"
+              placeholder={`Option ${index + 1} Description`}
+              value={option.description || ""}
+              onChange={(e) =>
+                onOptionChange(index, e.target.value, "description")
+              }
+            /> */}
+            <textarea
+              placeholder={`Candidate ${index + 1} Description`}
+              value={option.description || ""}
+              onChange={(e) =>
+                onOptionChange(index, e.target.value, "description")
+              }
+            />
+          </>
+        )}
+        {candidateSelection === "withImage" && (
+          <div className={styles["image-option"]}>
+            <WithImageInput
+              index={index}
+              type="text"
+              placeholder={`Candidate ${index + 1} Title`}
+              option={option}
+              file={file}
+              onChange={(e, field) =>
+                onOptionChange(index, e.target.value, field)
+              }
+              onFileRemove={() => onFileRemove(index)}
+              onFileChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) onFileChange(index, file);
+              }}
+            />
+          </div>
+        )}
+      </div>
       {index > 0 && (
         <button
           type="button"

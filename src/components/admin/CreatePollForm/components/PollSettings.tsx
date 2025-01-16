@@ -61,7 +61,11 @@ export const PollSettings = ({
 
       <div className={styles["input-field-container"]}>
         <label className={styles.label}>Select Vote Type</label>
-        <select value={pollData.mode || ""} onChange={onModeChange} required>
+        <select
+          value={pollData.mode === null ? "" : pollData.mode}
+          onChange={onModeChange}
+          required
+        >
           <option value="">Select Vote Type</option>
           <option value={EMode.QV}>Quadratic Vote</option>
           <option value={EMode.NON_QV}>Non Quadratic Vote</option>
