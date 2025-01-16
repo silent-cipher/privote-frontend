@@ -1,171 +1,203 @@
 import Image from "next/image";
+import { useState, useCallback } from "react";
 import { PollStatus, PollType } from "~~/types/poll";
 import styles from "./index.module.css";
-import { useState, useRef } from "react";
+import { decodeOptionInfo } from "~~/utils/optionInfo";
 import CID from "cids";
 import { hexToBytes } from "viem";
 
 interface VoteCardProps {
+  votes: number;
   title: string;
   bytesCid: string;
-  description: string;
-  image: string;
-  pollStatus: PollStatus | undefined;
-  onVote: () => void;
-  result: { candidate: string; votes: number } | undefined;
+  result?: {
+    candidate: string;
+    votes: number;
+  };
   totalVotes: number;
+  currentTotalVotes: number;
   isWinner: boolean;
   index: number;
   pollOpen: boolean;
-  clicked: boolean;
   pollType: PollType;
   isInvalid: boolean;
-  setIsInvalid: (status: boolean) => void;
-  onChange: (checked: boolean, votes: number) => void;
   isSelected: boolean;
-  setSelectedCandidate: (index: number) => void;
+  onVoteChange: (index: number, votes: number) => void;
+  onInvalidStatusChange: (status: boolean) => void;
+  onSelect: (index: number) => void;
+  maxVotePerPerson?: number;
 }
 
 const VoteCard = ({
+  votes,
   title,
   bytesCid,
-  description,
-  image,
-  pollStatus,
-  onVote,
   result,
   totalVotes,
+  currentTotalVotes,
   isWinner,
-  onChange,
-  setIsInvalid,
   pollType,
   isInvalid,
   pollOpen,
   index,
-  setSelectedCandidate,
   isSelected,
+  onVoteChange,
+  onInvalidStatusChange,
+  onSelect,
+  maxVotePerPerson,
 }: VoteCardProps) => {
   const [selected, setSelected] = useState(false);
-  const [votes, setVotes] = useState(0);
-  const votesFieldRef = useRef<HTMLInputElement>(null);
+  const { cid, description } = decodeOptionInfo(bytesCid);
 
-  console.log(Number(pollType) === PollType.SINGLE_VOTE);
+  const handleVoteChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSelected(e.target.checked);
+      const isChecked = e.target.checked;
+
+      if (isChecked) {
+        switch (Number(pollType)) {
+          case PollType.SINGLE_VOTE:
+          case PollType.MULTIPLE_VOTE:
+            onVoteChange(index, 1);
+            break;
+          case PollType.WEIGHTED_MULTIPLE_VOTE:
+            // For weighted votes, we'll handle the vote count in a separate input
+            onInvalidStatusChange(true);
+            break;
+        }
+      } else {
+        onVoteChange(index, 0);
+        onInvalidStatusChange(false);
+      }
+    },
+    [index, pollType, onVoteChange, onInvalidStatusChange]
+  );
+
+  const handleWeightedVoteChange = useCallback(
+    (votes: number) => {
+      if (!isNaN(votes) && votes > 0) {
+        // Check if votes exceed maxVotePerPerson (if defined)
+
+        if (maxVotePerPerson && currentTotalVotes + votes > maxVotePerPerson) {
+          onInvalidStatusChange(true);
+          return;
+        }
+        onVoteChange(index, votes);
+        onInvalidStatusChange(false);
+      } else {
+        onInvalidStatusChange(true);
+      }
+    },
+    [index, onVoteChange, onInvalidStatusChange, maxVotePerPerson]
+  );
+
+  const votePercentage =
+    totalVotes > 0 && result
+      ? Math.round((result.votes / totalVotes) * 100)
+      : 0;
+
   return (
     <label
       htmlFor={`candidate-votes-${index}`}
-      className={`${styles.card} ${isSelected ? styles.selected : ""}`}
-      onClick={() => {
-        setSelectedCandidate(index);
-      }}
+      className={`${styles.card} ${votes !== 0 ? styles.selected : ""} ${
+        isWinner ? styles.winner : ""
+      }`}
     >
-      {pollOpen && (
-        <input
-          id={`candidate-votes-${index}`}
-          type={
-            Number(pollType) === PollType.SINGLE_VOTE ? "radio" : "checkbox"
-          }
-          style={{ display: "none" }}
-          onChange={(e) => {
-            setSelected(e.target.checked);
-            if (e.target.checked) {
-              switch (Number(pollType)) {
-                case PollType.SINGLE_VOTE:
-                  onChange(true, 1);
-                  break;
-                case PollType.MULTIPLE_VOTE:
-                  onChange(true, 1);
-                  break;
-                case PollType.WEIGHTED_MULTIPLE_VOTE:
-                  if (votes) {
-                    onChange(true, votes);
-                  } else {
-                    setIsInvalid(true);
-                  }
-                  break;
-              }
-            } else {
-              onChange(false, 0);
-              setIsInvalid(false);
-              setVotes(0);
-              if (votesFieldRef.current) {
-                votesFieldRef.current.value = "";
-              }
-            }
-          }}
-          name={
-            pollType === PollType.SINGLE_VOTE
-              ? "candidate-votes"
-              : `candidate-votes-${index}`
-          }
-        />
-      )}
-      {bytesCid && bytesCid !== "0x" && bytesCid.length > 2 && (
+      {cid && cid !== "0x" && cid.length > 2 && (
         <div className={styles.image}>
           <Image
             src={`${process.env.NEXT_PUBLIC_LH_GATEWAY}/ipfs/${new CID(
-              hexToBytes(bytesCid as `0x${string}`)
+              hexToBytes(cid as `0x${string}`)
             ).toString()}`}
-            loading="lazy"
-            loader={(p) => {
-              return `${p.src}?img-width=${p.width}&img-height=${p.width}`;
-            }}
-            height={400}
+            alt={title}
             width={400}
-            alt="candidate"
+            height={400}
           />
         </div>
       )}
-      <div className={styles.content}>
-        <div className={styles.details}>
-          {(title === "Trump" || title === "Harris") && (
-            <Image
-              src={
-                title.toLowerCase() == "harris"
-                  ? "/democrat-icon.svg"
-                  : "/republican-icon.svg"
-              }
-              width={36}
-              height={36}
-              alt="icon"
-            />
-          )}
-          <div className={styles.content}>
-            <h3>{title}</h3>
-            {(title === "Trump" || title === "Harris") && <p>{description}</p>}
-          </div>
-        </div>
 
-        {pollOpen && pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
-          <input
-            ref={votesFieldRef}
-            type="number"
-            className={styles.input + " " + (isInvalid ? styles.invalid : "")}
-            disabled={!selected}
-            placeholder="Votes"
-            min={0}
-            step={1}
-            onChange={function (e) {
-              if (
-                Number(e.currentTarget.value) < 0 ||
-                (selected &&
-                  (e.currentTarget.value === "" ||
-                    Number(e.currentTarget.value) == 0))
-              ) {
-                setIsInvalid(true);
-              } else {
-                setIsInvalid(false);
-                setVotes(Number(e.currentTarget.value));
-                onChange(selected, Number(e.currentTarget.value));
+      <div className={styles.content}>
+        <h3 className={votes !== 0 ? styles.selected : ""}>{title}</h3>
+        {description && <p className={styles.description}>{description}</p>}
+
+        {pollOpen && (
+          <div className={styles.voteControls}>
+            <input
+              type={pollType === PollType.SINGLE_VOTE ? "radio" : "checkbox"}
+              id={`candidate-votes-${index}`}
+              name={
+                pollType === PollType.SINGLE_VOTE
+                  ? "candidate-votes"
+                  : `candidate-votes-${index}`
               }
-            }}
-          />
+              style={{ display: "none" }}
+              checked={votes !== 0}
+              onChange={handleVoteChange}
+            />
+
+            {pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
+              <div className={styles.box}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (votes > 1) {
+                      handleWeightedVoteChange(votes - 1);
+                    }
+                  }}
+                >
+                  <Image src="/minus.svg" alt="minus" width={20} height={20} />
+                </button>
+                <input
+                  type="number"
+                  onChange={(e) => {
+                    handleWeightedVoteChange(parseInt(e.target.value, 10));
+                  }}
+                  min={1}
+                  max={maxVotePerPerson}
+                  className={`${styles.weightInput} ${
+                    isInvalid ? styles.invalid : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!maxVotePerPerson) {
+                      handleWeightedVoteChange(votes + 1);
+                    } else {
+                      if (votes < maxVotePerPerson) {
+                        handleWeightedVoteChange(votes + 1);
+                      }
+                    }
+                  }}
+                >
+                  <Image src="/plus.svg" alt="plus" width={20} height={20} />
+                </button>
+              </div>
+              // <input
+              //   type="number"
+              //   min="1"
+              //   max={maxVotePerPerson}
+              //   placeholder="Enter vote weight"
+              //   onChange={handleWeightedVoteChange}
+              //   className={`${styles.weightInput} ${
+              //     isInvalid ? styles.invalid : ""
+              //   }`}
+              // />
+            )}
+          </div>
         )}
-        {result && pollStatus === PollStatus.RESULT_COMPUTED && (
+
+        {result && !pollOpen && (
           <div className={styles.result}>
-            <p className={styles["vote-number"]}>{result.votes} votes</p>
-            <p className={`${isWinner ? styles.winner : styles["not-winner"]}`}>
-              {Math.ceil((result.votes / totalVotes) * 100) || 0}%
-            </p>
+            <div className={styles.voteBar}>
+              <div
+                className={styles.voteProgress}
+                style={{ width: `${votePercentage}%` }}
+              />
+            </div>
+            <span className={styles.voteCount}>
+              {result.votes} votes ({votePercentage}%)
+            </span>
           </div>
         )}
       </div>

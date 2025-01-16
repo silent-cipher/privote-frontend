@@ -22,7 +22,13 @@ interface IPollDetails {
 }
 
 const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
-  const [pollType, setPollType] = useState(PollType.NOT_SELECTED);
+  const [pollMetadata, setPollMetadata] = useState<{
+    pollType: PollType;
+    description?: string;
+    maxVotePerPerson?: number;
+  }>({
+    pollType: PollType.NOT_SELECTED,
+  });
   const { address, isConnected } = useAccount();
   const [AnonAadhaar] = useAnonAadhaar();
   const {
@@ -51,6 +57,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
   });
 
   const {
+    votes,
     isVotesInvalid,
     selectedCandidate,
     isLoadingSingle,
@@ -61,20 +68,27 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     castVote,
   } = useVoting({
     pollAddress: poll?.pollContracts.poll,
-    pollType,
+    pollType: pollMetadata.pollType,
     status,
     coordinatorPubKey,
     keypair,
     pollId: id,
     stateIndex: Number(stateIndex),
+    maxVotePerPerson: pollMetadata.maxVotePerPerson,
   });
 
   useEffect(() => {
     if (!poll || !poll.metadata) return;
 
     try {
-      const { pollType } = JSON.parse(poll.metadata);
-      setPollType(pollType as PollType);
+      const { pollType, description, maxVotePerPerson } = JSON.parse(
+        poll.metadata
+      );
+      setPollMetadata({
+        pollType: pollType as PollType,
+        description,
+        maxVotePerPerson,
+      });
     } catch (err) {
       console.error("Error parsing poll metadata:", err);
     }
@@ -125,6 +139,9 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     <div className={styles["poll-details"]}>
       <PollHeader
         pollName={poll.name}
+        pollDescription={pollMetadata.description}
+        pollEndTime={poll.endTime}
+        pollStartTime={poll.startTime}
         authType={poll.authType}
         status={status}
         isConnected={isConnected}
@@ -135,9 +152,11 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
       />
 
       <VotingSection
+        votes={votes}
         pollId={id}
         pollStatus={status}
-        pollType={pollType}
+        pollType={pollMetadata.pollType}
+        maxVotePerPerson={pollMetadata.maxVotePerPerson}
         authType={poll.authType}
         options={poll.options}
         optionInfo={poll.optionInfo}

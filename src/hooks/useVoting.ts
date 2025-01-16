@@ -14,6 +14,7 @@ interface UseVotingProps {
   coordinatorPubKey?: PubKey;
   keypair?: Keypair | null;
   pollId?: bigint;
+  maxVotePerPerson?: number;
 }
 
 export const useVoting = ({
@@ -24,6 +25,7 @@ export const useVoting = ({
   coordinatorPubKey,
   keypair,
   pollId,
+  maxVotePerPerson,
 }: UseVotingProps) => {
   const [votes, setVotes] = useState<{ index: number; votes: number }[]>([]);
   const [isVotesInvalid, setIsVotesInvalid] = useState<Record<number, boolean>>(
@@ -77,8 +79,7 @@ export const useVoting = ({
   };
 
   const voteUpdated = (index: number, checked: boolean, voteCounts: number) => {
-    console.log("voteUpdated", index, checked, voteCounts, pollType, votes);
-    if (pollType === PollType.SINGLE_VOTE) {
+    if (Number(pollType) === PollType.SINGLE_VOTE) {
       if (checked) {
         setVotes([{ index, votes: voteCounts }]);
       }
@@ -94,20 +95,9 @@ export const useVoting = ({
       setVotes(votes.filter((v) => v.index !== index));
     }
   };
+  console.log("votes", votes);
 
   const castVote = async () => {
-    console.log(
-      "pollId",
-      pollId,
-      "stateIndex",
-      stateIndex,
-      "coordinatorPubKey",
-      coordinatorPubKey,
-      "keypair",
-      keypair,
-      "votes",
-      votes
-    );
     if (
       pollId == null ||
       stateIndex == null ||
@@ -133,6 +123,17 @@ export const useVoting = ({
 
     if (status !== PollStatus.OPEN) {
       notification.error("Voting is closed for this poll");
+      return;
+    }
+
+    if (
+      pollType === PollType.WEIGHTED_MULTIPLE_VOTE &&
+      maxVotePerPerson &&
+      votes.reduce((a, b) => a + b.votes, 0) > maxVotePerPerson
+    ) {
+      notification.error(
+        `You can't vote more than ${maxVotePerPerson} per poll`
+      );
       return;
     }
 

@@ -30,7 +30,7 @@ const Page = () => {
 };
 
 const UserPoll = () => {
-  const { isRegistered, isError, isLoading, keypair } = usePollContext();
+  const { isRegistered, isError, isLoading } = usePollContext();
   const params = useParams();
   const pollId = params.id;
 
@@ -78,7 +78,7 @@ const UserPoll = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles["main-container"]}>
       <Link href={"/polls"} className={styles.back}>
         <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
       </Link>

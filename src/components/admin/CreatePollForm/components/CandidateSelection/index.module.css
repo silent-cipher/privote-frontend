@@ -15,6 +15,12 @@
   justify-content: space-between;
 }
 
+.candidates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .candidate-header > h1 {
   color: #fff;
   font-size: 24px;

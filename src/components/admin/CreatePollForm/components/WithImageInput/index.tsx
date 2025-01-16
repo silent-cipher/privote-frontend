@@ -2,19 +2,27 @@ import React, { useState, useEffect } from "react";
 import styles from "../index.module.css";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import WithoutImageInput from "../WithoutImageInput";
+import type { PollOption } from "../../types";
 
 interface WithImageInputProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: "title" | "description"
+  ) => void;
+  index: number;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileRemove: () => void;
   placeholder: string;
+  option: PollOption;
   type?: string;
   className?: string;
-  file: File | null;
+  file?: File | null;
 }
 
 const WithImageInput = ({
+  option,
+  index,
   onChange,
   onFileChange,
   onFileRemove,
@@ -40,25 +48,43 @@ const WithImageInput = ({
 
   return (
     <div className={`${styles["with-img-input"]} ${className}`}>
-      <input
-        type={type}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={styles["input-field"]}
-        {...rest}
-      />
+      <div className={styles["text-fields"]}>
+        <input
+          type={type}
+          onChange={(e) => onChange(e, "title")}
+          placeholder={placeholder}
+          className={styles["input-field"]}
+          {...rest}
+        />
+        <textarea
+          placeholder={`Candidate ${index + 1} Description`}
+          value={option.description || ""}
+          onChange={(e) => onChange(e, "description")}
+        />
+      </div>
       <div className={styles["file-input-container"]}>
         {file ? (
           <div className={styles["selected-file"]}>
-            {preview && <img src={preview} alt="Preview" className={styles["image-preview"]} />}
-            <span className={styles["file-name"]}>{file.name}</span>
-            <button 
-              onClick={onFileRemove}
-              className={styles["remove-file-btn"]}
-              type="button"
-            >
-              <IoMdClose size={20} />
-            </button>
+            {preview ? (
+              <div className={styles["file-preview"]}>
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className={styles["image-preview"]}
+                />
+                <button
+                  onClick={onFileRemove}
+                  className={styles["remove-file-btn"]}
+                  type="button"
+                >
+                  <IoMdClose size={16} />
+                </button>
+              </div>
+            ) : (
+              <>
+                <span className={styles["file-name"]}>{file.name}</span>
+              </>
+            )}
           </div>
         ) : (
           <label className={styles["file-input-label"]}>

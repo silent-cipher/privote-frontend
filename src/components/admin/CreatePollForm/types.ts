@@ -14,15 +14,18 @@ export interface IPollData {
   maxVotePerPerson: number;
   pollType: PollType | null;
   mode: EMode | null;
-  options: {
-    value: string;
-    cid: `0x${string}`;
-    isUploadedToIPFS: boolean;
-  }[];
+  options: PollOption[];
   keyPair: Keypair;
   authType: "none" | "anon";
   veriMethod: string;
   pubKey: string;
+}
+
+export interface PollOption {
+  title?: string;
+  description?: string;
+  cid: `0x${string}`;
+  isUploadedToIPFS: boolean;
 }
 
 export interface VerificationProps {
@@ -31,18 +34,16 @@ export interface VerificationProps {
 }
 
 export interface CandidateSelectionProps {
-  candidateSelection: "withImage" | "withoutImage" | "none";
-  setCandidateSelection: React.Dispatch<
-    React.SetStateAction<"none" | "withImage" | "withoutImage">
-  >;
-  options: {
-    value: string;
-    cid: `0x${string}`;
-    isUploadedToIPFS: boolean;
-  }[];
+  candidateSelection: "none" | "withImage" | "withoutImage";
+  setCandidateSelection: (value: "none" | "withImage" | "withoutImage") => void;
+  handleAddOption: () => void;
+  handleOptionChange: (
+    index: number,
+    value: string,
+    field: "value" | "title" | "description"
+  ) => void;
+  options: PollOption[];
   files: (File | null)[] | null;
-  handleOptionChange: (index: number, value: string) => void;
-  handleAddOption: React.MouseEventHandler<HTMLButtonElement>;
   onFileChange: (index: number, file: File) => void;
   onFileRemove: (index: number) => void;
   onRemoveOption: (index: number) => void;
@@ -58,14 +59,18 @@ export interface PollConfigurationProps {
 }
 
 export interface PollOptionProps {
-  candidateSelection: "withImage" | "withoutImage" | "none";
-  option: { value: string; cid: string; isUploadedToIPFS: boolean };
+  option: PollOption;
   index: number;
-  file: File | null;
-  onOptionChange: (index: number, value: string) => void;
+  file?: File | null;
+  onOptionChange: (
+    index: number,
+    value: string,
+    field: "value" | "title" | "description"
+  ) => void;
   onFileChange: (index: number, file: File) => void;
   onFileRemove: (index: number) => void;
   onRemoveOption: (index: number) => void;
+  candidateSelection: "none" | "withImage" | "withoutImage";
 }
 
 export interface PollSettingsProps {

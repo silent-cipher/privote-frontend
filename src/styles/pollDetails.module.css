@@ -1,4 +1,5 @@
-.container {
+.container,
+.main-container {
   width: 100%;
   min-height: 100vh;
   max-width: 1155px;
@@ -8,6 +9,16 @@
   padding-inline: 1rem;
 }
 
+.main-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.main-container > div {
+  flex: 1;
+}
+
 .back {
   display: inline-flex;
   align-items: center;
@@ -15,6 +26,8 @@
   color: var(--text-primary);
   text-decoration: none;
   margin-bottom: 2rem;
+  position: sticky;
+  top: 80px;
 }
 
 .back:hover {

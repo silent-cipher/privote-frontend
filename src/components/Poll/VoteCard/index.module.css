@@ -1,38 +1,37 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   border-radius: 8px;
   border: 1px solid #535861;
-  /* padding: 8px; */
-  padding: 24px;
+  padding: 8px;
   background: #141414;
-  max-width: 420px;
-  flex: 1 400px;
-
-  /* State/Info Focus */
-  /* box-shadow: 0px 2px 2px -1px rgba(0, 0, 0, 0.12), 0px 0px 0px 3px #dceeff; */
+  max-width: 180px;
+  flex: 1 180px;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .card.selected {
-  border: 1px solid #fff;
+  border-color: #c45ec6;
+  box-shadow: 0 0 0 2px rgba(196, 94, 198, 0.5);
+}
+
+.card.winner {
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
 }
 
 .card:hover {
+  transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.details {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding-inline: 24px;
 }
 
 .image {
   width: 100%;
-  height: 400px;
+  height: 160px;
+  border-radius: 4px;
   overflow: hidden;
+  margin-bottom: 8px;
 }
 
 .image img {
@@ -43,117 +42,109 @@
 
 .content {
   color: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 .content h3 {
-  font-size: 1.5em;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%;
-}
-
-.content > p {
-  margin: 0 0 16px;
-  color: #666;
+  color: #a1a1a1;
   font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: color 0.1s ease;
+  margin-bottom: 4px;
 }
 
-.button {
-  margin-inline: 24px;
+.content h3.selected {
+  color: #fff;
+}
+
+.content .description {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #8c98a9;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.content p {
+  color: #a0a0a0;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.voteControls {
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: 1px solid rgba(209, 209, 209, 0.25);
+  gap: 12px;
+}
 
-  background: #191919;
+.voteControls input[type="checkbox"],
+.voteControls input[type="radio"] {
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
-  width: calc(100% - 48px);
-}
-
-/* .button.live {
-  background-color: #28a745;
-  color: #fff;
-}
-
-.button.notStarted {
-  background-color: #ffc107;
-  color: #fff;
-}
-
-.button.startingSoon {
-  background-color: #17a2b8;
-  color: #fff;
-} */
-
-.button:hover {
-  opacity: 0.9;
-  color: #191919;
-  background-color: #fff;
 }
 
 .result {
   margin-top: 16px;
-  margin-inline: 24px;
+}
+
+.voteBar {
+  height: 8px;
+  background: #2a2a2a;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.voteProgress {
+  height: 100%;
+  background: #28a745;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.voteCount {
+  font-size: 14px;
+  color: #a0a0a0;
+}
+
+.box {
   display: flex;
-  gap: 16px;
-  justify-content: center;
-  padding: 10px 20px;
+  padding: 2px 8px;
+  align-items: center;
+  gap: 8px;
   border-radius: 8px;
-  border: 1px solid rgba(209, 209, 209, 0.25);
+  border: 0.25px solid #535861;
 
-  background: #191919;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
-  width: calc(100% - 48px);
+  background: #141414;
 }
 
-.vote-number {
+.box > input {
+  background: #0b0c0f;
+  padding: 6px 8px;
   color: #fff;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 160%;
-}
-
-.winner,
-.not-winner {
-  color: #89ff85;
-
-  font-family: Satoshi;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 160%;
-}
-
-.not-winner {
-  /* color: #e73d3d; */
-  color: #535861;
-}
-
-.input {
-  display: flex;
-  background-color: #0b0c0f;
-  margin-left: 24px;
-  margin-top: 16px;
   border-radius: 8px;
-  padding: 8px 12px;
-  color: #fff;
   outline: 1px solid #535861;
+  max-width: 80px;
+  min-width: 80px;
 }
 
-.input:focus {
-  outline-color: #c65ec6;
+.box > input.invalid,
+.box > input.invalid:focus {
+  outline: 1px solid #dc3545;
 }
 
-.input::placeholder {
-  color: #535861;
+.box > input {
+  text-align: center;
+  outline: none;
+}
+
+.box > input:focus {
+  outline: 1px solid #fff;
 }
