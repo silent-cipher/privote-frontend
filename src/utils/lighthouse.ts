@@ -9,6 +9,12 @@ export const uploadFileToLighthouse = async (file: File[]) => {
 };
 
 export const getDataFromLighthouse = async (hash: string) => {
-  const response = await fetch(`${lighthouseGateway}/ipfs/${hash}`);
-  return await response.json();
+  try {
+    const response = await fetch(`${lighthouseGateway}/ipfs/${hash}`);
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };

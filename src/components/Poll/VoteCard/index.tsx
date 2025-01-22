@@ -120,7 +120,7 @@ const VoteCard = ({
         <h3 className={votes !== 0 ? styles.selected : ""}>{title}</h3>
         {description && <p className={styles.description}>{description}</p>}
       </div>
-      {true && (
+      {pollOpen && (
         <div className={styles.voteControls}>
           {pollType !== PollType.WEIGHTED_MULTIPLE_VOTE && (
             <div className={styles["vote-label-container"]}>

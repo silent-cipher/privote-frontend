@@ -95,7 +95,6 @@ export const useVoting = ({
       setVotes(votes.filter((v) => v.index !== index));
     }
   };
-  console.log("votes", votes);
 
   const castVote = async () => {
     if (
