@@ -79,9 +79,6 @@ const UserPoll = () => {
 
   return (
     <div className={styles["main-container"]}>
-      <Link href={"/polls"} className={styles.back}>
-        <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
-      </Link>
       <PollDetails
         id={BigInt(Number(pollId))}
         isUserRegistered={isRegistered}

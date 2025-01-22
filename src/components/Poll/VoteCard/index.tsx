@@ -105,7 +105,7 @@ const VoteCard = ({
     >
       {cid && cid !== "0x" && cid.length > 2 && (
         <div className={styles.image}>
-          <Image
+          <img
             src={`${process.env.NEXT_PUBLIC_LH_GATEWAY}/ipfs/${new CID(
               hexToBytes(cid as `0x${string}`)
             ).toString()}`}
@@ -119,88 +119,89 @@ const VoteCard = ({
       <div className={styles.content}>
         <h3 className={votes !== 0 ? styles.selected : ""}>{title}</h3>
         {description && <p className={styles.description}>{description}</p>}
-
-        {pollOpen && (
-          <div className={styles.voteControls}>
-            <input
-              type={pollType === PollType.SINGLE_VOTE ? "radio" : "checkbox"}
-              id={`candidate-votes-${index}`}
-              name={
-                pollType === PollType.SINGLE_VOTE
-                  ? "candidate-votes"
-                  : `candidate-votes-${index}`
-              }
-              style={{ display: "none" }}
-              checked={votes !== 0}
-              onChange={handleVoteChange}
-            />
-
-            {pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
-              <div className={styles.box}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (votes > 1) {
-                      handleWeightedVoteChange(votes - 1);
-                    }
-                  }}
-                >
-                  <Image src="/minus.svg" alt="minus" width={20} height={20} />
-                </button>
-                <input
-                  type="number"
-                  onChange={(e) => {
-                    handleWeightedVoteChange(parseInt(e.target.value, 10));
-                  }}
-                  min={1}
-                  max={maxVotePerPerson}
-                  className={`${styles.weightInput} ${
-                    isInvalid ? styles.invalid : ""
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!maxVotePerPerson) {
-                      handleWeightedVoteChange(votes + 1);
-                    } else {
-                      if (votes < maxVotePerPerson) {
-                        handleWeightedVoteChange(votes + 1);
-                      }
-                    }
-                  }}
-                >
-                  <Image src="/plus.svg" alt="plus" width={20} height={20} />
-                </button>
-              </div>
-              // <input
-              //   type="number"
-              //   min="1"
-              //   max={maxVotePerPerson}
-              //   placeholder="Enter vote weight"
-              //   onChange={handleWeightedVoteChange}
-              //   className={`${styles.weightInput} ${
-              //     isInvalid ? styles.invalid : ""
-              //   }`}
-              // />
-            )}
-          </div>
-        )}
-
-        {result && !pollOpen && (
-          <div className={styles.result}>
-            <div className={styles.voteBar}>
-              <div
-                className={styles.voteProgress}
-                style={{ width: `${votePercentage}%` }}
-              />
-            </div>
-            <span className={styles.voteCount}>
-              {result.votes} votes ({votePercentage}%)
-            </span>
-          </div>
-        )}
       </div>
+      {true && (
+        <div className={styles.voteControls}>
+          {pollType !== PollType.WEIGHTED_MULTIPLE_VOTE && (
+            <div className={styles["vote-label-container"]}>
+              <input
+                type={pollType === PollType.SINGLE_VOTE ? "radio" : "checkbox"}
+                id={`candidate-votes-${index}`}
+                name={
+                  pollType === PollType.SINGLE_VOTE
+                    ? "candidate-votes"
+                    : `candidate-votes-${index}`
+                }
+                style={{ display: "none" }}
+                checked={votes !== 0}
+                onChange={handleVoteChange}
+              />
+              <label
+                htmlFor={`candidate-votes-${index}`}
+                className={styles["vote-label"]}
+              >
+                <p>Select</p>
+              </label>
+            </div>
+          )}
+
+          {pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
+            <div className={styles.box}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (votes > 1) {
+                    console.log("votes", votes);
+                    handleWeightedVoteChange(votes - 1);
+                  }
+                }}
+              >
+                <Image src="/minus.svg" alt="minus" width={16} height={16} />
+              </button>
+              <input
+                type="number"
+                onChange={(e) => {
+                  handleWeightedVoteChange(parseInt(e.target.value, 10));
+                }}
+                min={1}
+                max={maxVotePerPerson}
+                value={votes}
+                className={`${styles.weightInput} ${
+                  isInvalid ? styles.invalid : ""
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (!maxVotePerPerson) {
+                    handleWeightedVoteChange(votes + 1);
+                  } else {
+                    if (votes < maxVotePerPerson) {
+                      handleWeightedVoteChange(votes + 1);
+                    }
+                  }
+                }}
+              >
+                <Image src="/plus.svg" alt="plus" width={16} height={16} />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {result && !pollOpen && (
+        <div className={styles.result}>
+          <div className={styles.voteBar}>
+            <div
+              className={styles.voteProgress}
+              style={{ width: `${votePercentage}%` }}
+            />
+          </div>
+          <span className={styles.voteCount}>
+            {result.votes} votes ({votePercentage}%)
+          </span>
+        </div>
+      )}
     </label>
   );
 };

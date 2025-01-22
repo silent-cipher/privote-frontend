@@ -9,6 +9,8 @@ import { useCallback } from "react";
 interface VotingSectionProps {
   votes: { index: number; votes: number }[];
   pollId: bigint;
+  pollTitle: string;
+  pollDescription?: string;
   pollStatus?: PollStatus;
   pollType: PollType;
   authType: string;
@@ -34,6 +36,8 @@ interface VotingSectionProps {
 export const VotingSection = ({
   votes,
   pollId,
+  pollTitle,
+  pollDescription,
   maxVotePerPerson,
   pollStatus,
   pollType,
@@ -101,6 +105,10 @@ export const VotingSection = ({
 
   return (
     <div className={styles["candidate-container"]}>
+      <div className={styles.content}>
+        <h1 className={styles.heading}>{pollTitle}</h1>
+        <p className={styles.description}>{pollDescription}</p>
+      </div>
       <ul className={styles["candidate-list"]}>
         {options.map((option: string, index: number) => (
           <VoteCard

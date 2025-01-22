@@ -1,3 +1,5 @@
+import Link from "next/link";
+import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
 import styles from "~~/styles/userPoll.module.css";
@@ -27,30 +29,16 @@ const PollStatusMapping = {
 };
 
 function formatTimeRemaining(time: number) {
-  if (time <= 0) return "Time expired";
+  if (time <= 0) return "00:00:00";
 
-  const days = Math.floor(time / 86400);
-  const hours = Math.floor((time % 86400) / 3600);
+  const hours = Math.floor(time / 3600);
   const minutes = Math.floor((time % 3600) / 60);
   const seconds = Math.floor(time % 60);
 
-  // If days exist, show only days
-  if (days > 0) {
-    return `${days} ${days === 1 ? "day" : "days"}`;
-  }
-
-  // If hours exist but no days, show only hours
-  if (hours > 0) {
-    return `${hours} ${hours === 1 ? "hour" : "hours"}`;
-  }
-
-  // If minutes exist but no days/hours, show minutes and seconds
-  if (minutes > 0) {
-    return `${minutes}m ${seconds}s`;
-  }
-
-  // If only seconds remain
-  return `${seconds}s`;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}:${String(seconds).padStart(2, "0")}`;
 }
 
 export const PollHeader = ({
@@ -70,9 +58,16 @@ export const PollHeader = ({
   return (
     <div className={styles.header}>
       <div className={styles.headerContent}>
-        <h1 className={styles.heading}>{pollName}</h1>
+        <Link href={"/polls"} className={styles.back}>
+          <Image
+            src="/arrow-left.svg"
+            alt="arrow left"
+            width={27}
+            height={27}
+          />
+        </Link>
         <div className={styles.end}>
-          {!isConnected && <ConnectButton />}
+          {/* {!isConnected && <ConnectButton />} */}
           {isConnected && authType === "anon" && status === PollStatus.OPEN && (
             <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
           )}
@@ -104,27 +99,21 @@ export const PollHeader = ({
             )}
 
           <div className={styles.status}>
-            {status ? PollStatusMapping[status] : ""}
+            <Image src="/clock.svg" alt="clock" width={24} height={24} />
+            {status === PollStatus.CLOSED && "Pole ended"}
+            {status === PollStatus.OPEN && (
+              <span className={styles.timeInfo}>
+                Time left:{" "}
+                {formatTimeRemaining(Number(pollEndTime) - Date.now() / 1000)}
+              </span>
+            )}
+            {status === PollStatus.NOT_STARTED && (
+              <span className={styles.timeInfo}>
+                Starts in:{" "}
+                {formatTimeRemaining(Number(pollStartTime) - Date.now() / 1000)}
+              </span>
+            )}
           </div>
-        </div>
-      </div>
-      <div className={styles.descriptionWrapper}>
-        {pollDescription && (
-          <p className={styles.description}>{pollDescription}</p>
-        )}
-        <div className={styles.pollTiming}>
-          {status === PollStatus.OPEN && (
-            <span className={styles.timeInfo}>
-              Ends in:{" "}
-              {formatTimeRemaining(Number(pollEndTime) - Date.now() / 1000)}
-            </span>
-          )}
-          {status === PollStatus.NOT_STARTED && (
-            <span className={styles.timeInfo}>
-              Starts in:{" "}
-              {formatTimeRemaining(Number(pollStartTime) - Date.now() / 1000)}
-            </span>
-          )}
         </div>
       </div>
     </div>

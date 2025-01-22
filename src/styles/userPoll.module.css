@@ -33,6 +33,15 @@
   gap: 16px;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: -40px;
+}
+
 .heading {
   font-size: 24px;
   font-style: normal;
@@ -83,8 +92,8 @@
 .status {
   display: flex;
   padding: 8px 16px;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
   gap: 10px;
   border-radius: 8px;
   background: #141414;
@@ -130,8 +139,16 @@
   font-size: 0.875rem;
 }
 
+.candidate-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
 .candidate-container {
   width: 100%;
+  max-width: 970px;
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
@@ -139,8 +156,6 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
-  max-width: 1155px;
-  width: 100%;
   margin: 0 auto;
   padding: 24px;
 }

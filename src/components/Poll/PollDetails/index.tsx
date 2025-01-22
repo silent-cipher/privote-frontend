@@ -153,6 +153,8 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
 
       <VotingSection
         votes={votes}
+        pollTitle={poll.name}
+        pollDescription={pollMetadata.description}
         pollId={id}
         pollStatus={status}
         pollType={pollMetadata.pollType}

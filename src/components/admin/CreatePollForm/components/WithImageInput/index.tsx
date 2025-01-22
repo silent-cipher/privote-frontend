@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import styles from "../index.module.css";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -48,6 +49,49 @@ const WithImageInput = ({
 
   return (
     <div className={`${styles["with-img-input"]} ${className}`}>
+      <div className={styles["file-input-container"]}>
+        <div className={styles["file-container"]}>
+          {file ? (
+            <div className={styles["selected-file"]}>
+              {preview ? (
+                <div className={styles["file-preview"]}>
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className={styles["image-preview"]}
+                  />
+                  <button
+                    onClick={onFileRemove}
+                    className={styles["remove-file-btn"]}
+                    type="button"
+                  >
+                    <IoMdClose size={16} />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <span className={styles["file-name"]}>{file.name}</span>
+                </>
+              )}
+            </div>
+          ) : (
+            <label className={styles["file-input-label"]}>
+              <input
+                type="file"
+                onChange={onFileChange}
+                accept="image/*"
+                className={styles["hidden-file-input"]}
+              />
+              <Image
+                src={"/img-square.svg"}
+                alt="Preview"
+                width={92}
+                height={92}
+              />
+            </label>
+          )}
+        </div>
+      </div>
       <div className={styles["text-fields"]}>
         <input
           type={type}
@@ -57,46 +101,10 @@ const WithImageInput = ({
           {...rest}
         />
         <textarea
-          placeholder={`Candidate ${index + 1} Description`}
+          placeholder={`Description...`}
           value={option.description || ""}
           onChange={(e) => onChange(e, "description")}
         />
-      </div>
-      <div className={styles["file-input-container"]}>
-        {file ? (
-          <div className={styles["selected-file"]}>
-            {preview ? (
-              <div className={styles["file-preview"]}>
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className={styles["image-preview"]}
-                />
-                <button
-                  onClick={onFileRemove}
-                  className={styles["remove-file-btn"]}
-                  type="button"
-                >
-                  <IoMdClose size={16} />
-                </button>
-              </div>
-            ) : (
-              <>
-                <span className={styles["file-name"]}>{file.name}</span>
-              </>
-            )}
-          </div>
-        ) : (
-          <label className={styles["file-input-label"]}>
-            <input
-              type="file"
-              onChange={onFileChange}
-              accept="image/*"
-              className={styles["hidden-file-input"]}
-            />
-            <MdOutlineAddPhotoAlternate size={24} />
-          </label>
-        )}
       </div>
     </div>
   );
