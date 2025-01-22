@@ -100,7 +100,8 @@ export const PollHeader = ({
 
           <div className={styles.status}>
             <Image src="/clock.svg" alt="clock" width={24} height={24} />
-            {status === PollStatus.CLOSED && "Pole ended"}
+            {status === PollStatus.CLOSED ||
+              (status === PollStatus.RESULT_COMPUTED && "Pole ended")}
             {status === PollStatus.OPEN && (
               <span className={styles.timeInfo}>
                 Time left:{" "}
