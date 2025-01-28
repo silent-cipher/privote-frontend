@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 const deployedContracts = {
   17000: {
     PrivoteFreeForAll: {
-      address: "0x028e9fB3B5Ff39f8aCE2fB53510a136A24Ce53bE",
+      address: "0x0bD70e8D40ccEA21e2795c6db00b5284f53923BF",
       abi: [
         {
           inputs: [
@@ -1711,10 +1711,10 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 3131952,
+      deploymentBlockNumber: 3239463,
     },
     PrivoteAnonAadhaar: {
-      address: "0x2F736f44dCcffB2BA5889509D1080f22683a93c1",
+      address: "0x6fA84B81F28E999D3aE5B5e7e56b480431A90C4A",
       abi: [
         {
           inputs: [
@@ -3418,12 +3418,12 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 3132249,
+      deploymentBlockNumber: 3239496,
     },
   },
   11155111: {
     PrivoteFreeForAll: {
-      address: "0x947b5A16d199154B0C075AD28A94f4e6a600e668",
+      address: "0x5c83422D862773ac9D8FAD8883b95B97c5aA2825",
       abi: [
         {
           inputs: [
@@ -5127,10 +5127,10 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 7477649,
+      deploymentBlockNumber: 7591484,
     },
     PrivoteAnonAadhaar: {
-      address: "0xf88A3efcBF4E3339b63cF610F5873CF37B08760b",
+      address: "0x3eF57484333c1Ac307cD716291991689C1AdB6B2",
       abi: [
         {
           inputs: [
@@ -6834,7 +6834,7 @@ const deployedContracts = {
           type: "function",
         },
       ],
-      deploymentBlockNumber: 7477681,
+      deploymentBlockNumber: 7591508,
     },
   },
 } as const;
