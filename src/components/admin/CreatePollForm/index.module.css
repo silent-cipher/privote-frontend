@@ -139,6 +139,12 @@
   gap: 10px;
   justify-content: center;
   color: #000;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #f6e6f6;
+  color: #c65ec6;
 }
 
 .submit-btn {

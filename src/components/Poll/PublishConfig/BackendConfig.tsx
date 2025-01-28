@@ -1,8 +1,10 @@
 import styles from "~~/styles/publish.module.css";
 import WithoutImageInput from "~~/components/admin/CreatePollForm/components/WithoutImageInput";
+import { ProofGenerationStatus } from "~~/services/socket/types/response";
 
 interface BackendConfigProps {
   isSelected: boolean;
+  proofGenerationState: ProofGenerationStatus;
   onClick: () => void;
   privKeyValue: string;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -10,9 +12,23 @@ interface BackendConfigProps {
   btnText: string;
 }
 
+const btnTextMap = {
+  [ProofGenerationStatus.IDLE]: "Publish Result",
+  [ProofGenerationStatus.ACCEPTED]: "Starting Proof Generation...",
+  [ProofGenerationStatus.MERGINGMESSAGES]: "Merging Messages...",
+  [ProofGenerationStatus.MERGINGSIGNUPS]: "Merging Signups...",
+  [ProofGenerationStatus.GENERATINGPROOF]: "Generating Proof...",
+  [ProofGenerationStatus.UPLOADINGTOIPFS]: "Uploading to IPFS...",
+  [ProofGenerationStatus.SUCCESS]: "Publishing...",
+  [ProofGenerationStatus.PUBLISHED]: "Results Published",
+  [ProofGenerationStatus.ERROR]: "Publish Result",
+  [ProofGenerationStatus.REJECTED]: "Publish Result",
+};
+
 export const BackendConfig = ({
   isSelected,
   onClick,
+  proofGenerationState,
   privKeyValue,
   onFormChange,
   onPublish,
@@ -42,10 +58,15 @@ export const BackendConfig = ({
               />
               <button
                 className={styles["publish-btn"]}
-                disabled={!privKeyValue || btnText === "Publishing..."}
+                disabled={
+                  !privKeyValue ||
+                  (proofGenerationState !== ProofGenerationStatus.IDLE &&
+                    proofGenerationState !== ProofGenerationStatus.REJECTED &&
+                    proofGenerationState !== ProofGenerationStatus.ERROR)
+                }
                 onClick={onPublish}
               >
-                {btnText}
+                {btnTextMap[proofGenerationState]}
               </button>
             </div>
           )}

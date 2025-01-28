@@ -5,6 +5,7 @@ import styles from "./index.module.css";
 import { decodeOptionInfo } from "~~/utils/optionInfo";
 import CID from "cids";
 import { hexToBytes } from "viem";
+import { notification } from "~~/utils/scaffold-eth";
 
 interface VoteCardProps {
   votes: number;
@@ -75,11 +76,11 @@ const VoteCard = ({
 
   const handleWeightedVoteChange = useCallback(
     (votes: number) => {
-      if (!isNaN(votes) && votes > 0) {
+      if (!isNaN(votes) && votes >= 0) {
         // Check if votes exceed maxVotePerPerson (if defined)
 
         if (maxVotePerPerson && currentTotalVotes + votes > maxVotePerPerson) {
-          onInvalidStatusChange(true);
+          notification.info("You have reached the maximum vote limit");
           return;
         }
         onVoteChange(index, votes);
@@ -101,7 +102,7 @@ const VoteCard = ({
       htmlFor={`candidate-votes-${index}`}
       className={`${styles.card} ${votes !== 0 ? styles.selected : ""} ${
         isWinner ? styles.winner : ""
-      }`}
+      } ${!description && styles.noDescription}`}
     >
       {cid && cid !== "0x" && cid.length > 2 && (
         <div className={styles.image}>
@@ -150,8 +151,7 @@ const VoteCard = ({
               <button
                 type="button"
                 onClick={() => {
-                  if (votes > 1) {
-                    console.log("votes", votes);
+                  if (votes > 0) {
                     handleWeightedVoteChange(votes - 1);
                   }
                 }}
@@ -163,7 +163,7 @@ const VoteCard = ({
                 onChange={(e) => {
                   handleWeightedVoteChange(parseInt(e.target.value, 10));
                 }}
-                min={1}
+                min={0}
                 max={maxVotePerPerson}
                 value={votes}
                 className={`${styles.weightInput} ${
@@ -190,7 +190,7 @@ const VoteCard = ({
       )}
 
       {result && !pollOpen && (
-        <div className={styles.result}>
+        <div className={`${styles.result} ${!description && styles.vertical}`}>
           <div className={styles.voteBar}>
             <div
               className={styles.voteProgress}

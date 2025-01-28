@@ -1,18 +1,13 @@
 import { io, Socket } from "socket.io-client";
 import {
-  BaseSocketResponse,
   ProofRequestAcceptedResponse,
   ProofRequestRejectedResponse,
-  ProofCompleteResponse,
+  ProofGenerationResponse,
   ProofErrorResponse,
+  ProofGenerationStatus,
 } from "./types/response";
 
-interface ProofCallback {
-  onComplete: (data: ProofCompleteResponse) => void;
-  onError: (error: ProofErrorResponse) => void;
-  onRejected: (data: ProofRequestRejectedResponse) => void;
-  onAccepted?: (data: ProofRequestAcceptedResponse) => void;
-}
+type ProofCallback = (data: ProofGenerationResponse) => Promise<any>;
 
 interface ProofGenerationRequest {
   pollId: string;
@@ -70,35 +65,28 @@ class SocketManager {
       console.log("Connection lost!");
     });
 
-    this.socket.on("proofComplete", (data: ProofCompleteResponse) => {
+    this.socket.on("generatingProof", async (data: ProofGenerationResponse) => {
+      console.log("Generating proof", data);
       if (data.jobId) {
         // Non-cached result - use jobId to get callback
         const callback = this.proofCallbacks.get(data.jobId);
         if (callback) {
-          callback.onComplete(data);
-          this.proofCallbacks.delete(data.jobId);
+          await callback(data);
+          if (
+            data.status === ProofGenerationStatus.SUCCESS ||
+            data.status === ProofGenerationStatus.REJECTED ||
+            data.status === ProofGenerationStatus.ERROR
+          )
+            this.proofCallbacks.delete(data.jobId);
+        } else if (this.latestCallback) {
+          // Cached result - use latest callback since there's no jobId
+          this.latestCallback(data);
+          this.latestCallback = null;
         }
       } else {
         // Cached result - use latest callback since there's no jobId
         if (this.latestCallback) {
-          this.latestCallback.onComplete(data);
-          this.latestCallback = null;
-        }
-      }
-    });
-
-    this.socket.on("proofError", (data: ProofErrorResponse) => {
-      if (data.jobId) {
-        // Non-cached result error
-        const callback = this.proofCallbacks.get(data.jobId);
-        if (callback) {
-          callback.onError(data);
-          this.proofCallbacks.delete(data.jobId);
-        }
-      } else {
-        // Cached result error
-        if (this.latestCallback) {
-          this.latestCallback.onError(data);
+          this.latestCallback(data);
           this.latestCallback = null;
         }
       }
@@ -114,40 +102,44 @@ class SocketManager {
 
   public generateProof(
     proofData: ProofGenerationRequest,
-    callbacks: ProofCallback
+    callback: ProofCallback
   ) {
     const socket = this.getSocket();
 
     // Store the callback for potential cached result
-    this.latestCallback = callbacks;
+    this.latestCallback = callback;
 
     socket.emit("generateProof", proofData);
 
-    socket.once(
-      "proofRequestAccepted",
-      (response: ProofRequestAcceptedResponse) => {
-        if (response.jobId) {
-          // Move callback from latest to proofCallbacks map
-          if (this.latestCallback) {
-            this.proofCallbacks.set(response.jobId, this.latestCallback);
-            this.latestCallback = null;
-            callbacks.onAccepted?.(response);
-          }
-        }
-      }
-    );
-
-    socket.once(
-      "proofRequestRejected",
-      (response: ProofRequestRejectedResponse) => {
-        console.log("Proof request rejected", response);
-        // Clear the latest callback since the request was rejected
+    socket.once("proofRequestAccepted", (response: ProofGenerationResponse) => {
+      console.log("Proof request accepted", response);
+      if (response.jobId) {
+        // Move callback from latest to proofCallbacks map
         if (this.latestCallback) {
-          this.latestCallback.onRejected?.(response);
+          this.proofCallbacks.set(response.jobId, this.latestCallback);
           this.latestCallback = null;
+          callback(response);
         }
       }
-    );
+    });
+
+    socket.once("proofRequestRejected", (response: ProofGenerationResponse) => {
+      console.log("Proof request rejected", response);
+      // Clear the latest callback since the request was rejected
+      if (this.latestCallback) {
+        this.latestCallback(response);
+        this.latestCallback = null;
+      }
+    });
+
+    socket.once("errorGeneratingProof", (response: ProofGenerationResponse) => {
+      console.log("Error generating proof", response);
+      // Clear the latest callback since the request was rejected
+      if (this.latestCallback) {
+        this.latestCallback(response);
+        this.latestCallback = null;
+      }
+    });
   }
 
   public cleanup() {

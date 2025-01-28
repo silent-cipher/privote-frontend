@@ -10,6 +10,25 @@
   padding-inline: 24px;
 }
 
+.info {
+  border-radius: 8px;
+  border: 1px solid #d7e884;
+  background: rgba(231, 228, 61, 0.05);
+  color: #d7e884;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 24px;
+}
+
+.info > p {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 100%;
+}
+
 .back {
   display: flex;
   padding: 3.455px;
@@ -39,11 +58,11 @@
   gap: 8px;
   justify-content: center;
   align-items: center;
-  margin-top: -40px;
+  margin-top: -20px;
 }
 
 .heading {
-  font-size: 24px;
+  font-size: 32px;
   font-style: normal;
   font-weight: 700;
   line-height: 160%; /* 38.4px */
@@ -74,7 +93,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 6px 12px 6px 0px;
   background: #141414;
   border-radius: 6px;
   font-size: 14px;
@@ -94,7 +113,7 @@
   padding: 8px 16px;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   border-radius: 8px;
   background: #141414;
   color: #8c98a9;
@@ -139,13 +158,6 @@
   font-size: 0.875rem;
 }
 
-.candidate-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-
 .candidate-container {
   width: 100%;
   max-width: 970px;
@@ -163,9 +175,11 @@
 .candidate-container > ul {
   width: 100%;
   display: flex;
-  gap: 16px;
+  gap: 32px;
   flex-wrap: wrap;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .poll-btn {
@@ -218,4 +232,62 @@
   flex-direction: column;
   gap: 16px;
   margin-top: 24px;
+}
+
+.shareContainer {
+  position: relative;
+  margin-right: 16px;
+}
+
+.shareButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.shareButton:hover {
+  background: #252525;
+}
+
+.shareMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+  z-index: 10;
+}
+
+.shareMenu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.shareMenu button:hover {
+  background: #252525;
 }

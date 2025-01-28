@@ -5,6 +5,9 @@ import { EMode } from "~~/types/poll";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useChainId, useAccount } from "wagmi";
 import { socketManager } from "~~/services/socket/socketManager";
+import { ProofGenerationStatus } from "~~/services/socket/types/response";
+import { notification } from "~~/utils/scaffold-eth";
+import { PrivKey } from "maci-domainobjs";
 
 interface PublishForm {
   cid: string;
@@ -22,6 +25,8 @@ export const usePublishResults = (
   });
   const [btnText, setBtnText] = useState("Publish Results");
   const [dockerConfig, setDockerConfig] = useState(0);
+  const [proofGenerationState, setProofGenerationState] =
+    useState<ProofGenerationStatus>(ProofGenerationStatus.IDLE);
   const router = useRouter();
   const chainId = useChainId();
   const { address } = useAccount();
@@ -38,9 +43,16 @@ export const usePublishResults = (
   };
 
   const publishWithBackend = async () => {
-    if (!form.privKey || !address) {
+    if (!PrivKey.isValidSerializedPrivKey(form.privKey)) {
+      notification.error("Invalid private key");
       return;
     }
+
+    if (!address) {
+      notification.error("Please connect your wallet");
+      return;
+    }
+
     try {
       setBtnText("Publishing...");
 
@@ -63,30 +75,35 @@ export const usePublishResults = (
           quiet: true,
           useWasm: true,
         },
-        {
-          onComplete: async (data) => {
-            try {
-              await writeAsync({
-                args: [BigInt(pollId), data.data.cid],
-              });
-              router.push("/admin");
-              setBtnText("Publish Results");
-            } catch (error) {
-              console.error("Error updating contract:", error);
-              setBtnText("Publish Results");
+        async (data) => {
+          console.log(data);
+          try {
+            if (data.status !== ProofGenerationStatus.SUCCESS) {
+              setProofGenerationState(data.status);
+              if (
+                data.status === ProofGenerationStatus.REJECTED ||
+                data.status === ProofGenerationStatus.ERROR
+              ) {
+                notification.error("Proof generation failed!");
+              }
+              return;
             }
-          },
-          onError: (error) => {
-            console.error("Proof generation error:", error);
+            setProofGenerationState(data.status);
+            await writeAsync({
+              args: [BigInt(pollId), data.data.cid],
+            });
+            setProofGenerationState(ProofGenerationStatus.PUBLISHED);
+            router.push("/admin");
             setBtnText("Publish Results");
-          },
-          onRejected: (data) => {
-            console.log("Proof generation rejected:", data);
+          } catch (error) {
+            console.error("Error updating contract:", error);
             setBtnText("Publish Results");
-          },
+            setProofGenerationState(ProofGenerationStatus.ERROR);
+          }
         }
       );
     } catch (error) {
+      setProofGenerationState(ProofGenerationStatus.ERROR);
       setBtnText("Publish Results");
       console.error("Error publishing results:", error);
     }
@@ -94,11 +111,19 @@ export const usePublishResults = (
 
   const publishWithDocker = async () => {
     try {
+      if (!address) {
+        notification.error("Please connect your wallet");
+        return;
+      }
+      console.log(form.cid);
+      setProofGenerationState(ProofGenerationStatus.SUCCESS);
       await writeAsync({
         args: [BigInt(pollId), form.cid],
       });
-      router.push("/");
+      setProofGenerationState(ProofGenerationStatus.PUBLISHED);
+      router.push(`/polls/${pollId}?authType=${authType}`);
     } catch (error) {
+      setProofGenerationState(ProofGenerationStatus.ERROR);
       console.error("Error publishing results:", error);
     }
   };
@@ -106,6 +131,7 @@ export const usePublishResults = (
   return {
     form,
     btnText,
+    proofGenerationState,
     dockerConfig,
     setDockerConfig,
     handleFormChange,

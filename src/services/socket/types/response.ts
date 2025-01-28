@@ -3,8 +3,22 @@ export interface RateLimitInfo {
   resetIn: number; // seconds until reset
 }
 
+export enum ProofGenerationStatus {
+  IDLE,
+  ACCEPTED,
+  MERGINGMESSAGES,
+  MERGINGSIGNUPS,
+  GENERATINGPROOF,
+  UPLOADINGTOIPFS,
+  SUCCESS,
+  PUBLISHED,
+  REJECTED,
+  ERROR,
+}
+
 export interface BaseSocketResponse {
   success: boolean;
+  status: ProofGenerationStatus;
   jobId?: string;
   message: string;
   timestamp: number;
@@ -19,7 +33,7 @@ export interface ProofRequestRejectedResponse extends BaseSocketResponse {
   error: string;
 }
 
-export interface ProofCompleteResponse extends BaseSocketResponse {
+export interface ProofGenerationResponse extends BaseSocketResponse {
   data: {
     cid: string;
     cached: boolean;

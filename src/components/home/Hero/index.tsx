@@ -28,7 +28,7 @@ export const Hero = ({
       <p className={styles.description}>{description}</p>
       <div className={styles.actions}>
         <Link className={styles["create-poll"]} href="/admin/?action=create">
-          Create Poll
+          <p>Create Poll</p>
         </Link>
       </div>
     </div>

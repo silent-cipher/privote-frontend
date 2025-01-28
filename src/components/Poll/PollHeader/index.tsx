@@ -6,6 +6,9 @@ import styles from "~~/styles/userPoll.module.css";
 import Button from "~~/components/ui/Button";
 import { PollStatus } from "~~/types/poll";
 import { useAccount } from "wagmi";
+import { useState, useEffect } from "react";
+import { FaShare, FaWhatsapp, FaTwitter, FaFacebook } from "react-icons/fa";
+import ShareModal from "~~/components/ui/ShareModal";
 
 interface PollHeaderProps {
   authType: string;
@@ -20,13 +23,6 @@ interface PollHeaderProps {
   onRegister: () => void;
   isRegistering: boolean;
 }
-
-const PollStatusMapping = {
-  [PollStatus.NOT_STARTED]: "Not Started",
-  [PollStatus.OPEN]: "Live",
-  [PollStatus.CLOSED]: "Pole ended",
-  [PollStatus.RESULT_COMPUTED]: "Pole ended",
-};
 
 function formatTimeRemaining(time: number) {
   if (time <= 0) return "00:00:00";
@@ -55,6 +51,42 @@ export const PollHeader = ({
   pollStartTime,
 }: PollHeaderProps) => {
   const { address } = useAccount();
+  const [timeRemaining, setTimeRemaining] = useState<number>(
+    status === PollStatus.OPEN
+      ? Number(pollEndTime) - Date.now() / 1000
+      : status === PollStatus.NOT_STARTED
+      ? Number(pollStartTime) - Date.now() / 1000
+      : 0
+  );
+
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const handleOpenShareModal = () => {
+    setIsShareModalOpen(true);
+  };
+
+  const handleCloseShareModal = () => {
+    setIsShareModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (status !== PollStatus.CLOSED && status !== PollStatus.RESULT_COMPUTED) {
+      const timer = setInterval(() => {
+        const newTime =
+          status === PollStatus.OPEN
+            ? Number(pollEndTime) - Date.now() / 1000
+            : Number(pollStartTime) - Date.now() / 1000;
+        setTimeRemaining(newTime);
+
+        if (newTime <= 0) {
+          clearInterval(timer);
+        }
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [status, pollEndTime, pollStartTime]);
+
   return (
     <div className={styles.header}>
       <div className={styles.headerContent}>
@@ -67,6 +99,19 @@ export const PollHeader = ({
           />
         </Link>
         <div className={styles.end}>
+          <button 
+            className={styles.shareButton}
+            onClick={handleOpenShareModal}
+          >
+            <FaShare /> Share
+          </button>
+          <ShareModal
+            isOpen={isShareModalOpen}
+            onClose={handleCloseShareModal}
+            url={typeof window !== 'undefined' ? window.location.href : ''}
+            title={pollName}
+            description={pollDescription}
+          />
           {/* {!isConnected && <ConnectButton />} */}
           {isConnected && authType === "anon" && status === PollStatus.OPEN && (
             <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
@@ -100,18 +145,17 @@ export const PollHeader = ({
 
           <div className={styles.status}>
             <Image src="/clock.svg" alt="clock" width={24} height={24} />
-            {status === PollStatus.CLOSED ||
-              (status === PollStatus.RESULT_COMPUTED && "Pole ended")}
+            {(status === PollStatus.CLOSED ||
+              status === PollStatus.RESULT_COMPUTED) &&
+              "Pole ended"}
             {status === PollStatus.OPEN && (
               <span className={styles.timeInfo}>
-                Time left:{" "}
-                {formatTimeRemaining(Number(pollEndTime) - Date.now() / 1000)}
+                Time left: {formatTimeRemaining(timeRemaining)}
               </span>
             )}
             {status === PollStatus.NOT_STARTED && (
               <span className={styles.timeInfo}>
-                Starts in:{" "}
-                {formatTimeRemaining(Number(pollStartTime) - Date.now() / 1000)}
+                Starts in: {formatTimeRemaining(timeRemaining)}
               </span>
             )}
           </div>

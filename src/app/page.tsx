@@ -7,6 +7,7 @@ import Button from "~~/components/ui/Button";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
 import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
 import { Poll } from "~~/types/poll";
+import LoaderModal from "~~/components/ui/LoaderModal";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);

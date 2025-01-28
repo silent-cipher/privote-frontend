@@ -6,9 +6,9 @@ import styles from "~~/styles/publish.module.css";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import usePublishResults from "~~/hooks/usePublishResults";
 import { DockerConfig, BackendConfig } from "~~/components/Poll/PublishConfig";
-import MessageProcessor from "~~/abi/MessageProcessor";
-import { useContractRead } from "wagmi";
 import { EMode } from "~~/types/poll";
+import LoaderModal from "~~/components/ui/LoaderModal";
+import { ProofGenerationStatus } from "~~/services/socket/types/response";
 
 export default function Publish() {
   const params = useParams();
@@ -27,12 +27,18 @@ export default function Publish() {
   const {
     form,
     btnText,
+    proofGenerationState,
     dockerConfig,
     setDockerConfig,
     handleFormChange,
     publishWithBackend,
     publishWithDocker,
   } = usePublishResults(pollId, authType, poll?.isQv as EMode);
+
+  const showLoader =
+    proofGenerationState !== ProofGenerationStatus.ERROR &&
+    proofGenerationState !== ProofGenerationStatus.IDLE &&
+    proofGenerationState !== ProofGenerationStatus.REJECTED;
 
   if (error) {
     return <div>Error loading poll details</div>;
@@ -59,6 +65,9 @@ export default function Publish() {
         </h2>
         <div className={styles["card-wrapper"]}>
           <DockerConfig
+            poll={poll}
+            pollId={pollId}
+            proofGenerationState={proofGenerationState}
             isSelected={dockerConfig === 1}
             onClick={() => setDockerConfig(1)}
             cidValue={form.cid}
@@ -67,6 +76,7 @@ export default function Publish() {
           />
           <BackendConfig
             isSelected={dockerConfig === 2}
+            proofGenerationState={proofGenerationState}
             onClick={() => setDockerConfig(2)}
             privKeyValue={form.privKey}
             onFormChange={handleFormChange}
@@ -75,6 +85,7 @@ export default function Publish() {
           />
         </div>
       </div>
+      <LoaderModal isOpen={showLoader} status={proofGenerationState} />
     </div>
   );
 }

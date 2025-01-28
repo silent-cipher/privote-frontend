@@ -93,7 +93,11 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-top: 16px;
+  transition: all 0.3s ease;
+}
+
+.poll-btn:hover {
+  background: #fff;
 }
 
 .poll-btn > p {

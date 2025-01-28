@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import styles from "~~/styles/userPoll.module.css";
 import { PollStatus, PollType } from "~~/types/poll";
@@ -109,6 +110,13 @@ export const VotingSection = ({
         <h1 className={styles.heading}>{pollTitle}</h1>
         <p className={styles.description}>{pollDescription}</p>
       </div>
+      <div className={styles.info}>
+        <Image src={"/info.svg"} alt="info" width={24} height={24} />
+        <p>
+          As no one knows whom you voted for, you can change your vote at any
+          time before the poll ends
+        </p>
+      </div>
       <ul className={styles["candidate-list"]}>
         {options.map((option: string, index: number) => (
           <VoteCard
@@ -156,6 +164,18 @@ export const VotingSection = ({
             )}
           </button>
         </div>
+      )}
+      {pollStatus === PollStatus.CLOSED && pollDeployer === userAddress && (
+        <Link
+          href={`/polls/${pollId}/publish?authType=${authType}`}
+          className={styles["poll-btn"]}
+        >
+          {isLoadingSingle || isLoadingBatch ? (
+            <span className={`${styles.spinner} spinner`}></span>
+          ) : (
+            <p>Publish Results</p>
+          )}
+        </Link>
       )}
     </div>
   );
