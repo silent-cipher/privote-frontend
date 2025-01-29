@@ -173,9 +173,10 @@
 }
 
 .candidate-container > ul {
+  margin-top: 30px;
   width: 100%;
   display: flex;
-  gap: 32px;
+  gap: 35px;
   flex-wrap: wrap;
   justify-content: center;
   /* flex-direction: column; */

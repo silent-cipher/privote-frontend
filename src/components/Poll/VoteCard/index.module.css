@@ -11,11 +11,11 @@
 }
 
 .card.noDescription {
-  width: min(345px, 100%);
+  flex: 1 1 300px;
   flex-direction: column;
   gap: 8px;
   align-self: center;
-  padding-right: 12px;
+  padding-right: 16px;
   background: #141414;
 }
 
