@@ -29,35 +29,37 @@ export const PollSettings = ({
         </select>
       </div>
 
-      <div className={styles["input-field-container-row"]}>
-        <label className={styles.label}>Max. vote per person</label>
-        <div className={styles.box}>
-          <button
-            type="button"
-            onClick={() => {
-              if (pollData.maxVotePerPerson > 1) {
-                onMaxVoteChange(1, "remove");
-              }
-            }}
-          >
-            <Image src="/minus.svg" alt="minus" width={20} height={20} />
-          </button>
-          <input
-            type="number"
-            value={pollData.maxVotePerPerson}
-            onChange={onMaxVoteChange}
-            min={1}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              onMaxVoteChange(1, "add");
-            }}
-          >
-            <Image src="/plus.svg" alt="plus" width={20} height={20} />
-          </button>
+      {pollData.pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
+        <div className={styles["input-field-container-row"]}>
+          <label className={styles.label}>Max. vote per person</label>
+          <div className={styles.box}>
+            <button
+              type="button"
+              onClick={() => {
+                if (pollData.maxVotePerPerson > 1) {
+                  onMaxVoteChange(1, "remove");
+                }
+              }}
+            >
+              <Image src="/minus.svg" alt="minus" width={20} height={20} />
+            </button>
+            <input
+              type="number"
+              value={pollData.maxVotePerPerson}
+              onChange={onMaxVoteChange}
+              min={1}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                onMaxVoteChange(1, "add");
+              }}
+            >
+              <Image src="/plus.svg" alt="plus" width={20} height={20} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={styles["input-field-container"]}>
         <label className={styles.label}>Select Vote Type</label>

@@ -19,9 +19,10 @@ const PollOption = ({
       <div className={styles["option-fields"]}>
         <div className={styles["image-option"]}>
           <WithImageInput
+            required
             index={index}
             type="text"
-            placeholder={`Candidate Name`}
+            placeholder={`*Candidate Name`}
             option={option}
             file={file}
             onChange={(e, field) =>

@@ -137,12 +137,16 @@ const VoteCard = ({
                 checked={votes !== 0}
                 onChange={handleVoteChange}
               />
-              <label
-                htmlFor={`candidate-votes-${index}`}
-                className={styles["vote-label"]}
-              >
-                <p>Select</p>
-              </label>
+              {description && (
+                <label
+                  htmlFor={`candidate-votes-${index}`}
+                  className={`${styles["vote-label"]} ${
+                    votes !== 0 ? styles.selected : ""
+                  }`}
+                >
+                  <p>{votes !== 0 ? "Selected" : "Select"}</p>
+                </label>
+              )}
             </div>
           )}
 

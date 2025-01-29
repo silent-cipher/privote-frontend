@@ -19,6 +19,7 @@ interface WithImageInputProps {
   type?: string;
   className?: string;
   file?: File | null;
+  required?: boolean;
 }
 
 const WithImageInput = ({
@@ -31,6 +32,7 @@ const WithImageInput = ({
   type = "text",
   className = "",
   file,
+  required = false,
   ...rest
 }: WithImageInputProps) => {
   const [preview, setPreview] = useState<string | null>(null);
@@ -98,6 +100,7 @@ const WithImageInput = ({
           onChange={(e) => onChange(e, "title")}
           placeholder={placeholder}
           className={styles["input-field"]}
+          required={required}
           {...rest}
         />
         <textarea
