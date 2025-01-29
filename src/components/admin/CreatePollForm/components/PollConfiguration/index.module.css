@@ -73,7 +73,8 @@
 }
 
 .priv-warning {
-  color: #535861;
+  color: red;
+  text-transform: uppercase;
   padding: 6px 12px;
   border-radius: 8px;
   background: #121417;
