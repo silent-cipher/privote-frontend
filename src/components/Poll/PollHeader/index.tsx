@@ -99,16 +99,13 @@ export const PollHeader = ({
           />
         </Link>
         <div className={styles.end}>
-          <button 
-            className={styles.shareButton}
-            onClick={handleOpenShareModal}
-          >
+          <button className={styles.shareButton} onClick={handleOpenShareModal}>
             <FaShare /> Share
           </button>
           <ShareModal
             isOpen={isShareModalOpen}
             onClose={handleCloseShareModal}
-            url={typeof window !== 'undefined' ? window.location.href : ''}
+            url={typeof window !== "undefined" ? window.location.href : ""}
             title={pollName}
             description={pollDescription}
           />
@@ -130,7 +127,7 @@ export const PollHeader = ({
                 )}
               </Button>
             )}
-          {authType === "none" &&
+          {authType === "free" &&
             status === PollStatus.OPEN &&
             !isUserRegistered &&
             isConnected && (

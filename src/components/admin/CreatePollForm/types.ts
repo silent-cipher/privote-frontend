@@ -16,7 +16,7 @@ export interface IPollData {
   mode: EMode | null;
   options: PollOption[];
   keyPair: Keypair;
-  authType: "none" | "anon";
+  authType: "free" | "anon";
   veriMethod: string;
   pubKey: string;
 }
@@ -30,7 +30,7 @@ export interface PollOption {
 
 export interface VerificationProps {
   handleVeriMethodChange: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  authType: "none" | "anon";
+  authType: "free" | "anon";
 }
 
 export interface CandidateSelectionProps {

@@ -24,7 +24,7 @@ const initialPollData: IPollData = {
     },
   ],
   keyPair: new Keypair(),
-  authType: "none",
+  authType: "free",
   veriMethod: "none",
   pubKey: "",
 };
@@ -46,7 +46,7 @@ export const useCreatePollForm = (
 
   const { writeAsync } = useScaffoldContractWrite({
     contractName:
-      pollData.authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
+      pollData.authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
     functionName: "createPoll",
     args: [
       pollData.title,
@@ -61,7 +61,7 @@ export const useCreatePollForm = (
             y: bigint;
           })
         : { x: 0n, y: 0n },
-      pollData.authType || "none",
+      pollData.authType || "free",
     ],
     value: parseEther("0.01"),
   });
@@ -219,7 +219,7 @@ export const useCreatePollForm = (
             x: bigint;
             y: bigint;
           },
-          finalPollData.authType || "none",
+          finalPollData.authType || "free",
         ],
         value: parseEther("0.01"),
       });

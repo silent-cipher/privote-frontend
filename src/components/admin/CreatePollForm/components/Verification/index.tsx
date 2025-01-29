@@ -13,9 +13,9 @@ const Verification = ({
         <button
           type="button"
           className={`${styles["veri-box"]} ${
-            authType === "none" ? styles.selected : ""
+            authType === "free" ? styles.selected : ""
           }`}
-          value={"none"}
+          value={"free"}
           onClick={handleVeriMethodChange}
         >
           None

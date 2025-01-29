@@ -33,7 +33,7 @@ export const usePublishResults = (
 
   const { writeAsync } = useScaffoldContractWrite({
     contractName:
-      authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
+      authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
     functionName: "updatePollTallyCID",
     args: [undefined, undefined],
   });
@@ -59,7 +59,7 @@ export const usePublishResults = (
       const contracts =
         deployedContracts[chainId as keyof typeof deployedContracts];
       const contract =
-        authType === "none"
+        authType === "free"
           ? contracts["PrivoteFreeForAll"]
           : contracts["PrivoteAnonAadhaar"];
 

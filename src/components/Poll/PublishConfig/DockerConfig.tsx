@@ -71,7 +71,7 @@ export const DockerConfig = ({
   const contracts =
     deployedContracts[chainId as keyof typeof deployedContracts];
   const contract =
-    poll?.authType === "none"
+    poll?.authType === "free"
       ? contracts["PrivoteFreeForAll"]
       : contracts["PrivoteAnonAadhaar"];
   return (

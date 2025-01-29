@@ -32,7 +32,7 @@ const useUserRegister = (authType?: string) => {
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName:
-      authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
+      authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
     functionName: "signUp",
     args: [
       keypair?.pubKey.asContractParam() as { x: bigint; y: bigint },
@@ -135,7 +135,7 @@ const useUserRegister = (authType?: string) => {
   };
 
   const registerUser = async () => {
-    if (authType === "none") {
+    if (authType === "free") {
       await registerUserForFreeForAll();
     } else {
       await registerUserForAnonAadhaar();

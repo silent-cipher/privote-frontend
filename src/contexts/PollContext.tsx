@@ -41,7 +41,7 @@ export default function PollContextProvider({
   const params = useParams();
   const searchParams = useSearchParams();
   const pollId = params.id;
-  const authType = searchParams.get("authType") || "none";
+  const authType = searchParams.get("authType") || "free";
   const { address, isConnected } = useAccount();
 
   const { keypair } = useSigContext();
@@ -49,7 +49,7 @@ export default function PollContextProvider({
   const [isRegistered, setIsRegistered] = useState(false);
 
   const contractName =
-    authType === "none" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar";
+    authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar";
   const {
     data: poll,
     isLoading,

@@ -71,7 +71,7 @@ export const useVotingState = ({
     };
   }
 
-  if (authType === "none") {
+  if (authType === "free") {
     if (!isUserRegistered) {
       return {
         canVote: false,
