@@ -1,6 +1,7 @@
 .wrapper {
   background: #000;
-  height: 100lvh;
+  min-height: 100vh;
+  min-height: 100lvh;
 }
 .admin-page {
   background: #000;

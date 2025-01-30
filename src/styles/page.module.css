@@ -7,8 +7,8 @@
   text-align: center;
   padding-block: 80px;
   width: 100%;
-  height: 100lvh;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100lvh;
   padding: 2rem;
   background: var(--background-primary);
   /* padding-top: 6rem; */
