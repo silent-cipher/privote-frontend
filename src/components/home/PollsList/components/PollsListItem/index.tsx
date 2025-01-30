@@ -48,14 +48,6 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
               )}
             </h2>
             <p>{Number(poll.numOfOptions)} Candidates</p>
-            {poll.status === PollStatus.RESULT_COMPUTED && (
-              <Link
-                href={`/polls/${poll.id}?authType=${poll.authType}`}
-                className={styles["poll-btn"]}
-              >
-                <p>View Results</p>
-              </Link>
-            )}
           </div>
           <div className={styles.right}>
             <p>
@@ -80,6 +72,14 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
             </p>
           </div>
         </div>
+        {poll.status === PollStatus.RESULT_COMPUTED && (
+          <Link
+            href={`/polls/${poll.id}?authType=${poll.authType}`}
+            className={styles["poll-btn"]}
+          >
+            <p>View Results</p>
+          </Link>
+        )}
       </Link>
     </li>
   );

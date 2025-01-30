@@ -64,6 +64,13 @@
   font-style: normal;
   font-weight: 700;
   line-height: 160%;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .left > p,
 .right > p {
@@ -109,4 +116,21 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 700px) {
+  .left > h2 {
+    text-align: left;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .poll-btn {
+    width: 100%;
+  }
 }

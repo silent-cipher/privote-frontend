@@ -48,14 +48,7 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
               )}
             </h2>
             <p>{Number(poll.numOfOptions)} Candidates</p>
-            {poll.status === PollStatus.CLOSED && (
-              <Link
-                href={`/polls/${poll.id}/publish?authType=${poll.authType}`}
-                className={styles["poll-btn"]}
-              >
-                <p>Publish Results</p>
-              </Link>
-            )}
+
             {poll.status === PollStatus.RESULT_COMPUTED && (
               <Link
                 href={`/polls/${poll.id}?authType=${poll.authType}`}
@@ -77,8 +70,8 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
               </span>
             </p>
             <p>
-              <span>End Time</span>
-              <span>:</span>
+              <span>End Time </span>
+              <span> :</span>
               <span>
                 {new Date(Number(poll.endTime) * 1000)
                   .toLocaleString("sv")
@@ -88,6 +81,14 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
             </p>
           </div>
         </div>
+        {poll.status === PollStatus.CLOSED && (
+          <Link
+            href={`/polls/${poll.id}/publish?authType=${poll.authType}`}
+            className={styles["poll-btn"]}
+          >
+            <p>Publish Results</p>
+          </Link>
+        )}
       </Link>
     </li>
   );

@@ -100,3 +100,10 @@
   border: 1px solid var(--error);
   color: var(--error);
 }
+
+@media (max-width: 1000px) {
+  .polls-container {
+    padding-inline: 0;
+    padding-top: 0px;
+  }
+}

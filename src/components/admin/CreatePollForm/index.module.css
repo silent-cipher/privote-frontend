@@ -171,3 +171,9 @@
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 620px) {
+  .create-form {
+    flex-direction: column;
+  }
+}

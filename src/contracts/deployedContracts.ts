@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 const deployedContracts = {
   17000: {
     PrivoteFreeForAll: {
-      address: "0x0bD70e8D40ccEA21e2795c6db00b5284f53923BF",
+      address: "0x028e9fB3B5Ff39f8aCE2fB53510a136A24Ce53bE",
       abi: [
         {
           inputs: [

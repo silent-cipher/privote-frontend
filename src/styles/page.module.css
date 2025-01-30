@@ -2,13 +2,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: calc(100vh - 53px);
   color: #fff;
   gap: 24px;
   text-align: center;
   padding-block: 80px;
   width: 100%;
-  min-height: 100vh;
+  height: 100lvh;
+  height: 100vh;
   padding: 2rem;
   background: var(--background-primary);
   /* padding-top: 6rem; */
@@ -55,7 +55,6 @@
   margin-inline: auto;
   color: #fff;
   padding-top: 100px;
-  min-height: 100vh;
   padding-bottom: 60px;
   display: flex;
   flex-direction: column;
@@ -72,7 +71,7 @@
   width: 100%;
 }
 
-.polls-container h2 {
+.polls-container > h2 {
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
@@ -132,13 +131,30 @@
   margin-inline: 30px;
 }
 
+@media (max-width: 1000px) {
+  .poll-wrapper {
+    padding-inline: 1rem;
+    padding-top: 80px;
+  }
+}
+
 @media (max-width: 768px) {
   .main-page {
-    padding: 1rem;
+    padding: 0rem;
   }
 
-  .poll-wrapper {
-    padding-inline: 16px;
-    padding-top: 60px;
+  .polls-container {
+    padding: 0px;
+  }
+
+  .pagination-container {
+    margin-top: 0rem;
+    padding-bottom: 0rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .polls-container h2 {
+    margin-bottom: 0px;
   }
 }

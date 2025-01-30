@@ -6,6 +6,7 @@
   height: 100%;
   flex: 1;
   gap: 24px;
+  padding-inline: 24px;
 }
 
 .status {
@@ -72,4 +73,31 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 1000px) {
+  .main-page {
+    padding-top: 60px;
+    padding-inline: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .heading {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .description {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .status {
+    font-size: 12px;
+  }
+
+  .create-poll {
+    padding: 8px 16px;
+  }
 }

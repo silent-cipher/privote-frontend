@@ -48,3 +48,14 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+@media (max-width: 570px) {
+  .pagination > button > p {
+    font-size: 14px;
+  }
+
+  .pagination > button {
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+}

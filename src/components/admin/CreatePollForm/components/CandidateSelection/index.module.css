@@ -72,3 +72,10 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+@media (max-width: 570px) {
+  .candidate-header > h1 {
+    font-size: 20px;
+    line-height: 160%;
+  }
+}

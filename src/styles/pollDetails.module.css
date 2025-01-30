@@ -2,6 +2,7 @@
 .main-container {
   width: 100%;
   min-height: 100vh;
+  min-height: 100lvh;
   max-width: 1155px;
   margin-inline: auto;
   background: var(--background-primary);
@@ -11,8 +12,8 @@
 
 .main-container {
   display: flex;
+  flex-direction: column;
   gap: 24px;
-  align-items: flex-start;
 }
 
 .main-container > div {

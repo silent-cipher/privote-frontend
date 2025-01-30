@@ -93,7 +93,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px 6px 0px;
+  padding: 6px 0px 6px 0px;
   background: #141414;
   border-radius: 6px;
   font-size: 14px;
@@ -291,4 +291,20 @@
 
 .shareMenu button:hover {
   background: #252525;
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    margin-top: 0px;
+  }
+
+  .status {
+    padding: 2px 12px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .candidate-container {
+    padding-inline: 0px;
+  }
 }

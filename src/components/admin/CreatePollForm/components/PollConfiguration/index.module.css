@@ -166,3 +166,14 @@
   color: #c65ec6;
   text-decoration: underline;
 }
+
+@media (max-width: 570px) {
+  .poll-config {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .config-wrapper {
+    flex: auto;
+  }
+}

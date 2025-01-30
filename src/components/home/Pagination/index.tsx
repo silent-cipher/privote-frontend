@@ -22,13 +22,13 @@ export default function Pagination({
   return (
     <div className={styles.pagination}>
       <button disabled={currentPage === 1} onClick={() => setCurrentPage(1)}>
-        <LuChevronFirst color="#000" size={20} />
+        <LuChevronFirst color="#000" size={14} />
       </button>
       <button
         disabled={currentPage === 1}
         onClick={() => setCurrentPage(currentPage - 1)}
       >
-        <LuChevronLeft color="#000" size={20} />
+        <LuChevronLeft color="#000" size={14} />
       </button>
 
       <span>
@@ -39,13 +39,13 @@ export default function Pagination({
         disabled={currentPage === totalPages}
         onClick={() => setCurrentPage(currentPage + 1)}
       >
-        <LuChevronRight color="#000" size={20} />
+        <LuChevronRight color="#000" size={14} />
       </button>
       <button
         disabled={currentPage === totalPages}
         onClick={() => setCurrentPage(totalPages)}
       >
-        <LuChevronLast color="#000" size={20} />
+        <LuChevronLast color="#000" size={14} />
       </button>
     </div>
   );

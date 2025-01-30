@@ -1,13 +1,14 @@
 .wrapper {
   background: #000;
+  height: 100lvh;
 }
 .admin-page {
+  background: #000;
   max-width: 1155px;
   padding-inline: 24px;
   margin-inline: auto;
   color: #fff;
   padding-top: 100px;
-  min-height: 100lvh;
   padding-bottom: 60px;
   display: flex;
   flex-direction: column;
@@ -66,4 +67,14 @@
 
 .retry-btn:hover {
   background: var(--primary-dark);
+}
+
+@media (max-width: 1000px) {
+  .header {
+    margin-bottom: 0;
+    padding-inline: 0;
+  }
+  .admin-page {
+    padding-top: 80px;
+  }
 }
