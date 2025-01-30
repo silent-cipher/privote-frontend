@@ -110,13 +110,13 @@ export const VotingSection = ({
         <h1 className={styles.heading}>{pollTitle}</h1>
         <p className={styles.description}>{pollDescription}</p>
       </div>
-      <div className={styles.info}>
+      {!result && <div className={styles.info}>
         <Image src={"/info.svg"} alt="info" width={24} height={24} />
         <p>
           As no one knows whom you voted for, you can change your vote at any
           time before the poll ends
         </p>
-      </div>
+      </div>}
       <ul className={styles["candidate-list"]}>
         {options.map((option: string, index: number) => (
           <VoteCard

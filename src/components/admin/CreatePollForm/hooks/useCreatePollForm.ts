@@ -11,7 +11,7 @@ import { decodeOptionInfo, encodeOptionInfo } from "~~/utils/optionInfo";
 const initialPollData: IPollData = {
   title: "",
   description: "",
-  expiry: new Date(),
+  expiry: new Date(Date.now() + 60 * 60 * 1000),
   maxVotePerPerson: 1,
   pollType: null,
   mode: null,

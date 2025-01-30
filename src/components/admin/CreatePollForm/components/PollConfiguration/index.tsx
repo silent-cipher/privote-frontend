@@ -78,8 +78,8 @@ const PollConfiguration = ({
                   {showKeys.show && (
                     <div className={styles["key-details"]}>
                       <div className={styles["key-container"]}>
-                        <p>Public Key: ${pubKey}</p>
-                        <p>Private Key: ${showKeys.privKey}</p>
+                        <p>Public Key: {pubKey}</p>
+                        <p>Private Key: {showKeys.privKey}</p>
                       </div>
                       <p className={styles["priv-warning"]}>
                         Please store the private key securely. It will not be

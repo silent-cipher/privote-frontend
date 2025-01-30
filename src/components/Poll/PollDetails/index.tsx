@@ -128,13 +128,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     );
   }
 
-  if (!poll || isPollLoading) {
-    return (
-      <div className={styles["loading-state"]}>
-        <div className="spinner large"></div>
-      </div>
-    );
-  }
+  if (!poll) return null;
   return (
     <div className={styles["poll-details"]}>
       <PollHeader

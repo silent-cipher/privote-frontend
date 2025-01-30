@@ -4,7 +4,7 @@
   width: 100%;
   border-radius: 8px;
   border: 1px solid #535861;
-  padding: 12px 24px 16px 12px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(6.150000095367432px);
   transition: all 0.3s ease;
@@ -15,7 +15,6 @@
   flex-direction: column;
   gap: 8px;
   align-self: center;
-  padding-right: 16px;
   background: #141414;
 }
 

@@ -146,7 +146,7 @@ export const PollHeader = ({
             <Image src="/clock.svg" alt="clock" width={24} height={24} />
             {(status === PollStatus.CLOSED ||
               status === PollStatus.RESULT_COMPUTED) &&
-              "Pole ended"}
+              "Poll ended"}
             {status === PollStatus.OPEN && (
               <span className={styles.timeInfo}>
                 Time left: {formatTimeRemaining(timeRemaining)}

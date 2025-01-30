@@ -9,7 +9,7 @@ interface PollsListProps {
 }
 
 const PollsList = ({ polls, isLoadingPolls, error }: PollsListProps) => {
-  if (isLoadingPolls || error) {
+  if (isLoadingPolls) {
     return (
       <div className={styles["spinner-wrapper"]}>
         <div className="spinner large"></div>

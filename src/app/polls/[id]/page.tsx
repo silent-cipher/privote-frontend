@@ -30,7 +30,7 @@ const Page = () => {
 };
 
 const UserPoll = () => {
-  const { isRegistered, isError, isLoading } = usePollContext();
+  const { isRegistered, isError, isLoading, poll } = usePollContext();
   const params = useParams();
   const pollId = params.id;
 
@@ -58,8 +58,9 @@ const UserPoll = () => {
       </div>
     );
   }
+  console.log(isLoading);
 
-  if (isLoading) {
+  if (!poll || isLoading) {
     return (
       <div className={styles.container}>
         <Link href={"/"} className={styles.back}>

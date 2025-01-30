@@ -34,7 +34,7 @@ export interface ProofRequestRejectedResponse extends BaseSocketResponse {
 }
 
 export interface ProofGenerationResponse extends BaseSocketResponse {
-  data: {
+  data?: {
     cid: string;
     cached: boolean;
   };
