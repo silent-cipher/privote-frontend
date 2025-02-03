@@ -1,0 +1,38 @@
+.container {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 8px;
+  border: 1px solid rgba(83, 88, 97, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6.150000095367432px);
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 48px; /* 200% */
+}
+
+.heading > h4 {
+  text-align: left;
+  background: radial-gradient(
+    70.54% 70.54% at 50% 50%,
+    #fff 0%,
+    rgba(255, 255, 255, 0.57) 92.71%,
+    rgba(255, 255, 255, 0.6) 92.72%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.polls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
