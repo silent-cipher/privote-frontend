@@ -48,11 +48,14 @@ export const PollSettings = ({
               value={pollData.maxVotePerPerson}
               onChange={onMaxVoteChange}
               min={1}
+              max={100}
             />
             <button
               type="button"
               onClick={() => {
-                onMaxVoteChange(1, "add");
+                if (pollData.maxVotePerPerson < 100) {
+                  onMaxVoteChange(1, "add");
+                }
               }}
             >
               <Image src="/plus.svg" alt="plus" width={20} height={20} />
