@@ -55,7 +55,7 @@ export const usePublishResults = (
 
     try {
       setBtnText("Publishing...");
-      setProofGenerationState(ProofGenerationStatus.IDLE);
+      setProofGenerationState(ProofGenerationStatus.ACCEPTED);
 
       const contracts =
         deployedContracts[chainId as keyof typeof deployedContracts];
@@ -73,7 +73,7 @@ export const usePublishResults = (
           startBlock: contract.deploymentBlockNumber,
           chainId: chainId,
           userId: address,
-          quiet: true,
+          quiet: false,
           useWasm: true,
         },
         async (data) => {
@@ -85,14 +85,16 @@ export const usePublishResults = (
                 data.status === ProofGenerationStatus.ERROR
               ) {
                 // Show the specific error message from the server if available
-                notification.error(data.message || "Failed to generate proof. Please try again.");
+                notification.error(
+                  data.message || "Failed to generate proof. Please try again."
+                );
                 setBtnText("Publish Results");
               }
               return;
             }
-            
+
             setProofGenerationState(data.status);
-            
+
             try {
               await writeAsync({
                 args: [BigInt(pollId), data?.data?.cid],
@@ -101,16 +103,20 @@ export const usePublishResults = (
               router.push("/admin");
             } catch (error) {
               console.error("Error updating contract:", error);
-              notification.error("Failed to update contract. Please try again.");
+              notification.error(
+                "Failed to update contract. Please try again."
+              );
               setProofGenerationState(ProofGenerationStatus.ERROR);
             }
-            
+
             setBtnText("Publish Results");
           } catch (error) {
             console.error("Error in proof generation callback:", error);
             setBtnText("Publish Results");
             setProofGenerationState(ProofGenerationStatus.ERROR);
-            notification.error("An unexpected error occurred. Please try again.");
+            notification.error(
+              "An unexpected error occurred. Please try again."
+            );
           }
         }
       );
@@ -118,7 +124,9 @@ export const usePublishResults = (
       setProofGenerationState(ProofGenerationStatus.ERROR);
       setBtnText("Publish Results");
       console.error("Error publishing results:", error);
-      notification.error("Failed to start publishing process. Please try again.");
+      notification.error(
+        "Failed to start publishing process. Please try again."
+      );
     }
   };
 

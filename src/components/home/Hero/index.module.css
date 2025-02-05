@@ -5,7 +5,7 @@
   align-items: center;
   gap: 24px;
   padding-inline: 24px;
-  padding-top: 70px;
+  padding-top: 80px;
 }
 
 .status {
@@ -76,8 +76,11 @@
 
 @media (max-width: 1000px) {
   .main-page {
-    padding-top: 60px;
     padding-inline: 16px;
+  }
+
+  .hero {
+    padding-top: 100px;
   }
 }
 

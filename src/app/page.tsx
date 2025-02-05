@@ -6,6 +6,7 @@ import { Hero } from "~~/components/home";
 import Button from "~~/components/ui/Button";
 import Trending from "~~/components/home/Trending";
 import Footer from "~~/components/Footer";
+import { PollStatus } from "~~/types/poll";
 
 export default function Home() {
   const {
@@ -33,12 +34,16 @@ export default function Home() {
   return (
     <div className={styles["main-page"]}>
       <Hero />
-      <Trending
-        totalPolls={totalPolls}
-        polls={polls}
-        isLoading={isPollsLoading}
-        error={error}
-      />
+      {!isPollsLoading &&
+        polls &&
+        polls.filter((poll) => poll.status === PollStatus.OPEN).length > 0 && (
+          <Trending
+            totalPolls={totalPolls}
+            polls={polls}
+            isLoading={isPollsLoading}
+            error={error}
+          />
+        )}
       <Footer />
     </div>
   );
