@@ -1,12 +1,13 @@
 import styles from "~~/styles/publish.module.css";
 import WithoutImageInput from "~~/components/admin/CreatePollForm/components/WithoutImageInput";
-import { RawPoll } from "~~/types/poll";
+import { AuthType, PollType, RawPoll } from "~~/types/poll";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useAccount, useChainId } from "wagmi";
 import { useNetwork } from "wagmi";
 import { useState } from "react";
 import { FiCopy, FiCheck } from "react-icons/fi";
 import { ProofGenerationStatus } from "~~/services/socket/types/response";
+import { getMaciContractName } from "~~/utils/maciName";
 
 const btnTextMap = {
   [ProofGenerationStatus.IDLE]: "Publish Result",
@@ -14,15 +15,16 @@ const btnTextMap = {
   [ProofGenerationStatus.MERGINGMESSAGES]: "Merging Messages...",
   [ProofGenerationStatus.MERGINGSIGNUPS]: "Merging Signups...",
   [ProofGenerationStatus.GENERATINGPROOF]: "Generating Proof...",
-  [ProofGenerationStatus.UPLOADINGTOIPFS]: "Uploading to IPFS...",
-  [ProofGenerationStatus.SUCCESS]: "Publishing...",
-  [ProofGenerationStatus.PUBLISHED]: "Results Published",
+  [ProofGenerationStatus.SUBMITTINGONCHAIN]: "Submitting onchain...",
+  [ProofGenerationStatus.SUCCESS]: "Result Published",
   [ProofGenerationStatus.ERROR]: "Publish Result",
   [ProofGenerationStatus.REJECTED]: "Publish Result",
 };
 
 interface DockerConfigProps {
   poll: RawPoll | undefined;
+  pollType: PollType;
+  authType: AuthType;
   proofGenerationState: ProofGenerationStatus;
   isSelected: boolean;
   onClick: () => void;
@@ -58,6 +60,8 @@ const CommandBlock = ({ command }: { command: string }) => {
 export const DockerConfig = ({
   poll,
   pollId,
+  pollType,
+  authType,
   proofGenerationState,
   isSelected,
   onClick,
@@ -70,10 +74,8 @@ export const DockerConfig = ({
   const { isConnected } = useAccount();
   const contracts =
     deployedContracts[chainId as keyof typeof deployedContracts];
-  const contract =
-    poll?.authType === "free"
-      ? contracts["PrivoteFreeForAll"]
-      : contracts["PrivoteAnonAadhaar"];
+  const contractName = getMaciContractName(authType, pollType);
+  const contract = contracts[contractName];
   return (
     <div className={styles["config-wrapper"]}>
       <div className={styles["config-option"]} onClick={onClick}>
@@ -112,7 +114,7 @@ export const DockerConfig = ({
                   />
                 </div>
 
-                <div className={styles.stepBlock}>
+                {/* <div className={styles.stepBlock}>
                   <h3 className={styles.stepTitle}>Step 3: Publish Results</h3>
                   <p className={styles.stepDescription}>
                     After generating the results, you'll get a CID. Enter it
@@ -125,9 +127,9 @@ export const DockerConfig = ({
                     name="cid"
                     className={styles["public-input"]}
                   />
-                </div>
+                </div> */}
               </div>
-              <button
+              {/* <button
                 className={styles["publish-btn"]}
                 disabled={
                   !cidValue ||
@@ -138,7 +140,7 @@ export const DockerConfig = ({
                 onClick={onPublish}
               >
                 {btnTextMap[proofGenerationState]}
-              </button>
+              </button> */}
             </>
           )}
         </div>

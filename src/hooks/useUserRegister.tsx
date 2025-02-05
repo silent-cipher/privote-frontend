@@ -12,6 +12,8 @@ import {
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useSigContext } from "~~/contexts/SigContext";
+import { AuthType, PollType } from "~~/types/poll";
+import { getMaciContractName } from "~~/utils/maciName";
 
 const anonAadhaarInitArgs: InitArgs = {
   wasmURL: artifactUrls.v2.wasm,
@@ -20,7 +22,7 @@ const anonAadhaarInitArgs: InitArgs = {
   artifactsOrigin: ArtifactsOrigin.server,
 };
 
-const useUserRegister = (authType?: string) => {
+const useUserRegister = (authType?: AuthType, pollType?: PollType) => {
   const { isRegistered } = usePollContext();
   const { keypair } = useSigContext();
   const [anonAadhaar] = useAnonAadhaar();
@@ -31,8 +33,7 @@ const useUserRegister = (authType?: string) => {
   }, []);
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName:
-      authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
+    contractName: getMaciContractName(authType, pollType),
     functionName: "signUp",
     args: [
       keypair?.pubKey.asContractParam() as { x: bigint; y: bigint },

@@ -28,81 +28,158 @@ export const useFetchUserPolls = (
 ) => {
   const [polls, setPolls] = useState<Poll[]>();
   const [lastTimer, setLastTimer] = useState<NodeJS.Timeout>();
-  const { data: totalFreePolls, refetch: refetchTotalFreePolls } =
+
+  // Get total polls from each contract
+  const { data: totalFreeSinglePolls, refetch: refetchTotalFreeSinglePolls } =
     useScaffoldContractRead({
-      contractName: "PrivoteFreeForAll",
+      contractName: "privote_free_single",
       functionName: "userTotalPolls",
       args: [address],
     });
 
-  const { data: totalAnonPolls, refetch: refetchTotalAnonPolls } =
+  const { data: totalFreeMultiPolls, refetch: refetchTotalFreeMultiPolls } =
     useScaffoldContractRead({
-      contractName: "PrivoteAnonAadhaar",
+      contractName: "privote_free_multi",
       functionName: "userTotalPolls",
       args: [address],
     });
 
-  const freeLimit =
-    totalAnonPolls === 0n
-      ? limit
-      : totalFreePolls && totalAnonPolls
-      ? (limit * Number(totalFreePolls)) /
-        (Number(totalFreePolls) + Number(totalAnonPolls))
-      : limit / 2;
-  const anonLimit =
-    totalFreePolls === 0n
-      ? limit
-      : totalFreePolls && totalAnonPolls
-      ? (limit * Number(totalAnonPolls)) /
-        (Number(totalFreePolls) + Number(totalAnonPolls))
-      : limit / 2;
+  const { data: totalAnonSinglePolls, refetch: refetchTotalAnonSinglePolls } =
+    useScaffoldContractRead({
+      contractName: "privote_anon_single",
+      functionName: "userTotalPolls",
+      args: [address],
+    });
 
+  const { data: totalAnonMultiPolls, refetch: refetchTotalAnonMultiPolls } =
+    useScaffoldContractRead({
+      contractName: "privote_anon_multi",
+      functionName: "userTotalPolls",
+      args: [address],
+    });
+
+  // Calculate total polls across all contracts
+  const totalPolls =
+    Number(totalFreeSinglePolls || 0n) +
+    Number(totalFreeMultiPolls || 0n) +
+    Number(totalAnonSinglePolls || 0n) +
+    Number(totalAnonMultiPolls || 0n);
+
+  // Calculate limits proportionally
+  const getContractLimit = (contractTotal: bigint) => {
+    if (totalPolls === 0) return limit / 4;
+    return contractTotal === 0n
+      ? 0
+      : (limit * Number(contractTotal)) / totalPolls;
+  };
+
+  const freeSingleLimit = getContractLimit(totalFreeSinglePolls || 0n);
+  const freeMultiLimit = getContractLimit(totalFreeMultiPolls || 0n);
+  const anonSingleLimit = getContractLimit(totalAnonSinglePolls || 0n);
+  const anonMultiLimit = getContractLimit(totalAnonMultiPolls || 0n);
+
+  // Fetch polls from each contract
   const {
-    data: rawAllFreePolls,
-    refetch: refetchAllFreePolls,
-    isLoading: isLoadingAllFreePolls,
-    error: errorAllFreePolls,
+    data: rawFreeSinglePolls,
+    refetch: refetchFreeSinglePolls,
+    isLoading: isLoadingFreeSinglePolls,
+    error: errorFreeSinglePolls,
   } = useScaffoldContractRead({
-    contractName: "PrivoteFreeForAll",
+    contractName: "privote_free_single",
     functionName: "fetchUserPolls",
     args: [
       address,
       BigInt(currentPage),
-      BigInt(Math.ceil(freeLimit)),
+      BigInt(Math.ceil(freeSingleLimit)),
       reversed,
     ],
   });
 
   const {
-    data: rawAllAnonPolls,
-    refetch: refetchAllAnonPolls,
-    isLoading: isLoadingAllAnonPolls,
-    error: errorAllAnonPolls,
+    data: rawFreeMultiPolls,
+    refetch: refetchFreeMultiPolls,
+    isLoading: isLoadingFreeMultiPolls,
+    error: errorFreeMultiPolls,
   } = useScaffoldContractRead({
-    contractName: "PrivoteAnonAadhaar",
+    contractName: "privote_free_multi",
     functionName: "fetchUserPolls",
     args: [
       address,
       BigInt(currentPage),
-      BigInt(Math.ceil(anonLimit)),
+      BigInt(Math.ceil(freeMultiLimit)),
+      reversed,
+    ],
+  });
+
+  const {
+    data: rawAnonSinglePolls,
+    refetch: refetchAnonSinglePolls,
+    isLoading: isLoadingAnonSinglePolls,
+    error: errorAnonSinglePolls,
+  } = useScaffoldContractRead({
+    contractName: "privote_anon_single",
+    functionName: "fetchUserPolls",
+    args: [
+      address,
+      BigInt(currentPage),
+      BigInt(Math.ceil(anonSingleLimit)),
+      reversed,
+    ],
+  });
+
+  const {
+    data: rawAnonMultiPolls,
+    refetch: refetchAnonMultiPolls,
+    isLoading: isLoadingAnonMultiPolls,
+    error: errorAnonMultiPolls,
+  } = useScaffoldContractRead({
+    contractName: "privote_anon_multi",
+    functionName: "fetchUserPolls",
+    args: [
+      address,
+      BigInt(currentPage),
+      BigInt(Math.ceil(anonMultiLimit)),
       reversed,
     ],
   });
 
   const refetchTotalPolls = () => {
-    refetchTotalFreePolls();
-    refetchTotalAnonPolls();
+    refetchTotalFreeSinglePolls();
+    refetchTotalFreeMultiPolls();
+    refetchTotalAnonSinglePolls();
+    refetchTotalAnonMultiPolls();
   };
 
-  const isLoading = isLoadingAllFreePolls || isLoadingAllAnonPolls;
-  const error = errorAllFreePolls || errorAllAnonPolls;
+  const refetchAllPolls = () => {
+    refetchFreeSinglePolls();
+    refetchFreeMultiPolls();
+    refetchAnonSinglePolls();
+    refetchAnonMultiPolls();
+  };
+
+  const isLoading =
+    isLoadingFreeSinglePolls ||
+    isLoadingFreeMultiPolls ||
+    isLoadingAnonSinglePolls ||
+    isLoadingAnonMultiPolls;
+
+  const error =
+    errorFreeSinglePolls ||
+    errorFreeMultiPolls ||
+    errorAnonSinglePolls ||
+    errorAnonMultiPolls;
 
   useEffect(() => {
     if (lastTimer) {
       clearInterval(lastTimer);
     }
 
-    if (!rawAllAnonPolls || !rawAllFreePolls) {
+    if (
+      !rawFreeSinglePolls ||
+      !rawFreeMultiPolls ||
+      !rawAnonSinglePolls ||
+      !rawAnonMultiPolls
+    ) {
       setPolls([]);
       return;
     }
@@ -110,34 +187,38 @@ export const useFetchUserPolls = (
     const interval = setInterval(() => {
       const _polls: Poll[] = [];
 
-      for (const rawPoll of rawAllAnonPolls) {
-        _polls.push({
-          ...rawPoll,
-          status: getPollStatus(rawPoll),
-        });
-      }
+      const addPollsToArray = (rawPolls: readonly RawPoll[]) => {
+        for (const rawPoll of rawPolls) {
+          _polls.push({
+            ...rawPoll,
+            status: getPollStatus(rawPoll),
+          });
+        }
+      };
 
-      for (const rawPoll of rawAllFreePolls) {
-        _polls.push({
-          ...rawPoll,
-          status: getPollStatus(rawPoll),
-        });
-      }
+      addPollsToArray(rawFreeSinglePolls);
+      addPollsToArray(rawFreeMultiPolls);
+      addPollsToArray(rawAnonSinglePolls);
+      addPollsToArray(rawAnonMultiPolls);
 
       setPolls(_polls.sort((a, b) => Number(b.startTime - a.startTime)));
     }, 1000);
 
     setLastTimer(interval);
 
-    () => {
+    return () => {
       clearInterval(interval);
     };
-  }, [rawAllFreePolls, rawAllAnonPolls]);
+  }, [
+    rawFreeSinglePolls,
+    rawFreeMultiPolls,
+    rawAnonSinglePolls,
+    rawAnonMultiPolls,
+  ]);
 
   function refetch() {
     refetchTotalPolls();
-    refetchAllFreePolls();
-    refetchAllAnonPolls();
+    refetchAllPolls();
   }
 
   if (!address) {
@@ -148,8 +229,9 @@ export const useFetchUserPolls = (
       error: null,
     };
   }
+
   return {
-    totalPolls: Number(totalFreePolls || 0n) + Number(totalAnonPolls || 0n),
+    totalPolls,
     polls,
     refetch,
     isLoading,

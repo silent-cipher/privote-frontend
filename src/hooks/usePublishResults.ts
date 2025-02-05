@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useScaffoldContractWrite } from "./scaffold-eth";
-import { EMode } from "~~/types/poll";
+import { AuthType, PollType, EMode } from "~~/types/poll";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useChainId, useAccount } from "wagmi";
 import { socketManager } from "~~/services/socket/socketManager";
 import { ProofGenerationStatus } from "~~/services/socket/types/response";
 import { notification } from "~~/utils/scaffold-eth";
 import { PrivKey } from "maci-domainobjs";
+import { getMaciContractName } from "~~/utils/maciName";
 
 interface PublishForm {
   cid: string;
@@ -16,7 +17,8 @@ interface PublishForm {
 
 export const usePublishResults = (
   pollId: string,
-  authType: string,
+  authType: AuthType,
+  pollType: PollType,
   mode: EMode
 ) => {
   const [form, setForm] = useState<PublishForm>({
@@ -32,8 +34,7 @@ export const usePublishResults = (
   const { address } = useAccount();
 
   const { writeAsync } = useScaffoldContractWrite({
-    contractName:
-      authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
+    contractName: getMaciContractName(authType, pollType),
     functionName: "updatePollTallyCID",
     args: [undefined, undefined],
   });
@@ -59,10 +60,7 @@ export const usePublishResults = (
 
       const contracts =
         deployedContracts[chainId as keyof typeof deployedContracts];
-      const contract =
-        authType === "free"
-          ? contracts["PrivoteFreeForAll"]
-          : contracts["PrivoteAnonAadhaar"];
+      const contract = contracts[getMaciContractName(authType, pollType)];
 
       socketManager.generateProof(
         {
@@ -94,19 +92,15 @@ export const usePublishResults = (
             }
 
             setProofGenerationState(data.status);
-
-            try {
-              await writeAsync({
-                args: [BigInt(pollId), data?.data?.cid],
-              });
-              setProofGenerationState(ProofGenerationStatus.PUBLISHED);
-              router.push("/admin");
-            } catch (error) {
-              console.error("Error updating contract:", error);
-              notification.error(
-                "Failed to update contract. Please try again."
+            if (data.status === ProofGenerationStatus.SUCCESS) {
+              router.push(
+                "/polls/" +
+                  pollId +
+                  "?authType=" +
+                  authType +
+                  "&pollType=" +
+                  pollType
               );
-              setProofGenerationState(ProofGenerationStatus.ERROR);
             }
 
             setBtnText("Publish Results");
@@ -130,25 +124,25 @@ export const usePublishResults = (
     }
   };
 
-  const publishWithDocker = async () => {
-    try {
-      if (!address) {
-        notification.error("Please connect your wallet");
-        return;
-      }
-      console.log(form.cid);
-      setProofGenerationState(ProofGenerationStatus.SUCCESS);
-      await writeAsync({
-        args: [BigInt(pollId), form.cid],
-      });
-      setProofGenerationState(ProofGenerationStatus.PUBLISHED);
-      router.push(`/polls/${pollId}?authType=${authType}`);
-    } catch (error) {
-      setProofGenerationState(ProofGenerationStatus.ERROR);
-      console.error("Error publishing results:", error);
-      notification.error("Error publishing results!");
-    }
-  };
+  // const publishWithDocker = async () => {
+  //   try {
+  //     if (!address) {
+  //       notification.error("Please connect your wallet");
+  //       return;
+  //     }
+  //     console.log(form.cid);
+  //     setProofGenerationState(ProofGenerationStatus.SUCCESS);
+  //     await writeAsync({
+  //       args: [BigInt(pollId), form.cid],
+  //     });
+  //     setProofGenerationState(ProofGenerationStatus.PUBLISHED);
+  //     router.push(`/polls/${pollId}?authType=${authType}&pollType=${pollType}`);
+  //   } catch (error) {
+  //     setProofGenerationState(ProofGenerationStatus.ERROR);
+  //     console.error("Error publishing results:", error);
+  //     notification.error("Error publishing results!");
+  //   }
+  // };
 
   return {
     form,
@@ -158,7 +152,7 @@ export const usePublishResults = (
     setDockerConfig,
     handleFormChange,
     publishWithBackend,
-    publishWithDocker,
+    publishWithDocker: () => {},
   };
 };
 

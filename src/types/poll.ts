@@ -37,6 +37,11 @@ export enum PollType {
   WEIGHTED_MULTIPLE_VOTE,
 }
 
+export enum AuthType {
+  FREE = "free",
+  ANON = "anon",
+}
+
 export enum VerificationType {
   NONE,
   ANON,

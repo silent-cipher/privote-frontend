@@ -6,14 +6,16 @@ import { uploadFileToLighthouse } from "~~/utils/lighthouse";
 import CID from "cids";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { parseEther } from "viem";
-import { decodeOptionInfo, encodeOptionInfo } from "~~/utils/optionInfo";
+import { encodeOptionInfo } from "~~/utils/optionInfo";
+import { getMaciContractName } from "~~/utils/maciName";
+import { AuthType, PollType } from "~~/types/poll";
 
 const initialPollData: IPollData = {
   title: "",
   description: "",
   expiry: new Date(Date.now() + 60 * 60 * 1000),
   maxVotePerPerson: 1,
-  pollType: null,
+  pollType: PollType.NOT_SELECTED,
   mode: null,
   options: [
     {
@@ -25,7 +27,7 @@ const initialPollData: IPollData = {
     },
   ],
   keyPair: new Keypair(),
-  authType: "free",
+  authType: AuthType.FREE,
   veriMethod: "none",
   pubKey: "",
 };
@@ -46,8 +48,7 @@ export const useCreatePollForm = (
   const duration = Math.round((pollData.expiry.getTime() - Date.now()) / 1000);
 
   const { writeAsync } = useScaffoldContractWrite({
-    contractName:
-      pollData.authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar",
+    contractName: getMaciContractName(pollData.authType, pollData.pollType),
     functionName: "createPoll",
     args: [
       pollData.title,

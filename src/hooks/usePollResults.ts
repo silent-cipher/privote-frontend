@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { getDataFromLighthouse } from "~~/utils/lighthouse";
-import { RawPoll } from "~~/types/poll";
+import { RawPoll, AuthType, PollType } from "~~/types/poll";
+import { useFetchPollResult } from "./useFetchPollResult";
+import { getMaciContractName } from "~~/utils/maciName";
 
 interface IResult {
   candidate: string;
@@ -16,31 +18,34 @@ interface UsePollResultsReturn {
 }
 
 export const usePollResults = (
-  poll: RawPoll | undefined
+  poll: RawPoll | undefined,
+  authType: AuthType,
+  pollType: PollType
 ): UsePollResultsReturn => {
   const [result, setResult] = useState<IResult[] | null>(null);
   const [totalVotes, setTotalVotes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { data: tally, isLoading: pollTallyLoading } = useFetchPollResult(
+    poll && BigInt(poll?.id),
+    getMaciContractName(authType, pollType)
+  );
+
+  console.log(tally);
 
   const fetchResults = async () => {
-    if (!poll || !poll.tallyJsonCID) return;
+    if (!poll || !poll.tallyJsonCID || !tally) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await getDataFromLighthouse(poll.tallyJsonCID);
-      const {
-        results: { tally },
-      } = response;
-
       if (!poll.options || poll.options.length > tally.length) {
         throw new Error("Invalid tally data");
       }
 
       const tallyCounts: number[] = tally
-        .map((v: string) => Number(v))
+        .map((v: bigint) => Number(v))
         .slice(0, poll.options.length);
 
       const results = poll.options.map((candidate: string, i: number) => ({

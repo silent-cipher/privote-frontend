@@ -6,22 +6,25 @@ import styles from "~~/styles/publish.module.css";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
 import usePublishResults from "~~/hooks/usePublishResults";
 import { DockerConfig, BackendConfig } from "~~/components/Poll/PublishConfig";
-import { EMode } from "~~/types/poll";
+import { AuthType, EMode, PollType } from "~~/types/poll";
 import LoaderModal from "~~/components/ui/LoaderModal";
 import { ProofGenerationStatus } from "~~/services/socket/types/response";
+import { getMaciContractName } from "~~/utils/maciName";
 
 export default function Publish() {
   const params = useParams();
   const searchParams = useSearchParams();
   const pollId = params.id as string;
-  const authType = (searchParams.get("authType") as string) || "free";
+  const authType = (searchParams.get("authType") as AuthType) || "free";
+  const pollType =
+    (Number(searchParams.get("pollType")) as PollType) || PollType.SINGLE_VOTE;
   const {
     data: poll,
     error,
     isLoading,
   } = useFetchPoll(
     BigInt(Number(pollId)),
-    authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar"
+    getMaciContractName(authType, pollType)
   );
 
   const {
@@ -33,7 +36,7 @@ export default function Publish() {
     handleFormChange,
     publishWithBackend,
     publishWithDocker,
-  } = usePublishResults(pollId, authType, poll?.isQv as EMode);
+  } = usePublishResults(pollId, authType, pollType, poll?.isQv as EMode);
 
   const showLoader =
     proofGenerationState !== ProofGenerationStatus.ERROR &&
@@ -67,6 +70,8 @@ export default function Publish() {
           <DockerConfig
             poll={poll}
             pollId={pollId}
+            pollType={pollType}
+            authType={authType}
             proofGenerationState={proofGenerationState}
             isSelected={dockerConfig === 1}
             onClick={() => setDockerConfig(1)}

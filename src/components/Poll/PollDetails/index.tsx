@@ -5,7 +5,7 @@ import { useAnonAadhaar } from "@anon-aadhaar/react";
 import { PubKey } from "maci-domainobjs";
 import styles from "~~/styles/userPoll.module.css";
 import PollAbi from "~~/abi/Poll";
-import { PollType, PollStatus } from "~~/types/poll";
+import { PollType, AuthType, PollStatus } from "~~/types/poll";
 import { usePollContext } from "~~/contexts/PollContext";
 import { getPollStatus } from "~~/hooks/useFetchPolls";
 import useUserRegister from "~~/hooks/useUserRegister";
@@ -15,6 +15,7 @@ import PollHeader from "../PollHeader";
 import VotingSection from "../VotingSection";
 import Button from "~~/components/ui/Button";
 import { useSigContext } from "~~/contexts/SigContext";
+import { useSearchParams } from "next/navigation";
 
 interface IPollDetails {
   id: bigint;
@@ -29,6 +30,10 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
   }>({
     pollType: PollType.NOT_SELECTED,
   });
+  const searchParams = useSearchParams();
+  const authType = (searchParams.get("authType") as AuthType) || "free";
+  const pollType =
+    (Number(searchParams.get("pollType")) as PollType) || PollType.SINGLE_VOTE;
   const { address, isConnected } = useAccount();
   const [AnonAadhaar] = useAnonAadhaar();
   const {
@@ -39,7 +44,8 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
   } = usePollContext();
   const { keypair } = useSigContext();
   const { registerUser, isLoading: isRegistering } = useUserRegister(
-    poll?.authType
+    authType,
+    pollType
   );
   const [status, setStatus] = useState<PollStatus>();
   const [coordinatorPubKey, setCoordinatorPubKey] = useState<PubKey>();
@@ -48,7 +54,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     totalVotes,
     isLoading: isResultsLoading,
     error: resultsError,
-  } = usePollResults(poll);
+  } = usePollResults(poll, authType, pollType);
 
   const { data: coordinatorPubKeyResult } = useContractRead({
     abi: PollAbi,
@@ -136,7 +142,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
         pollDescription={pollMetadata.description}
         pollEndTime={poll.endTime}
         pollStartTime={poll.startTime}
-        authType={poll.authType}
+        authType={authType}
         status={status}
         isConnected={isConnected}
         isUserRegistered={isUserRegistered}
@@ -153,7 +159,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
         pollStatus={status}
         pollType={pollMetadata.pollType}
         maxVotePerPerson={pollMetadata.maxVotePerPerson}
-        authType={poll.authType}
+        authType={authType}
         options={poll.options}
         optionInfo={poll.optionInfo}
         pollDeployer={poll.pollDeployer}

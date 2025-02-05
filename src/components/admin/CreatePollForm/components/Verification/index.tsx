@@ -1,6 +1,7 @@
 import styles from "./index.module.css";
 import Image from "next/image";
 import { VerificationProps } from "../../types";
+import { AuthType } from "~~/types/poll";
 
 const Verification = ({
   handleVeriMethodChange,
@@ -13,9 +14,9 @@ const Verification = ({
         <button
           type="button"
           className={`${styles["veri-box"]} ${
-            authType === "free" ? styles.selected : ""
+            authType === AuthType.FREE ? styles.selected : ""
           }`}
-          value={"free"}
+          value={AuthType.FREE}
           onClick={handleVeriMethodChange}
         >
           None
@@ -23,9 +24,9 @@ const Verification = ({
         <button
           type="button"
           className={`${styles["veri-box"]} ${
-            authType === "anon" ? styles.selected : ""
+            authType === AuthType.ANON ? styles.selected : ""
           }`}
-          value={"anon"}
+          value={AuthType.ANON}
           onClick={handleVeriMethodChange}
         >
           <Image width={31} height={31} alt="icon" src={"/anon-icon.svg"} />

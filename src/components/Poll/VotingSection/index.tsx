@@ -110,13 +110,15 @@ export const VotingSection = ({
         <h1 className={styles.heading}>{pollTitle}</h1>
         <p className={styles.description}>{pollDescription}</p>
       </div>
-      {!result && <div className={styles.info}>
-        <Image src={"/info.svg"} alt="info" width={24} height={24} />
-        <p>
-          As no one knows whom you voted for, you can change your vote at any
-          time before the poll ends
-        </p>
-      </div>}
+      {!result && (
+        <div className={styles.info}>
+          <Image src={"/info.svg"} alt="info" width={24} height={24} />
+          <p>
+            As no one knows whom you voted for, you can change your vote at any
+            time before the poll ends
+          </p>
+        </div>
+      )}
       <ul className={styles["candidate-list"]}>
         {options.map((option: string, index: number) => (
           <VoteCard
@@ -167,7 +169,7 @@ export const VotingSection = ({
       )}
       {pollStatus === PollStatus.CLOSED && pollDeployer === userAddress && (
         <Link
-          href={`/polls/${pollId}/publish?authType=${authType}`}
+          href={`/polls/${pollId}/publish?authType=${authType}&pollType=${pollType}`}
           className={styles["poll-btn"]}
         >
           {isLoadingSingle || isLoadingBatch ? (

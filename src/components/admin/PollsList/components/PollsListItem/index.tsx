@@ -15,9 +15,12 @@ const AuthTypeMapping: { [key: string]: string } = {
 };
 
 const PollsListItem = ({ poll }: PollsListItemProps) => {
+  const metadata = JSON.parse(poll.metadata);
   return (
     <li className={styles["polls-list-item"]}>
-      <Link href={`/polls/${poll.id}?authType=${poll.authType}`}>
+      <Link
+        href={`/polls/${poll.id}?authType=${poll.authType}&pollType=${metadata.pollType}`}
+      >
         <div
           className={`${styles["poll-status"]} ${
             poll.status === PollStatus.OPEN
@@ -48,8 +51,6 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
               )}
             </h2>
             <p>{Number(poll.numOfOptions)} Candidates</p>
-
-            
           </div>
           <div className={styles.right}>
             <p>
@@ -75,16 +76,16 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
           </div>
         </div>
         {poll.status === PollStatus.RESULT_COMPUTED && (
-              <Link
-                href={`/polls/${poll.id}?authType=${poll.authType}`}
-                className={styles["poll-btn"]}
-              >
-                <p>View Results</p>
-              </Link>
-            )}
+          <Link
+            href={`/polls/${poll.id}?authType=${poll.authType}&pollType=${metadata.pollType}`}
+            className={styles["poll-btn"]}
+          >
+            <p>View Results</p>
+          </Link>
+        )}
         {poll.status === PollStatus.CLOSED && (
           <Link
-            href={`/polls/${poll.id}/publish?authType=${poll.authType}`}
+            href={`/polls/${poll.id}/publish?authType=${poll.authType}&pollType=${metadata.pollType}`}
             className={styles["poll-btn"]}
           >
             <p>Publish Results</p>

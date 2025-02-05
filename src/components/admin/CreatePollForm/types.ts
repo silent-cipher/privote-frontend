@@ -1,5 +1,5 @@
 import { Keypair } from "maci-domainobjs";
-import { PollType } from "~~/types/poll";
+import { AuthType, PollType } from "~~/types/poll";
 import { EMode } from "~~/types/poll";
 
 export interface CreatePollFormProps {
@@ -12,11 +12,11 @@ export interface IPollData {
   description: string;
   expiry: Date;
   maxVotePerPerson: number;
-  pollType: PollType | null;
+  pollType: PollType;
   mode: EMode | null;
   options: PollOption[];
   keyPair: Keypair;
-  authType: "free" | "anon";
+  authType: AuthType;
   veriMethod: string;
   pubKey: string;
 }

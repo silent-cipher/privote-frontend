@@ -1,26 +1,13 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { Keypair, PrivKey, PubKey } from "maci-domainobjs";
-import { useAccount, useSignMessage } from "wagmi";
-import deployedContracts from "~~/contracts/deployedContracts";
-import {
-  useScaffoldContractRead,
-  useScaffoldEventHistory,
-  useScaffoldEventSubscriber,
-  useTargetNetwork,
-} from "~~/hooks/scaffold-eth";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
 import { useParams, useSearchParams } from "next/navigation";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
-import { PollStatus, RawPoll } from "~~/types/poll";
-import { getPollStatus } from "~~/hooks/useFetchPolls";
+import { PollType, AuthType, RawPoll } from "~~/types/poll";
 import { useSigContext } from "./SigContext";
+import { getMaciContractName } from "~~/utils/maciName";
 
 interface IPollContext {
   authType: string | null;
@@ -41,15 +28,16 @@ export default function PollContextProvider({
   const params = useParams();
   const searchParams = useSearchParams();
   const pollId = params.id;
-  const authType = searchParams.get("authType") || "free";
+  const authType = (searchParams.get("authType") as AuthType) || "free";
+  const pollType =
+    (Number(searchParams.get("pollType")) as PollType) || PollType.SINGLE_VOTE;
   const { address, isConnected } = useAccount();
 
   const { keypair } = useSigContext();
   const [stateIndex, setStateIndex] = useState<bigint | null>(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const contractName =
-    authType === "free" ? "PrivoteFreeForAll" : "PrivoteAnonAadhaar";
+  const contractName = getMaciContractName(authType, pollType);
   const {
     data: poll,
     isLoading,

@@ -15,9 +15,14 @@ const AuthTypeMapping: { [key: string]: string } = {
 };
 
 const PollsListItem = ({ poll }: PollsListItemProps) => {
+  const metadata = JSON.parse(poll.metadata);
   return (
     <li className={styles["polls-list-item"]}>
-      <Link href={`/polls/${Number(poll.id)}?authType=${poll.authType}`}>
+      <Link
+        href={`/polls/${Number(poll.id)}?authType=${poll.authType}&pollType=${
+          metadata.pollType
+        }`}
+      >
         <div
           className={`${styles["poll-status"]} ${
             poll.status === PollStatus.OPEN
@@ -74,7 +79,7 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
         </div>
         {poll.status === PollStatus.RESULT_COMPUTED && (
           <Link
-            href={`/polls/${poll.id}?authType=${poll.authType}`}
+            href={`/polls/${poll.id}?authType=${poll.authType}&pollType=${metadata.pollType}`}
             className={styles["poll-btn"]}
           >
             <p>View Results</p>

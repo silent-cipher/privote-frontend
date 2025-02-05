@@ -18,9 +18,8 @@ const btnTextMap = {
   [ProofGenerationStatus.MERGINGMESSAGES]: "Merging Messages...",
   [ProofGenerationStatus.MERGINGSIGNUPS]: "Merging Signups...",
   [ProofGenerationStatus.GENERATINGPROOF]: "Generating Proof...",
-  [ProofGenerationStatus.UPLOADINGTOIPFS]: "Uploading to IPFS...",
-  [ProofGenerationStatus.SUCCESS]: "Publishing...",
-  [ProofGenerationStatus.PUBLISHED]: "Results Published",
+  [ProofGenerationStatus.SUBMITTINGONCHAIN]: "Submitting onchain...",
+  [ProofGenerationStatus.SUCCESS]: "Result Published",
   [ProofGenerationStatus.ERROR]: "Publish Result",
   [ProofGenerationStatus.REJECTED]: "Publish Result",
 };

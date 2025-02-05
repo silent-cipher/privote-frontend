@@ -6,16 +6,15 @@ import checkIcon from "../../../../public/circle-tick.svg";
 import { ProofGenerationStatus } from "~~/services/socket/types/response";
 
 const btnTextMap = {
-  [ProofGenerationStatus.IDLE]: "Publish Results",
+  [ProofGenerationStatus.IDLE]: "Publish Result",
   [ProofGenerationStatus.ACCEPTED]: "Starting Proof Generation...",
   [ProofGenerationStatus.MERGINGMESSAGES]: "Merging Messages...",
   [ProofGenerationStatus.MERGINGSIGNUPS]: "Merging Signups...",
   [ProofGenerationStatus.GENERATINGPROOF]: "Generating Proof...",
-  [ProofGenerationStatus.UPLOADINGTOIPFS]: "Uploading to IPFS...",
-  [ProofGenerationStatus.SUCCESS]: "Awaiting for confirmation...",
-  [ProofGenerationStatus.PUBLISHED]: "Results Published",
-  [ProofGenerationStatus.ERROR]: "Error",
-  [ProofGenerationStatus.REJECTED]: "Rejected",
+  [ProofGenerationStatus.SUBMITTINGONCHAIN]: "Submitting onchain...",
+  [ProofGenerationStatus.SUCCESS]: "Result Published",
+  [ProofGenerationStatus.ERROR]: "Publish Result",
+  [ProofGenerationStatus.REJECTED]: "Publish Result",
 };
 
 const LoaderModal: React.FC<{
@@ -30,14 +29,14 @@ const LoaderModal: React.FC<{
       onClose={() => {}}
     >
       <div className={styles.container}>
-        {status === ProofGenerationStatus.PUBLISHED ? (
+        {status === ProofGenerationStatus.SUCCESS ? (
           <Image src={checkIcon} alt="check" width={200} height={200} />
         ) : (
           <Image src={loaderGif} alt="loader" width={200} height={200} />
         )}
         <div
           className={`${styles["content"]} ${
-            status === ProofGenerationStatus.PUBLISHED ? styles.published : ""
+            status === ProofGenerationStatus.SUCCESS ? styles.published : ""
           }}`}
         >
           <p className={styles.text}>{btnTextMap[status]}</p>

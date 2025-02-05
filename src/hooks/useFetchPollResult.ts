@@ -6,12 +6,12 @@ type ContractName =
   | "privote_anon_single"
   | "privote_anon_multi";
 
-export const useFetchPoll = (
+export const useFetchPollResult = (
   id: bigint | undefined,
   contractName: ContractName
 ) =>
   useScaffoldContractRead({
     contractName,
-    functionName: "fetchPoll",
+    functionName: "getPollResult",
     args: [id],
   });
