@@ -20,6 +20,7 @@
 
 .card.noDescription > .content {
   flex: auto;
+  align-items: center;
 }
 
 .card.noDescription > .image {
@@ -74,6 +75,7 @@
   color: #fff;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .content h3 {
@@ -105,6 +107,30 @@
   line-clamp: 5;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 8px;
+  background: #191919;
+  padding: 12px 24px;
+  margin-top: 0.8rem;
+}
+
+.link-text {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 160%;
+
+  background: var(
+    --grd,
+    linear-gradient(328deg, #c65ec6 11.74%, #7f58b7 87.19%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .voteControls {

@@ -4,15 +4,17 @@ import { toUtf8Bytes, hexlify, toUtf8String } from "ethers";
 interface OptionInfo {
   cid: `0x${string}`;
   description?: string;
+  link?: string;
   // Add more fields here in the future
 }
 
 export function encodeOptionInfo(info: OptionInfo): string {
   // Create an object with version for future compatibility
   const data = {
-    version: 1,
+    version: 2,
     cid: info.cid,
     description: info.description || "",
+    link: info.link || "",
   };
 
   // Convert to JSON and then to bytes
@@ -32,6 +34,14 @@ export function decodeOptionInfo(hexString: string): OptionInfo {
       return {
         cid: data.cid as `0x${string}`,
         description: data.description,
+      };
+    }
+
+    if (data.version === 2) {
+      return {
+        cid: data.cid as `0x${string}`,
+        description: data.description,
+        link: data.link,
       };
     }
 

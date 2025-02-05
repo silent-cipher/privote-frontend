@@ -9,7 +9,7 @@ import type { PollOption } from "../../types";
 interface WithImageInputProps {
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: "title" | "description"
+    field: "title" | "description" | "link"
   ) => void;
   index: number;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -107,6 +107,12 @@ const WithImageInput = ({
           placeholder={`Description...`}
           value={option.description || ""}
           onChange={(e) => onChange(e, "description")}
+        />
+        <input
+          type={"text"}
+          onChange={(e) => onChange(e, "link")}
+          placeholder={`Link...`}
+          className={styles["input-field"]}
         />
       </div>
     </div>

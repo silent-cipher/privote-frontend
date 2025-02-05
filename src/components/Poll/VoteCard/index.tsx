@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { useState, useCallback } from "react";
 import { PollStatus, PollType } from "~~/types/poll";
+import { GoLink } from "react-icons/go";
 import styles from "./index.module.css";
 import { decodeOptionInfo } from "~~/utils/optionInfo";
 import CID from "cids";
 import { hexToBytes } from "viem";
 import { notification } from "~~/utils/scaffold-eth";
+import Link from "next/link";
 
 interface VoteCardProps {
   votes: number;
@@ -48,7 +50,7 @@ const VoteCard = ({
   maxVotePerPerson,
 }: VoteCardProps) => {
   const [selected, setSelected] = useState(false);
-  const { cid, description } = decodeOptionInfo(bytesCid);
+  const { cid, description, link } = decodeOptionInfo(bytesCid);
 
   const handleVoteChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +122,17 @@ const VoteCard = ({
       <div className={styles.content}>
         <h3 className={votes !== 0 ? styles.selected : ""}>{title}</h3>
         {description && <p className={styles.description}>{description}</p>}
+        {link && (
+          <Link
+            className={styles.link}
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <GoLink fill="#7F58B7" size={24} />{" "}
+            <span className={styles["link-text"]}>Overview</span>
+          </Link>
+        )}
       </div>
       {pollOpen && (
         <div className={styles.voteControls}>

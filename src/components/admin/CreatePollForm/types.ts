@@ -24,6 +24,7 @@ export interface IPollData {
 export interface PollOption {
   title?: string;
   description?: string;
+  link?: string;
   cid: `0x${string}`;
   isUploadedToIPFS: boolean;
 }
@@ -65,7 +66,7 @@ export interface PollOptionProps {
   onOptionChange: (
     index: number,
     value: string,
-    field: "value" | "title" | "description"
+    field: "value" | "title" | "description" | "link"
   ) => void;
   onFileChange: (index: number, file: File) => void;
   onFileRemove: (index: number) => void;

@@ -20,6 +20,7 @@ const initialPollData: IPollData = {
       title: "",
       description: "",
       cid: "0x" as `0x${string}`,
+      link: "",
       isUploadedToIPFS: false,
     },
   ],
@@ -105,6 +106,20 @@ export const useCreatePollForm = (
     if (!PubKey.isValidSerializedPubKey(pollData.pubKey)) {
       notification.error("Please enter a valid public key");
       return false;
+    }
+
+    // If link is present on option then it should be a valid url
+    const validUrlReges = new RegExp(
+      "((http|https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)"
+    );
+
+    for (const option of pollData.options) {
+      if (option.link && !validUrlReges.test(option.link)) {
+        notification.error(
+          "Please enter a valid URL for Candidate : " + option.title
+        );
+        return false;
+      }
     }
 
     return true;
@@ -199,6 +214,7 @@ export const useCreatePollForm = (
           return encodeOptionInfo({
             cid: option.isUploadedToIPFS ? option.cid : ("0x" as `0x${string}`),
             description: option.description,
+            link: option.link,
           });
         })
       );
