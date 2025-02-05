@@ -56,17 +56,17 @@
 }
 
 .image {
-  flex: 0 0 200px;
-  width: 200px;
-  height: 175px;
+  flex: 0 0 207px;
+  width: 207px;
+  height: 210px;
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 8px;
 }
 
 .image img {
-  width: 200px;
-  height: 175px;
+  width: 207px;
+  height: 210px;
   object-fit: cover;
 }
 
@@ -262,8 +262,9 @@
   -moz-appearance: textfield;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 650px) {
   .card {
+    max-width: 400px;
     flex-direction: column;
     padding: 12px;
   }
@@ -275,7 +276,7 @@
   .card > .image {
     flex: 0 0 100%;
     width: 100%;
-    aspect-ratio: 8 / 7;
+    aspect-ratio: 1/1;
   }
 
   .card > .image > img {
