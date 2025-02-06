@@ -31,10 +31,8 @@ export const usePollResults = (
     getMaciContractName(authType, pollType)
   );
 
-  console.log(tally);
-
   const fetchResults = async () => {
-    if (!poll || !poll.tallyJsonCID || !tally) return;
+    if (!poll || !tally) return;
 
     setIsLoading(true);
     setError(null);
@@ -73,7 +71,7 @@ export const usePollResults = (
 
   useEffect(() => {
     fetchResults();
-  }, [poll?.tallyJsonCID]);
+  }, [tally]);
 
   return {
     result,

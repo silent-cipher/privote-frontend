@@ -57,6 +57,19 @@ const CommandBlock = ({ command }: { command: string }) => {
   );
 };
 
+const getPollText = (pollType: PollType) => {
+  switch (pollType) {
+    case PollType.SINGLE_VOTE:
+      return "single";
+    case PollType.MULTIPLE_VOTE:
+      return "multi";
+    case PollType.WEIGHTED_MULTIPLE_VOTE:
+      return "multi";
+    default:
+      return "single";
+  }
+};
+
 export const DockerConfig = ({
   poll,
   pollId,
@@ -104,13 +117,25 @@ export const DockerConfig = ({
                   <CommandBlock
                     command={`yarn hardhat genResults --poll ${pollId} --auth-type ${
                       poll?.authType
-                    } --use-quadratic-voting ${
+                    } --poll-type ${getPollText(
+                      pollType
+                    )} --use-quadratic-voting ${
                       poll?.isQv === 0 ? "true" : "false"
                     } --output-dir ./proofs --tally-file ./tally.json --start-block ${
                       contract.deploymentBlockNumber
                     } --network ${
                       isConnected ? chain?.name?.toLowerCase() : "holesky"
                     } --coordinator-private-key <private-key>`}
+                  />
+                </div>
+                <div className={styles.stepBlock}>
+                  <h3 className={styles.stepTitle}>Step 3: Submit onchain</h3>
+                  <CommandBlock
+                    command={`yarn hardhat submitOnChain --poll ${pollId} --auth-type ${
+                      poll?.authType
+                    } --output-dir ./proofs --tally-file ./tally.json --network ${
+                      isConnected ? chain?.name?.toLowerCase() : "holesky"
+                    }`}
                   />
                 </div>
 

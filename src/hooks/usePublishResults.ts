@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useScaffoldContractWrite } from "./scaffold-eth";
 import { AuthType, PollType, EMode } from "~~/types/poll";
 import deployedContracts from "~~/contracts/deployedContracts";
 import { useChainId, useAccount } from "wagmi";
@@ -32,12 +31,6 @@ export const usePublishResults = (
   const router = useRouter();
   const chainId = useChainId();
   const { address } = useAccount();
-
-  const { writeAsync } = useScaffoldContractWrite({
-    contractName: getMaciContractName(authType, pollType),
-    functionName: "updatePollTallyCID",
-    args: [undefined, undefined],
-  });
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

@@ -6,8 +6,8 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 
 const deployedContracts = {
   17000: {
-    PrivoteFreeForAll: {
-      address: "0x0bD70e8D40ccEA21e2795c6db00b5284f53923BF",
+    privote_free_single: {
+      address: "0xa3D5837Fb097fA19E468F8BE8d73698AbE6e04a0",
       abi: [
         {
           inputs: [
@@ -72,6 +72,11 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "InsufficientStake",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "InvalidCaller",
           type: "error",
         },
@@ -83,6 +88,21 @@ const deployedContracts = {
         {
           inputs: [],
           name: "InvalidPubKey",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoExcessBalance",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoStakeToWithdraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotPollDeployer",
           type: "error",
         },
         {
@@ -102,6 +122,11 @@ const deployedContracts = {
           type: "error",
         },
         {
+          inputs: [],
+          name: "PollAlreadyTallied",
+          type: "error",
+        },
+        {
           inputs: [
             {
               internalType: "uint256",
@@ -114,12 +139,27 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "PollNotTallied",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "PoseidonHashLibrariesNotLinked",
           type: "error",
         },
         {
           inputs: [],
           name: "PubKeyAlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "SlashThresholdNotReached",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "StakeAmountMismatch",
           type: "error",
         },
         {
@@ -335,6 +375,10 @@ const deployedContracts = {
           ],
           name: "SignUp",
           type: "event",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
         },
         {
           inputs: [],
@@ -580,9 +624,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -720,9 +764,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -865,9 +909,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -954,17 +998,17 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_poll",
-              type: "address",
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
             },
           ],
-          name: "getPollId",
+          name: "getPollResult",
           outputs: [
             {
-              internalType: "uint256",
-              name: "pollId",
-              type: "uint256",
+              internalType: "uint256[]",
+              name: "results",
+              type: "uint256[]",
             },
           ],
           stateMutability: "view",
@@ -1334,25 +1378,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "pollIds",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "",
               type: "uint256",
@@ -1451,6 +1476,19 @@ const deployedContracts = {
             },
           ],
           name: "setConfig",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "setPollTallied",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -1607,6 +1645,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "totalStaked",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -1645,24 +1696,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_pollId",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "_tallyJsonCID",
-              type: "string",
-            },
-          ],
-          name: "updatePollTallyCID",
-          outputs: [],
-          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -1710,11 +1743,35 @@ const deployedContracts = {
           stateMutability: "view",
           type: "function",
         },
+        {
+          inputs: [],
+          name: "withdrawExcessBalance",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "withdrawStake",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
       ],
-      deploymentBlockNumber: 3239463,
+      deploymentBlockNumber: 3299313,
     },
-    PrivoteAnonAadhaar: {
-      address: "0x6fA84B81F28E999D3aE5B5e7e56b480431A90C4A",
+    privote_free_multi: {
+      address: "0x77c0746eE056d1819Cb918D7A2c63C7ACe662829",
       abi: [
         {
           inputs: [
@@ -1779,6 +1836,11 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "InsufficientStake",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "InvalidCaller",
           type: "error",
         },
@@ -1790,6 +1852,21 @@ const deployedContracts = {
         {
           inputs: [],
           name: "InvalidPubKey",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoExcessBalance",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoStakeToWithdraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotPollDeployer",
           type: "error",
         },
         {
@@ -1809,6 +1886,11 @@ const deployedContracts = {
           type: "error",
         },
         {
+          inputs: [],
+          name: "PollAlreadyTallied",
+          type: "error",
+        },
+        {
           inputs: [
             {
               internalType: "uint256",
@@ -1821,12 +1903,27 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "PollNotTallied",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "PoseidonHashLibrariesNotLinked",
           type: "error",
         },
         {
           inputs: [],
           name: "PubKeyAlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "SlashThresholdNotReached",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "StakeAmountMismatch",
           type: "error",
         },
         {
@@ -2042,6 +2139,10 @@ const deployedContracts = {
           ],
           name: "SignUp",
           type: "event",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
         },
         {
           inputs: [],
@@ -2287,9 +2388,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -2427,9 +2528,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -2572,9 +2673,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -2661,17 +2762,17 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_poll",
-              type: "address",
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
             },
           ],
-          name: "getPollId",
+          name: "getPollResult",
           outputs: [
             {
-              internalType: "uint256",
-              name: "pollId",
-              type: "uint256",
+              internalType: "uint256[]",
+              name: "results",
+              type: "uint256[]",
             },
           ],
           stateMutability: "view",
@@ -3041,25 +3142,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "pollIds",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "",
               type: "uint256",
@@ -3158,6 +3240,19 @@ const deployedContracts = {
             },
           ],
           name: "setConfig",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "setPollTallied",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -3314,6 +3409,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "totalStaked",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -3352,24 +3460,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_pollId",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "_tallyJsonCID",
-              type: "string",
-            },
-          ],
-          name: "updatePollTallyCID",
-          outputs: [],
-          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -3417,13 +3507,35 @@ const deployedContracts = {
           stateMutability: "view",
           type: "function",
         },
+        {
+          inputs: [],
+          name: "withdrawExcessBalance",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "withdrawStake",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
       ],
-      deploymentBlockNumber: 3239496,
+      deploymentBlockNumber: 3299335,
     },
-  },
-  11155111: {
-    PrivoteFreeForAll: {
-      address: "0x5c83422D862773ac9D8FAD8883b95B97c5aA2825",
+    privote_anon_single: {
+      address: "0x033247862adC2Ef761900c371a7a6707328eDEac",
       abi: [
         {
           inputs: [
@@ -3488,6 +3600,11 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "InsufficientStake",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "InvalidCaller",
           type: "error",
         },
@@ -3499,6 +3616,21 @@ const deployedContracts = {
         {
           inputs: [],
           name: "InvalidPubKey",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoExcessBalance",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoStakeToWithdraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotPollDeployer",
           type: "error",
         },
         {
@@ -3518,6 +3650,11 @@ const deployedContracts = {
           type: "error",
         },
         {
+          inputs: [],
+          name: "PollAlreadyTallied",
+          type: "error",
+        },
+        {
           inputs: [
             {
               internalType: "uint256",
@@ -3530,12 +3667,27 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "PollNotTallied",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "PoseidonHashLibrariesNotLinked",
           type: "error",
         },
         {
           inputs: [],
           name: "PubKeyAlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "SlashThresholdNotReached",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "StakeAmountMismatch",
           type: "error",
         },
         {
@@ -3751,6 +3903,10 @@ const deployedContracts = {
           ],
           name: "SignUp",
           type: "event",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
         },
         {
           inputs: [],
@@ -3996,9 +4152,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -4136,9 +4292,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -4281,9 +4437,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -4370,17 +4526,17 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_poll",
-              type: "address",
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
             },
           ],
-          name: "getPollId",
+          name: "getPollResult",
           outputs: [
             {
-              internalType: "uint256",
-              name: "pollId",
-              type: "uint256",
+              internalType: "uint256[]",
+              name: "results",
+              type: "uint256[]",
             },
           ],
           stateMutability: "view",
@@ -4750,25 +4906,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "pollIds",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "",
               type: "uint256",
@@ -4867,6 +5004,19 @@ const deployedContracts = {
             },
           ],
           name: "setConfig",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "setPollTallied",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -5023,6 +5173,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "totalStaked",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -5061,24 +5224,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_pollId",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "_tallyJsonCID",
-              type: "string",
-            },
-          ],
-          name: "updatePollTallyCID",
-          outputs: [],
-          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -5126,11 +5271,35 @@ const deployedContracts = {
           stateMutability: "view",
           type: "function",
         },
+        {
+          inputs: [],
+          name: "withdrawExcessBalance",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "withdrawStake",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
       ],
-      deploymentBlockNumber: 7591484,
+      deploymentBlockNumber: 3293005,
     },
-    PrivoteAnonAadhaar: {
-      address: "0x3eF57484333c1Ac307cD716291991689C1AdB6B2",
+    privote_anon_multi: {
+      address: "0xEE9900f9d828eEeb2d941f1DaCBa86A56bF27c8B",
       abi: [
         {
           inputs: [
@@ -5195,6 +5364,11 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "InsufficientStake",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "InvalidCaller",
           type: "error",
         },
@@ -5206,6 +5380,21 @@ const deployedContracts = {
         {
           inputs: [],
           name: "InvalidPubKey",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoExcessBalance",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NoStakeToWithdraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotPollDeployer",
           type: "error",
         },
         {
@@ -5225,6 +5414,11 @@ const deployedContracts = {
           type: "error",
         },
         {
+          inputs: [],
+          name: "PollAlreadyTallied",
+          type: "error",
+        },
+        {
           inputs: [
             {
               internalType: "uint256",
@@ -5237,12 +5431,27 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "PollNotTallied",
+          type: "error",
+        },
+        {
+          inputs: [],
           name: "PoseidonHashLibrariesNotLinked",
           type: "error",
         },
         {
           inputs: [],
           name: "PubKeyAlreadyRegistered",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "SlashThresholdNotReached",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "StakeAmountMismatch",
           type: "error",
         },
         {
@@ -5458,6 +5667,10 @@ const deployedContracts = {
           ],
           name: "SignUp",
           type: "event",
+        },
+        {
+          stateMutability: "payable",
+          type: "fallback",
         },
         {
           inputs: [],
@@ -5703,9 +5916,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -5843,9 +6056,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -5988,9 +6201,9 @@ const deployedContracts = {
                   type: "bytes[]",
                 },
                 {
-                  internalType: "string",
-                  name: "tallyJsonCID",
-                  type: "string",
+                  internalType: "bool",
+                  name: "isTallied",
+                  type: "bool",
                 },
                 {
                   components: [
@@ -6077,17 +6290,17 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "_poll",
-              type: "address",
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
             },
           ],
-          name: "getPollId",
+          name: "getPollResult",
           outputs: [
             {
-              internalType: "uint256",
-              name: "pollId",
-              type: "uint256",
+              internalType: "uint256[]",
+              name: "results",
+              type: "uint256[]",
             },
           ],
           stateMutability: "view",
@@ -6457,25 +6670,6 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "pollIds",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "",
               type: "uint256",
@@ -6574,6 +6768,19 @@ const deployedContracts = {
             },
           ],
           name: "setConfig",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "setPollTallied",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -6730,6 +6937,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "totalStaked",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
@@ -6768,24 +6988,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_pollId",
-              type: "uint256",
-            },
-            {
-              internalType: "string",
-              name: "_tallyJsonCID",
-              type: "string",
-            },
-          ],
-          name: "updatePollTallyCID",
-          outputs: [],
-          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -6833,8 +7035,32 @@ const deployedContracts = {
           stateMutability: "view",
           type: "function",
         },
+        {
+          inputs: [],
+          name: "withdrawExcessBalance",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_pollId",
+              type: "uint256",
+            },
+          ],
+          name: "withdrawStake",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          stateMutability: "payable",
+          type: "receive",
+        },
       ],
-      deploymentBlockNumber: 7591508,
+      deploymentBlockNumber: 3299412,
     },
   },
 } as const;

@@ -78,13 +78,14 @@ class SocketManager {
     this.socket.on("connect_error", (error) => {
       console.error("Connection error:", error);
       this.reconnectAttempts++;
-      
+
       if (this.reconnectAttempts >= this.MAX_RECONNECT_ATTEMPTS) {
         if (this.latestCallback) {
           this.latestCallback({
             success: false,
             status: ProofGenerationStatus.ERROR,
-            message: "Unable to connect to server. Service may be unavailable. Please try again later.",
+            message:
+              "Unable to connect to server. Service may be unavailable. Please try again later.",
             timestamp: Date.now(),
           });
           this.latestCallback = null;
@@ -99,7 +100,8 @@ class SocketManager {
         this.latestCallback({
           success: false,
           status: ProofGenerationStatus.ERROR,
-          message: "Connection timed out. Please check your internet connection and try again.",
+          message:
+            "Connection timed out. Please check your internet connection and try again.",
           timestamp: Date.now(),
         });
         this.latestCallback = null;
@@ -108,7 +110,6 @@ class SocketManager {
     });
 
     this.socket.on("generatingProof", async (data: ProofGenerationResponse) => {
-      console.log("Generating proof", data);
       if (data.jobId) {
         // Non-cached result - use jobId to get callback
         const callback = this.proofCallbacks.get(data.jobId);
@@ -147,47 +148,58 @@ class SocketManager {
 
       socket.emit("generateProof", proofData);
 
-      socket.once("proofRequestAccepted", (response: ProofGenerationResponse) => {
-        console.log("Proof request accepted", response);
-        if (response.jobId) {
-          // Move callback from latest to proofCallbacks map
-          if (this.latestCallback) {
-            this.proofCallbacks.set(response.jobId, this.latestCallback);
-            this.latestCallback = null;
-            callback(response);
+      socket.once(
+        "proofRequestAccepted",
+        (response: ProofGenerationResponse) => {
+          if (response.jobId) {
+            // Move callback from latest to proofCallbacks map
+            if (this.latestCallback) {
+              this.proofCallbacks.set(response.jobId, this.latestCallback);
+              this.latestCallback = null;
+              callback(response);
+            }
           }
         }
-      });
+      );
 
-      socket.once("proofRequestRejected", (response: ProofGenerationResponse) => {
-        console.log("Proof request rejected", response);
-        // Clear the latest callback since the request was rejected
-        if (this.latestCallback) {
-          this.latestCallback({
-            ...response,
-            message: response.message || "Server rejected the proof request. Please try again.",
-          });
-          this.latestCallback = null;
+      socket.once(
+        "proofRequestRejected",
+        (response: ProofGenerationResponse) => {
+          // Clear the latest callback since the request was rejected
+          if (this.latestCallback) {
+            this.latestCallback({
+              ...response,
+              message:
+                response.message ||
+                "Server rejected the proof request. Please try again.",
+            });
+            this.latestCallback = null;
+          }
         }
-      });
+      );
 
-      socket.once("errorGeneratingProof", (response: ProofGenerationResponse) => {
-        console.log("Error generating proof", response);
-        // Clear the latest callback since the request was rejected
-        if (this.latestCallback) {
-          this.latestCallback({
-            ...response,
-            message: response.message || "Error generating proof. Please try again.",
-          });
-          this.latestCallback = null;
+      socket.once(
+        "errorGeneratingProof",
+        (response: ProofGenerationResponse) => {
+          console.log("Error generating proof", response);
+          // Clear the latest callback since the request was rejected
+          if (this.latestCallback) {
+            this.latestCallback({
+              ...response,
+              message:
+                response.message || "Error generating proof. Please try again.",
+            });
+            this.latestCallback = null;
+          }
         }
-      });
+      );
     } catch (error) {
       console.error("Error in generateProof:", error);
       callback({
         success: false,
         status: ProofGenerationStatus.ERROR,
-        message: "Failed to initialize connection to server. Please try again later.",
+        message:
+          "Failed to initialize connection to server. Please try again later.",
         timestamp: Date.now(),
       });
     }

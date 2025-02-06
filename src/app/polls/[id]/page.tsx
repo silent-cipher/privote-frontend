@@ -58,7 +58,6 @@ const UserPoll = () => {
       </div>
     );
   }
-  console.log(isLoading);
 
   if (!poll || isLoading) {
     return (

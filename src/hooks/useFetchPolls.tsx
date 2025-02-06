@@ -13,7 +13,7 @@ export function getPollStatus(poll: RawPoll) {
     return PollStatus.OPEN;
   }
 
-  if (!poll.tallyJsonCID) {
+  if (!poll.isTallied) {
     return PollStatus.CLOSED;
   }
 

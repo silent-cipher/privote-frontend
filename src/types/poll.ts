@@ -20,7 +20,7 @@ export interface RawPoll {
   numOfOptions: bigint;
   options: readonly string[];
   optionInfo: readonly string[];
-  tallyJsonCID: string;
+  isTallied: boolean;
   pollDeployer: string;
   authType: string;
   isQv: EMode;
