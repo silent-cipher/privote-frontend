@@ -5,13 +5,12 @@
   color: #fff;
   gap: 24px;
   text-align: center;
-  padding-block: 80px;
   width: 100%;
   min-height: 100vh;
   min-height: 100lvh;
   padding: 2rem;
+  padding-bottom: 1rem;
   background: var(--background-primary);
-  /* padding-top: 6rem; */
 }
 
 .status {

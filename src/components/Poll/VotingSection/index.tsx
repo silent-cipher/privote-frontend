@@ -110,7 +110,7 @@ export const VotingSection = ({
         <h1 className={styles.heading}>{pollTitle}</h1>
         <p className={styles.description}>{pollDescription}</p>
       </div>
-      {!result && (
+      {pollStatus === PollStatus.OPEN && (
         <div className={styles.info}>
           <Image src={"/info.svg"} alt="info" width={24} height={24} />
           <p>

@@ -43,7 +43,7 @@ const Footer = () => {
               className={styles["img-container"]}
               key={index}
             >
-              <Image src={social.icon} alt="social" width={24} height={24} />
+              <Image src={social.icon} alt="social" width={20} height={20} />
             </Link>
           ))}
         </div>
