@@ -1,0 +1,89 @@
+import React from "react";
+import Link from "next/link";
+import { GoLink } from "react-icons/go";
+import Modal from "~~/components/ui/Modal";
+import Button from "~~/components/ui/Button";
+import { PollType } from "~~/types/poll";
+import styles from "./OptionDetailsModal.module.css";
+import { IoMdClose } from "react-icons/io";
+
+interface OptionDetailsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  link?: string;
+  pollType: PollType;
+  onVote?: () => void;
+  isLoading: boolean;
+}
+
+const OptionDetailsModal: React.FC<OptionDetailsModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  description,
+  imageUrl,
+  link,
+  pollType,
+  onVote,
+  isLoading,
+}) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      showCloseButton={false}
+      maxWidth="700px"
+      padding="8px"
+    >
+      <div className={styles.container}>
+        <div className={styles.blur}></div>
+        <div className={styles.header}>
+          {imageUrl && (
+            <div className={styles.imageContainer}>
+              <img src={imageUrl} alt={title} width={100} height={100} />
+            </div>
+          )}
+          <h2 className={styles.title}>{title}</h2>
+          <button onClick={onClose} className={styles.closeButton}>
+            <IoMdClose size={24} fill="#434343" />
+          </button>
+        </div>
+        <div className={styles.divider} />
+        <div className={styles.content}>
+          <p className={styles.description}>{description}</p>
+          {link && (
+            <Link
+              className={styles.link}
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GoLink fill="#7F58B7" size={18} />{" "}
+              <span className={styles["link-text"]}>Link</span>
+            </Link>
+          )}
+        </div>
+        {pollType === PollType.SINGLE_VOTE && onVote && (
+          <div className={styles.footer}>
+            <Button
+              action={onVote}
+              disabled={isLoading || pollType !== PollType.SINGLE_VOTE}
+              className={styles.voteButton}
+            >
+              {isLoading ? (
+                <span className={`${styles.spinner} spinner`}></span>
+              ) : (
+                <p>Vote Now</p>
+              )}
+            </Button>
+          </div>
+        )}
+      </div>
+    </Modal>
+  );
+};
+
+export default OptionDetailsModal;

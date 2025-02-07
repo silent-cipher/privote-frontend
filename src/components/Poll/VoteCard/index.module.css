@@ -61,7 +61,6 @@
   height: 210px;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
 .image img {
@@ -108,6 +107,30 @@
   line-clamp: 5;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
+  margin-bottom: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: auto;
+}
+
+.viewMore {
+  background: none;
+  border: none;
+  color: #c65ec6;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  padding-bottom: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.viewMore:hover {
+  opacity: 0.8;
 }
 
 .link {
@@ -116,8 +139,8 @@
   gap: 12px;
   border-radius: 8px;
   background: #191919;
-  padding: 12px 24px;
-  margin-top: auto;
+  padding: 8px 16px;
+  transition: background-color 0.2s ease;
 }
 
 .link-text {
@@ -132,6 +155,10 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.link:hover {
+  background-color: #0b0c0f;
 }
 
 .voteControls {
@@ -288,6 +315,10 @@
   }
 
   .link {
+    align-self: center;
+  }
+
+  .viewMore {
     align-self: center;
   }
 }

@@ -9,6 +9,7 @@ interface ModalProps {
   children: React.ReactNode;
   title?: string;
   maxWidth?: string;
+  padding?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -18,6 +19,7 @@ const Modal: React.FC<ModalProps> = ({
   title,
   maxWidth,
   showCloseButton = true,
+  padding = "24px",
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +56,11 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className={styles.modalOverlay}>
-      <div className={styles.modalContent} ref={modalRef} style={{ maxWidth }}>
+      <div
+        className={styles.modalContent}
+        ref={modalRef}
+        style={{ maxWidth, padding }}
+      >
         {(showCloseButton || title) && (
           <div className={styles.modalHeader}>
             {title && <h2>{title}</h2>}

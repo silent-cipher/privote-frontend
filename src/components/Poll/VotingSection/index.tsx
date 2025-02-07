@@ -145,6 +145,8 @@ export const VotingSection = ({
             }
             onSelect={() => handleSelect(index)}
             isSelected={selectedCandidate === index}
+            onVote={onVote}
+            isLoading={isLoadingBatch || isLoadingSingle}
           />
         ))}
       </ul>
