@@ -51,7 +51,7 @@ export const ScaffoldEthAppWithProviders = ({
         theme={customTheme}
       >
         <SigContextProvider>
-          <AnonAadhaarProvider _useTestAadhaar>
+          <AnonAadhaarProvider>
             <Toaster />
             {children}
           </AnonAadhaarProvider>
