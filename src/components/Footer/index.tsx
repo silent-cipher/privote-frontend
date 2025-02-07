@@ -42,6 +42,7 @@ const Footer = () => {
               href={social.link}
               className={styles["img-container"]}
               key={index}
+              target="_blank"
             >
               <Image src={social.icon} alt="social" width={20} height={20} />
             </Link>
