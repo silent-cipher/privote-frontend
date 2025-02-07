@@ -123,13 +123,17 @@
   color: #c65ec6;
   font-size: 14px;
   font-weight: 600;
+  line-height: 20px;
+  height: 42px;
   cursor: pointer;
-  padding: 0;
-  padding-bottom: 4px;
-  transition: opacity 0.2s ease;
+  border-radius: 8px;
+  background: #191919;
+  padding: 8px 16px;
+  transition: background-color 0.2s ease;
 }
 
 .viewMore:hover {
+  background-color: #0b0c0f;
   opacity: 0.8;
 }
 
@@ -209,6 +213,7 @@
 }
 
 .result {
+  align-self: center;
   margin-top: 16px;
 }
 

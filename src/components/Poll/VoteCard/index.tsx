@@ -32,6 +32,7 @@ interface VoteCardProps {
   maxVotePerPerson?: number;
   onVote: () => void;
   isLoading: boolean;
+  isUserRegistered: boolean;
 }
 
 const VoteCard = ({
@@ -46,6 +47,7 @@ const VoteCard = ({
   isInvalid,
   pollOpen,
   index,
+  isUserRegistered,
   isSelected,
   onVoteChange,
   onInvalidStatusChange,
@@ -60,6 +62,10 @@ const VoteCard = ({
 
   const handleVoteChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!isUserRegistered) {
+        notification.error("Please register to vote");
+        return;
+      }
       setSelected(e.target.checked);
       const isChecked = e.target.checked;
 

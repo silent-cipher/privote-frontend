@@ -293,6 +293,11 @@
   background: #252525;
 }
 
+.message {
+  color: #8c98a9;
+  margin-top: 12px;
+}
+
 @media screen and (max-width: 768px) {
   .content {
     margin-top: 0px;

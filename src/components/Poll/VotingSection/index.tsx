@@ -131,6 +131,7 @@ export const VotingSection = ({
             index={index}
             result={result?.find((r) => r.candidate === option)}
             totalVotes={totalVotes}
+            isUserRegistered={isUserRegistered}
             currentTotalVotes={votes
               .filter((v) => v.index !== index)
               .reduce((acc, v) => acc + v.votes, 0)}
@@ -150,6 +151,9 @@ export const VotingSection = ({
           />
         ))}
       </ul>
+      {votingState.message && (
+        <p className={styles.message}>{votingState.message}</p>
+      )}
       {votingState.canVote && (
         <div className={styles.col}>
           <button
