@@ -39,7 +39,7 @@ const OptionDetailsModal: React.FC<OptionDetailsModalProps> = ({
       padding="8px"
     >
       <div className={styles.container}>
-        <div className={styles.blur}></div>
+        {/* <div className={styles.blur}></div> */}
         <div className={styles.header}>
           {imageUrl && (
             <div className={styles.imageContainer}>
