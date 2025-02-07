@@ -262,8 +262,10 @@
 
 .end {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .text {
@@ -354,6 +356,10 @@
 @media screen and (max-width: 500px) {
   .candidate-container {
     padding-inline: 0px;
+  }
+
+  .headerContent {
+    align-items: flex-start;
   }
 
   .candidate-container > ul {
