@@ -136,6 +136,17 @@ const VoteCard = ({
           <h3 className={votes !== 0 ? styles.selected : ""}>{title}</h3>
           {description && <p className={styles.description}>{description}</p>}
           <div className={styles.actions}>
+            {link && (
+              <Link
+                className={styles.link}
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GoLink fill="#7F58B7" size={20} />{" "}
+                <span className={styles["link-text"]}>Link</span>
+              </Link>
+            )}
             {description && (
               <button
                 onClick={(e) => {
@@ -149,17 +160,6 @@ const VoteCard = ({
               >
                 View More
               </button>
-            )}
-            {link && (
-              <Link
-                className={styles.link}
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <GoLink fill="#7F58B7" size={20} />{" "}
-                <span className={styles["link-text"]}>Link</span>
-              </Link>
             )}
           </div>
         </div>
