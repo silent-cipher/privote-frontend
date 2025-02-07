@@ -82,6 +82,48 @@
   margin-bottom: 10px;
   max-width: 850px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: max-height 0.3s ease-out;
+}
+
+.descriptionTruncated {
+  max-height: 120px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
+}
+
+.showMoreButton {
+  background: none;
+  border: none;
+  color: #d7e884;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.showMoreButton:hover {
+  text-decoration: underline;
+}
+
+.fadeOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, #000000);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fadeOverlayVisible {
+  opacity: 1;
 }
 
 .pollTiming {

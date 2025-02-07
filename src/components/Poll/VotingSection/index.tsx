@@ -5,7 +5,7 @@ import { PollStatus, PollType } from "~~/types/poll";
 import VoteCard from "../VoteCard";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
 import useVotingState from "~~/hooks/useVotingState";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 
 interface VotingSectionProps {
   votes: { index: number; votes: number }[];
@@ -61,6 +61,44 @@ export const VotingSection = ({
   onVote,
 }: VotingSectionProps) => {
   const [AnonAadhaar] = useAnonAadhaar();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isContentOverflowing, setIsContentOverflowing] = useState(false);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Check initially
+    checkIfMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkIfMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (descriptionRef.current) {
+        // Get the line height from computed styles
+        const lineHeight = parseInt(window.getComputedStyle(descriptionRef.current).lineHeight);
+        const maxHeight = lineHeight * 5; // Height for 5 lines
+        
+        // Check if content height is greater than max height
+        setIsContentOverflowing(descriptionRef.current.scrollHeight > maxHeight);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, [pollDescription]);
+
   const votingState = useVotingState({
     authType,
     pollStatus,
@@ -108,7 +146,27 @@ export const VotingSection = ({
     <div className={styles["candidate-container"]}>
       <div className={styles.content}>
         <h1 className={styles.heading}>{pollTitle}</h1>
-        <p className={styles.description}>{pollDescription}</p>
+        {pollDescription && (
+          <div>
+            <p
+              ref={descriptionRef}
+              className={`${styles.description} ${
+                !isExpanded && isContentOverflowing ? styles.descriptionTruncated : ""
+              }`}
+            >
+              {pollDescription}
+              {/* <div className={`${styles.fadeOverlay} ${!isExpanded && isMobile ? styles.fadeOverlayVisible : ''}`} /> */}
+            </p>
+            {isMobile && isContentOverflowing && (
+              <button
+                className={styles.showMoreButton}
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {isExpanded ? "Show Less" : "Show More"}
+              </button>
+            )}
+          </div>
+        )}
       </div>
       {pollStatus === PollStatus.OPEN && (
         <div className={styles.info}>
