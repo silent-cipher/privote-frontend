@@ -307,4 +307,8 @@
   .candidate-container {
     padding-inline: 0px;
   }
+
+  .candidate-container > ul {
+    margin-top: 24px;
+  }
 }

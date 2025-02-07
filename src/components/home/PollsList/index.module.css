@@ -52,3 +52,9 @@
   color: var(--text-secondary);
   font-size: 0.875rem;
 }
+
+@media screen and (max-width: 500px) {
+  .polls-list {
+    gap: 1.5rem;
+  }
+}

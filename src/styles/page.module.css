@@ -139,7 +139,7 @@
 
 @media (max-width: 768px) {
   .main-page {
-    padding: 0rem;
+    padding: 0rem 1rem;
   }
 
   .polls-container {
@@ -153,7 +153,15 @@
 }
 
 @media (max-width: 500px) {
+  .polls-container {
+    gap: 24px;
+  }
+
   .polls-container h2 {
     margin-bottom: 0px;
+  }
+
+  .poll-wrapper {
+    padding-inline: 0rem;
   }
 }

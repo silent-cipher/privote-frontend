@@ -107,3 +107,9 @@
     padding-top: 0px;
   }
 }
+
+@media screen and (max-width: 500px) {
+  .polls-list {
+    gap: 1.5rem;
+  }
+}
