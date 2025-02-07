@@ -151,7 +151,7 @@ export const VotingSection = ({
           />
         ))}
       </ul>
-      {votingState.message && (
+      {votingState.message && pollStatus === PollStatus.OPEN && (
         <p className={styles.message}>{votingState.message}</p>
       )}
       {votingState.canVote && (
