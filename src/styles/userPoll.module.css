@@ -80,7 +80,8 @@
   line-height: 1.5;
   color: #8c98a9;
   margin-bottom: 10px;
-  max-width: 600px;
+  max-width: 850px;
+  text-align: center;
 }
 
 .pollTiming {
