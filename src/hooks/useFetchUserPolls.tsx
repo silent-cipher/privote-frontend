@@ -13,7 +13,7 @@ export function getPollStatus(poll: RawPoll) {
     return PollStatus.OPEN;
   }
 
-  if (!poll.tallyJsonCID) {
+  if (!poll.isTallied) {
     return PollStatus.CLOSED;
   }
 
@@ -69,7 +69,7 @@ export const useFetchUserPolls = (
   const getContractLimit = (contractTotal: bigint) => {
     if (totalPolls === 0) return limit / 4;
     return contractTotal === 0n
-      ? 0
+      ? limit
       : (limit * Number(contractTotal)) / totalPolls;
   };
 

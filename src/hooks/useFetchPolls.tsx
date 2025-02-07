@@ -59,7 +59,7 @@ export const useFetchPolls = (currentPage = 1, limit = 25, reversed = true) => {
   const getContractLimit = (contractTotal: bigint) => {
     if (totalPolls === 0) return limit / 4;
     return contractTotal === 0n
-      ? 0
+      ? limit
       : (limit * Number(contractTotal)) / totalPolls;
   };
 
