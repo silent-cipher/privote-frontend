@@ -8,12 +8,15 @@ import { useState, useEffect, Suspense } from "react";
 import { CreatePollForm } from "~~/components/admin";
 import { useFetchUserPolls } from "~~/hooks/useFetchUserPolls";
 import { PollsList, Pagination } from "~~/components/home";
+import { PollFormProvider } from "~~/components/admin/CreatePollForm/context/PollFormContext";
 
 export default function Admin() {
   return (
     <div className={styles.wrapper}>
       <Suspense fallback={<div>Loading...</div>}>
-        <AdminPoll />
+        <PollFormProvider>
+          <AdminPoll />
+        </PollFormProvider>
       </Suspense>
     </div>
   );

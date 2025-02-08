@@ -3,8 +3,6 @@ import Image from "next/image";
 import styles from "./index.module.css";
 import { CreatePollFormProps } from "./types";
 import { PollSettings } from "./components/PollSettings";
-import { useCreatePollForm } from "./hooks/useCreatePollForm";
-import { LuPlus } from "react-icons/lu";
 import {
   Divider,
   CandidateSelection,
@@ -12,7 +10,7 @@ import {
   PollConfiguration,
 } from "./components";
 import Button from "~~/components/ui/Button";
-import { EMode } from "~~/types/poll";
+import { usePollForm } from "./context";
 
 const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const { isConnected } = useAccount();
@@ -35,7 +33,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     handleRemoveOption,
     handleSubmit,
     handleVeriMethodChange,
-  } = useCreatePollForm(onClose, refetchPolls);
+  } = usePollForm();
 
   if (!isConnected) {
     return (
@@ -106,7 +104,10 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
               mode: parseInt(e.target.value),
             }))
           }
-          onMaxVoteChange={(e: number | React.ChangeEvent<HTMLInputElement>, action?: "add" | "remove") => {
+          onMaxVoteChange={(
+            e: number | React.ChangeEvent<HTMLInputElement>,
+            action?: "add" | "remove"
+          ) => {
             if (action === "add") {
               setPollData((prev) => ({
                 ...prev,
@@ -118,7 +119,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
                 maxVotePerPerson: prev.maxVotePerPerson - 1,
               }));
             } else {
-              const value = typeof e === 'number' ? e : parseInt(e.target.value);
+              const value =
+                typeof e === "number" ? e : parseInt(e.target.value);
               setPollData((prev) => ({
                 ...prev,
                 maxVotePerPerson: value,

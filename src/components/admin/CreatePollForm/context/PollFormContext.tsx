@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { IPollData } from "../types";
 import { notification } from "~~/utils/scaffold-eth";
 import { Keypair, PubKey } from "maci-domainobjs";
-import { uploadFileToLighthouse } from "~~/utils/lighthouse";
-import CID from "cids";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { parseEther } from "viem";
-import { encodeOptionInfo } from "~~/utils/optionInfo";
 import { getMaciContractName } from "~~/utils/maciName";
+import { encodeOptionInfo } from "~~/utils/optionInfo";
+import { uploadFileToLighthouse } from "~~/utils/lighthouse";
+import CID from "cids";
 import { AuthType, PollType } from "~~/types/poll";
 
 const initialPollData: IPollData = {
@@ -32,10 +32,40 @@ const initialPollData: IPollData = {
   pubKey: "",
 };
 
-export const useCreatePollForm = (
-  onClose: () => void,
-  refetchPolls: () => void
-) => {
+interface PollFormContextType {
+  pollData: IPollData;
+  setPollData: React.Dispatch<React.SetStateAction<IPollData>>;
+  files: (File | null)[] | null;
+  isLoading: boolean;
+  showKeys: { show: boolean; privKey: string };
+  setShowKeys: React.Dispatch<
+    React.SetStateAction<{ show: boolean; privKey: string }>
+  >;
+  pollConfig: number;
+  setPollConfig: React.Dispatch<React.SetStateAction<number>>;
+  generateKeyPair: () => void;
+  candidateSelection: "none" | "withImage" | "withoutImage";
+  setCandidateSelection: React.Dispatch<
+    React.SetStateAction<"none" | "withImage" | "withoutImage">
+  >;
+  handleOptionChange: (
+    index: number,
+    value: string,
+    field: "value" | "title" | "description" | "link"
+  ) => void;
+  handleFileChange: (index: number, file: File) => void;
+  handleFileRemove: (index: number) => void;
+  handleAddOption: () => void;
+  handleRemoveOption: (index: number) => void;
+  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  handleVeriMethodChange: (e: React.ChangeEvent<any>) => void;
+}
+
+const PollFormContext = createContext<PollFormContextType | undefined>(
+  undefined
+);
+
+export const PollFormProvider = ({ children }: { children: ReactNode }) => {
   const [pollData, setPollData] = useState<IPollData>(initialPollData);
   const [files, setFiles] = useState<(File | null)[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -242,8 +272,6 @@ export const useCreatePollForm = (
       });
 
       setIsLoading(false);
-      onClose();
-      refetchPolls();
       notification.success("Poll created successfully!");
     } catch (error) {
       console.error("Error creating poll:", error);
@@ -253,7 +281,7 @@ export const useCreatePollForm = (
     }
   };
 
-  return {
+  const value = {
     pollData,
     setPollData,
     files,
@@ -273,4 +301,18 @@ export const useCreatePollForm = (
     handleSubmit,
     handleVeriMethodChange,
   };
+
+  return (
+    <PollFormContext.Provider value={value}>
+      {children}
+    </PollFormContext.Provider>
+  );
+};
+
+export const usePollForm = () => {
+  const context = useContext(PollFormContext);
+  if (context === undefined) {
+    throw new Error("usePollForm must be used within a PollFormProvider");
+  }
+  return context;
 };
