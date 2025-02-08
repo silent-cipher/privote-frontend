@@ -6,7 +6,7 @@ import { Hero } from "~~/components/home";
 import Button from "~~/components/ui/Button";
 import Trending from "~~/components/home/Trending";
 import Footer from "~~/components/Footer";
-import { PollStatus } from "~~/types/poll";
+import { AuthType, PollStatus, PollType } from "~~/types/poll";
 
 export default function Home() {
   const {
@@ -31,19 +31,30 @@ export default function Home() {
     );
   }
 
+  // TODO: Remove filter for Weighted Multiple Vote with new contract deployment
+  const filteredPolls = polls
+    ? polls.filter((poll) => {
+        const metadata = JSON.parse(poll.metadata);
+        return (
+          (metadata.pollType !== PollType.WEIGHTED_MULTIPLE_VOTE ||
+            poll.id !== BigInt(0) ||
+            poll.authType !== AuthType.ANON) &&
+          poll.status === PollStatus.OPEN
+        );
+      })
+    : [];
+
   return (
     <div className={styles["main-page"]}>
       <Hero />
-      {!isPollsLoading &&
-        polls &&
-        polls.filter((poll) => poll.status === PollStatus.OPEN).length > 0 && (
-          <Trending
-            totalPolls={totalPolls}
-            polls={polls}
-            isLoading={isPollsLoading}
-            error={error}
-          />
-        )}
+      {!isPollsLoading && filteredPolls.length > 0 && (
+        <Trending
+          totalPolls={totalPolls}
+          polls={filteredPolls}
+          isLoading={isPollsLoading}
+          error={error}
+        />
+      )}
       <Footer />
     </div>
   );
