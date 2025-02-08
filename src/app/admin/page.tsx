@@ -3,10 +3,11 @@ import { useAccount } from "wagmi";
 import { useSearchParams } from "next/navigation";
 import styles from "~~/styles/admin.module.css";
 import Button from "~~/components/ui/Button";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState, useEffect, Suspense } from "react";
-import { CreatePollForm, PollsList } from "~~/components/admin";
+import { CreatePollForm } from "~~/components/admin";
 import { useFetchUserPolls } from "~~/hooks/useFetchUserPolls";
-import { Pagination } from "~~/components/home";
+import { PollsList, Pagination } from "~~/components/home";
 
 export default function Admin() {
   return (
@@ -63,14 +64,18 @@ const AdminPoll = () => {
           </Button>
         )}
       </div>
-      {!showCreatePoll ? (
+      {!isConnected && (
+        <div className={styles["empty-state"]}>
+          <h3>Connect Your Wallet</h3>
+          <p>Please connect your wallet to view your polls</p>
+          <div className={styles["connect-button"]}>
+            <ConnectButton />
+          </div>
+        </div>
+      )}
+      {!showCreatePoll && isConnected && (
         <>
-          <PollsList
-            polls={polls}
-            isLoading={isLoading}
-            refetch={refetchPolls}
-            error={error}
-          />
+          <PollsList polls={polls} isLoadingPolls={isLoading} error={error} />
           {polls && polls.length > 0 && (
             <div className={styles["pagination-container"]}>
               <Pagination
@@ -82,7 +87,8 @@ const AdminPoll = () => {
             </div>
           )}
         </>
-      ) : (
+      )}{" "}
+      {showCreatePoll && isConnected && (
         <CreatePollForm
           refetchPolls={refetchPolls}
           onClose={() => {

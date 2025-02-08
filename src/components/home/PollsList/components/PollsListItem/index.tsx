@@ -41,8 +41,8 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
         </div>
         <div className={styles.container}>
           <div className={styles.left}>
-            <h2>
-              {poll.name}{" "}
+            <div className={styles.heading}>
+              <h2>{poll.name} </h2>
               {AuthTypeMapping[poll.authType] && (
                 <Image
                   src={`/${AuthTypeMapping[poll.authType]}.svg`}
@@ -51,7 +51,7 @@ const PollsListItem = ({ poll }: PollsListItemProps) => {
                   alt="icon"
                 />
               )}
-            </h2>
+            </div>
             <p>{Number(poll.numOfOptions)} Candidates</p>
           </div>
           <div className={styles.right}>

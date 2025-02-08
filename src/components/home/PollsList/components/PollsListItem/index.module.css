@@ -46,6 +46,7 @@
 .container {
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -55,17 +56,18 @@
   flex-direction: column;
 }
 
-.left > h2 {
+.heading {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
+}
+
+.heading > h2 {
   color: #fff;
-  text-align: center;
   font-size: 24px;
-  font-style: normal;
   font-weight: 700;
   line-height: 160%;
-
+  text-align: left;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   line-clamp: 1;
