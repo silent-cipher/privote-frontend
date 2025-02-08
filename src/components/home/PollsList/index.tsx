@@ -26,23 +26,11 @@ const PollsList = ({ polls, isLoadingPolls, error }: PollsListProps) => {
     );
   }
 
-  // TODO: Remove filter for Weighted Multiple Vote with new contract deployment
-  const filteredPolls = polls
-    ? polls.filter((poll) => {
-        const metadata = JSON.parse(poll.metadata);
-        return (
-          metadata.pollType !== PollType.WEIGHTED_MULTIPLE_VOTE ||
-          poll.id !== BigInt(0) ||
-          poll.authType !== AuthType.ANON
-        );
-      })
-    : [];
-
   return (
     <div className={styles["polls-container"]}>
       <ul className={styles["polls-list"]}>
-        {filteredPolls &&
-          filteredPolls.map((poll) => (
+        {polls &&
+          polls.map((poll) => (
             <PollsListItem key={poll.pollContracts.poll} poll={poll} />
           ))}
       </ul>

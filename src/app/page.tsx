@@ -6,7 +6,7 @@ import { Hero } from "~~/components/home";
 import Button from "~~/components/ui/Button";
 import Trending from "~~/components/home/Trending";
 import Footer from "~~/components/Footer";
-import { AuthType, PollStatus, PollType } from "~~/types/poll";
+import { PollStatus } from "~~/types/poll";
 
 export default function Home() {
   const {
@@ -31,7 +31,6 @@ export default function Home() {
     );
   }
 
-  // TODO: Remove filter for Weighted Multiple Vote with new contract deployment
   const filteredPolls = polls
     ? polls.filter((poll) => poll.status === PollStatus.OPEN)
     : [];
