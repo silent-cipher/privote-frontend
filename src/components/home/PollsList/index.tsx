@@ -31,10 +31,9 @@ const PollsList = ({ polls, isLoadingPolls, error }: PollsListProps) => {
     ? polls.filter((poll) => {
         const metadata = JSON.parse(poll.metadata);
         return (
-          (metadata.pollType !== PollType.WEIGHTED_MULTIPLE_VOTE ||
-            poll.id !== BigInt(0) ||
-            poll.authType !== AuthType.ANON) &&
-          poll.status === PollStatus.OPEN
+          metadata.pollType !== PollType.WEIGHTED_MULTIPLE_VOTE ||
+          poll.id !== BigInt(0) ||
+          poll.authType !== AuthType.ANON
         );
       })
     : [];

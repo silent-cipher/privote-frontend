@@ -33,15 +33,7 @@ export default function Home() {
 
   // TODO: Remove filter for Weighted Multiple Vote with new contract deployment
   const filteredPolls = polls
-    ? polls.filter((poll) => {
-        const metadata = JSON.parse(poll.metadata);
-        return (
-          (metadata.pollType !== PollType.WEIGHTED_MULTIPLE_VOTE ||
-            poll.id !== BigInt(0) ||
-            poll.authType !== AuthType.ANON) &&
-          poll.status === PollStatus.OPEN
-        );
-      })
+    ? polls.filter((poll) => poll.status === PollStatus.OPEN)
     : [];
 
   return (
