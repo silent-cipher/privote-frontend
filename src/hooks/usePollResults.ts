@@ -32,7 +32,7 @@ export const usePollResults = (
   );
 
   const fetchResults = async () => {
-    if (!poll || !tally) return;
+    if (!poll || !poll.isTallied || !tally) return;
 
     setIsLoading(true);
     setError(null);
@@ -71,7 +71,7 @@ export const usePollResults = (
 
   useEffect(() => {
     fetchResults();
-  }, [tally]);
+  }, [tally, poll?.isTallied]);
 
   return {
     result,
