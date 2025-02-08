@@ -90,6 +90,10 @@ const VoteCard = ({
 
   const handleWeightedVoteChange = useCallback(
     (votes: number) => {
+      if (!isUserRegistered) {
+        notification.error("Please register to vote");
+        return;
+      }
       if (!isNaN(votes) && votes >= 0) {
         // Check if votes exceed maxVotePerPerson (if defined)
 
