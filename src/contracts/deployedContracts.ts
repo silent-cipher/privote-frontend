@@ -3535,7 +3535,7 @@ const deployedContracts = {
       deploymentBlockNumber: 3299335,
     },
     privote_anon_single: {
-      address: "0x033247862adC2Ef761900c371a7a6707328eDEac",
+      address: "0x471A0ED8624E8d278cA74B7193DB2b8de4851F3b",
       abi: [
         {
           inputs: [
@@ -5296,10 +5296,10 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 3293005,
+      deploymentBlockNumber: 3310156,
     },
     privote_anon_multi: {
-      address: "0xEE9900f9d828eEeb2d941f1DaCBa86A56bF27c8B",
+      address: "0xcE3F6d6BFC8129BF240E7D0FDEA809ED37cf2d96",
       abi: [
         {
           inputs: [
@@ -7060,7 +7060,7 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 3299412,
+      deploymentBlockNumber: 3310258,
     },
   },
 } as const;
