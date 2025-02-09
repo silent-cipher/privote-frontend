@@ -16,6 +16,7 @@ import VotingSection from "../VotingSection";
 import Button from "~~/components/ui/Button";
 import { useSigContext } from "~~/contexts/SigContext";
 import { useSearchParams } from "next/navigation";
+import { EMode } from "~~/types/poll";
 
 interface IPollDetails {
   id: bigint;
@@ -74,6 +75,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     castVote,
   } = useVoting({
     pollAddress: poll?.pollContracts.poll,
+    mode: poll?.isQv as EMode,
     pollType: pollMetadata.pollType,
     status,
     coordinatorPubKey,

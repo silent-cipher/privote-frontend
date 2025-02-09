@@ -3,7 +3,7 @@ import { useContractWrite } from "wagmi";
 import { PCommand, Keypair, PubKey } from "maci-domainobjs";
 import { genRandomSalt } from "maci-crypto";
 import { notification } from "~~/utils/scaffold-eth";
-import { PollType, PollStatus } from "~~/types/poll";
+import { PollType, PollStatus, EMode } from "~~/types/poll";
 import PollAbi from "~~/abi/Poll";
 
 interface UseVotingProps {
@@ -15,6 +15,7 @@ interface UseVotingProps {
   keypair?: Keypair | null;
   pollId?: bigint;
   maxVotePerPerson?: number;
+  mode?: EMode;
 }
 
 export const useVoting = ({
@@ -26,6 +27,7 @@ export const useVoting = ({
   keypair,
   pollId,
   maxVotePerPerson,
+  mode,
 }: UseVotingProps) => {
   const [votes, setVotes] = useState<{ index: number; votes: number }[]>([]);
   const [isVotesInvalid, setIsVotesInvalid] = useState<Record<number, boolean>>(
@@ -136,13 +138,22 @@ export const useVoting = ({
       return;
     }
 
-    const votesToMessage = votes.map((v, i) =>
+    let updatedVotes = votes;
+
+    if (pollType === PollType.WEIGHTED_MULTIPLE_VOTE && mode === EMode.QV) {
+      updatedVotes = votes.map((v) => ({
+        index: v.index,
+        votes: Math.floor(Math.sqrt(v.votes)),
+      }));
+    }
+
+    const votesToMessage = updatedVotes.map((v, i) =>
       getMessageAndEncKeyPair(
         BigInt(stateIndex),
         pollId,
         BigInt(v.index),
         BigInt(v.votes),
-        BigInt(votes.length - i),
+        BigInt(updatedVotes.length - i),
         coordinatorPubKey,
         keypair
       )
