@@ -1771,7 +1771,7 @@ const deployedContracts = {
       deploymentBlockNumber: 3299313,
     },
     privote_free_multi: {
-      address: "0x77c0746eE056d1819Cb918D7A2c63C7ACe662829",
+      address: "0x48b2AE2960fB44e81AA3690f07CFf12B8C56F12B",
       abi: [
         {
           inputs: [
