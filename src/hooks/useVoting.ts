@@ -147,17 +147,19 @@ export const useVoting = ({
       }));
     }
 
-    const votesToMessage = updatedVotes.map((v, i) =>
-      getMessageAndEncKeyPair(
-        BigInt(stateIndex),
-        pollId,
-        BigInt(v.index),
-        BigInt(v.votes),
-        BigInt(updatedVotes.length - i),
-        coordinatorPubKey,
-        keypair
-      )
-    );
+    const votesToMessage = updatedVotes
+      .sort((a, b) => a.index - b.index)
+      .map((v, i) =>
+        getMessageAndEncKeyPair(
+          BigInt(stateIndex),
+          pollId,
+          BigInt(v.index),
+          BigInt(v.votes),
+          BigInt(updatedVotes.length - i),
+          coordinatorPubKey,
+          keypair
+        )
+      );
 
     try {
       if (votesToMessage.length === 1) {
