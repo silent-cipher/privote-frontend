@@ -112,9 +112,12 @@ export const PollHeader = ({
             description={pollDescription}
           />
           {/* {!isConnected && <ConnectButton />} */}
-          {isConnected && authType === "anon" && status === PollStatus.OPEN && (
-            <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
-          )}
+          {isConnected &&
+            !isUserRegistered &&
+            authType === "anon" &&
+            status === PollStatus.OPEN && (
+              <LogInWithAnonAadhaar nullifierSeed={4534} signal={address} />
+            )}
 
           {authType === "anon" &&
             status === PollStatus.OPEN &&

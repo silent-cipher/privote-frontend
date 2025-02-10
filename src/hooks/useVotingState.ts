@@ -83,10 +83,10 @@ export const useVotingState = ({
       };
     }
   } else if (authType === "anon") {
-    if (anonAadhaarStatus === "logged-out") {
+    if (!isUserRegistered && anonAadhaarStatus === "logged-out") {
       return {
         canVote: false,
-        message: "Please login using AnonAadhaar to vote",
+        message: "Please login using AnonAadhaar to register",
         showRegisterButton: false,
         showVoteButton: false,
         showLoginButton: true,
