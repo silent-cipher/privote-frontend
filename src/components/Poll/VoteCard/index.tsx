@@ -94,18 +94,13 @@ const VoteCard = ({
         notification.error("Please register to vote");
         return;
       }
-      if (!isNaN(votes) && votes >= 0) {
-        // Check if votes exceed maxVotePerPerson (if defined)
 
-        if (maxVotePerPerson && currentTotalVotes + votes > maxVotePerPerson) {
-          notification.info("You have reached the maximum vote limit");
-          return;
-        }
-        onVoteChange(index, votes);
-        onInvalidStatusChange(false);
-      } else {
-        onInvalidStatusChange(true);
+      if (maxVotePerPerson && currentTotalVotes + votes > maxVotePerPerson) {
+        notification.info("You have reached the maximum vote limit");
+        return;
       }
+      onVoteChange(index, votes);
+      onInvalidStatusChange(false);
     },
     [index, onVoteChange, onInvalidStatusChange, maxVotePerPerson]
   );

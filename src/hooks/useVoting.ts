@@ -138,7 +138,8 @@ export const useVoting = ({
       return;
     }
 
-    let updatedVotes = votes;
+    // remove any votes from the array that are invalid
+    let updatedVotes = votes.filter((v) => !isNaN(v.votes));
 
     if (pollType === PollType.WEIGHTED_MULTIPLE_VOTE && mode === EMode.QV) {
       updatedVotes = votes.map((v) => ({
