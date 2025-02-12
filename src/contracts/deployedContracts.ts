@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "../utils/scaffold-eth/contract";
 const deployedContracts = {
   17000: {
     privote_free_single: {
-      address: "0xa3D5837Fb097fA19E468F8BE8d73698AbE6e04a0",
+      address: "0xaa9EA2061D24A79B6752668AECdFa8848fBc57C0",
       abi: [
         {
           inputs: [
@@ -1768,10 +1768,10 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 3299313,
+      deploymentBlockNumber: 3338680,
     },
     privote_free_multi: {
-      address: "0x48b2AE2960fB44e81AA3690f07CFf12B8C56F12B",
+      address: "0xf9f51d7490A70f338523de6ab58194599B0671f2",
       abi: [
         {
           inputs: [
@@ -3532,10 +3532,10 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 3299335,
+      deploymentBlockNumber: 3338752,
     },
     privote_anon_single: {
-      address: "0x471A0ED8624E8d278cA74B7193DB2b8de4851F3b",
+      address: "0x6b962dA1eA33524C22Ce90E00C7B511Ca058D113",
       abi: [
         {
           inputs: [
@@ -5296,10 +5296,10 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 3310156,
+      deploymentBlockNumber: 3338801,
     },
     privote_anon_multi: {
-      address: "0xB005Fe2FB8466a349C9C14fdB8Ee2F89466D848a",
+      address: "0x673e021Efb1C5895d3CE50dfaa6F0a444780b1b1",
       abi: [
         {
           inputs: [
@@ -7060,7 +7060,7 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 3320281,
+      deploymentBlockNumber: 3338614,
     },
   },
 } as const;
