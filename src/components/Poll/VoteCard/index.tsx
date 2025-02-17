@@ -162,7 +162,7 @@ const VoteCard = ({
             )}
           </div>
         </div>
-        {true && (
+        {pollOpen && (
           <div className={styles.voteControls}>
             {pollType !== PollType.WEIGHTED_MULTIPLE_VOTE && (
               <div className={styles["vote-label-container"]}>
@@ -246,7 +246,7 @@ const VoteCard = ({
           </div>
         )}
 
-        {result && !true && (
+        {result && !pollOpen && (
           <div
             className={`${styles.result} ${!description && styles.vertical}`}
           >
