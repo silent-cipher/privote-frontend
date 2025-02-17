@@ -114,10 +114,11 @@ export const PollFormProvider = ({ children }: { children: ReactNode }) => {
       return false;
     }
 
-    if (!pollData.description.trim()) {
-      notification.error("Please enter a description");
-      return false;
-    }
+    // Removed description validation
+    // if (!pollData.description.trim()) {
+    //   notification.error("Please enter a description");
+    //   return false;
+    // }
 
     if (pollData.pollType === null) {
       notification.error("Please select a poll type");

@@ -90,10 +90,10 @@ const VoteCard = ({
 
   const handleWeightedVoteChange = useCallback(
     (votes: number) => {
-      if (!isUserRegistered) {
-        notification.error("Please register to vote");
-        return;
-      }
+      // if (!isUserRegistered) {
+      //   notification.error("Please register to vote");
+      //   return;
+      // }
 
       if (maxVotePerPerson && currentTotalVotes + votes > maxVotePerPerson) {
         notification.info("You have reached the maximum vote limit");
@@ -162,7 +162,7 @@ const VoteCard = ({
             )}
           </div>
         </div>
-        {pollOpen && (
+        {true && (
           <div className={styles.voteControls}>
             {pollType !== PollType.WEIGHTED_MULTIPLE_VOTE && (
               <div className={styles["vote-label-container"]}>
@@ -194,49 +194,59 @@ const VoteCard = ({
             )}
 
             {pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
-              <div className={styles.box}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (votes > 0) {
-                      handleWeightedVoteChange(votes - 1);
-                    }
-                  }}
-                >
-                  <Image src="/minus.svg" alt="minus" width={16} height={16} />
-                </button>
-                <input
-                  type="number"
-                  onChange={(e) => {
-                    handleWeightedVoteChange(parseInt(e.target.value, 10));
-                  }}
-                  min={0}
-                  max={maxVotePerPerson}
-                  value={votes}
-                  className={`${styles.weightInput} ${
-                    isInvalid ? styles.invalid : ""
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!maxVotePerPerson) {
-                      handleWeightedVoteChange(votes + 1);
-                    } else {
-                      if (votes < maxVotePerPerson) {
-                        handleWeightedVoteChange(votes + 1);
+              <div className={styles["mw"]}>
+                <div className={styles.box}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (votes > 0) {
+                        handleWeightedVoteChange(votes - 1);
                       }
-                    }
-                  }}
-                >
-                  <Image src="/plus.svg" alt="plus" width={16} height={16} />
-                </button>
+                    }}
+                  >
+                    <Image
+                      src="/minus.svg"
+                      alt="minus"
+                      width={16}
+                      height={16}
+                    />
+                  </button>
+                  <input
+                    type="number"
+                    onChange={(e) => {
+                      handleWeightedVoteChange(parseInt(e.target.value, 10));
+                    }}
+                    min={0}
+                    max={maxVotePerPerson}
+                    value={votes}
+                    className={`${styles.weightInput} ${
+                      isInvalid ? styles.invalid : ""
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!maxVotePerPerson) {
+                        handleWeightedVoteChange(votes + 1);
+                      } else {
+                        if (votes < maxVotePerPerson) {
+                          handleWeightedVoteChange(votes + 1);
+                        }
+                      }
+                    }}
+                  >
+                    <Image src="/plus.svg" alt="plus" width={16} height={16} />
+                  </button>
+                </div>
+                <div className={styles["vote-weight"]}>
+                  <p>Weight: {Math.floor(Math.sqrt(votes))}</p>
+                </div>
               </div>
             )}
           </div>
         )}
 
-        {result && !pollOpen && (
+        {result && !true && (
           <div
             className={`${styles.result} ${!description && styles.vertical}`}
           >

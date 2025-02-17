@@ -62,6 +62,7 @@
 }
 
 .heading {
+  text-align: center;
   font-size: 32px;
   font-style: normal;
   font-weight: 700;
