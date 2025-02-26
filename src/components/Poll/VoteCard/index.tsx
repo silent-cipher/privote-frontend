@@ -50,7 +50,7 @@ const VoteCard = ({
   isWinner,
   pollType,
   isInvalid,
-  // pollOpen,
+  pollOpen,
   index,
   isUserRegistered,
   isSelected,
@@ -62,7 +62,6 @@ const VoteCard = ({
   onVote,
   isLoading,
 }: VoteCardProps) => {
-  const pollOpen = true;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isConnected } = useAccount();
   const { cid, description, link } = decodeOptionInfo(bytesCid);
