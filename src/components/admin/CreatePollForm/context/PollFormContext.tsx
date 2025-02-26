@@ -9,6 +9,7 @@ import { encodeOptionInfo } from "~~/utils/optionInfo";
 import { uploadFileToLighthouse } from "~~/utils/lighthouse";
 import CID from "cids";
 import { AuthType, PollType } from "~~/types/poll";
+import { useRouter } from "next/navigation";
 
 const initialPollData: IPollData = {
   title: "",
@@ -66,6 +67,7 @@ const PollFormContext = createContext<PollFormContextType | undefined>(
 );
 
 export const PollFormProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
   const [pollData, setPollData] = useState<IPollData>(initialPollData);
   const [files, setFiles] = useState<(File | null)[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -274,6 +276,7 @@ export const PollFormProvider = ({ children }: { children: ReactNode }) => {
 
       setIsLoading(false);
       notification.success("Poll created successfully!");
+      router.push("/polls");
     } catch (error) {
       console.error("Error creating poll:", error);
       notification.error("Failed to create poll");

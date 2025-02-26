@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import styles from "~~/styles/publish.module.css";
 import { useFetchPoll } from "~~/hooks/useFetchPoll";
@@ -18,6 +19,7 @@ export default function Publish() {
   const authType = (searchParams.get("authType") as AuthType) || "free";
   const pollType =
     (Number(searchParams.get("pollType")) as PollType) || PollType.SINGLE_VOTE;
+  const [isModalVisible, setIsModalVisible] = useState(true);
   const {
     data: poll,
     error,
@@ -39,6 +41,7 @@ export default function Publish() {
   } = usePublishResults(pollId, authType, pollType, poll?.isQv as EMode);
 
   const showLoader =
+    isModalVisible &&
     proofGenerationState !== ProofGenerationStatus.ERROR &&
     proofGenerationState !== ProofGenerationStatus.IDLE &&
     proofGenerationState !== ProofGenerationStatus.REJECTED;
@@ -90,7 +93,11 @@ export default function Publish() {
           />
         </div>
       </div>
-      <LoaderModal isOpen={showLoader} status={proofGenerationState} />
+      <LoaderModal
+        isOpen={showLoader}
+        status={proofGenerationState}
+        onClose={() => setIsModalVisible(false)}
+      />
     </div>
   );
 }

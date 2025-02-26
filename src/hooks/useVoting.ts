@@ -5,6 +5,7 @@ import { genRandomSalt } from "maci-crypto";
 import { notification } from "~~/utils/scaffold-eth";
 import { PollType, PollStatus, EMode } from "~~/types/poll";
 import PollAbi from "~~/abi/Poll";
+import { useScaffoldContractWrite } from "./scaffold-eth";
 
 interface UseVotingProps {
   pollAddress?: string;
@@ -29,7 +30,7 @@ export const useVoting = ({
   maxVotePerPerson,
   mode,
 }: UseVotingProps) => {
-  const [votes, setVotes] = useState<{ index: number; votes: number }[]>([]);
+  const [votes, setVotes] = useState<{ index: number; votes: string }[]>([]);
   const [isVotesInvalid, setIsVotesInvalid] = useState<Record<number, boolean>>(
     {}
   );
@@ -80,7 +81,7 @@ export const useVoting = ({
     return { message, encKeyPair };
   };
 
-  const voteUpdated = (index: number, checked: boolean, voteCounts: number) => {
+  const voteUpdated = (index: number, checked: boolean, voteCounts: string) => {
     if (Number(pollType) === PollType.SINGLE_VOTE) {
       if (checked) {
         setVotes([{ index, votes: voteCounts }]);
@@ -127,10 +128,18 @@ export const useVoting = ({
       return;
     }
 
+    // remove any votes from the array that are invalid
+    let updatedVotes = votes
+      .map((v) => ({
+        index: v.index,
+        votes: parseInt(v.votes),
+      }))
+      .filter((v) => !isNaN(v.votes));
+
     if (
       pollType === PollType.WEIGHTED_MULTIPLE_VOTE &&
       maxVotePerPerson &&
-      votes.reduce((a, b) => a + b.votes, 0) > maxVotePerPerson
+      updatedVotes.reduce((a, b) => a + b.votes, 0) > maxVotePerPerson
     ) {
       notification.error(
         `You can't vote more than ${maxVotePerPerson} per poll`
@@ -138,15 +147,14 @@ export const useVoting = ({
       return;
     }
 
-    // remove any votes from the array that are invalid
-    let updatedVotes = votes.filter((v) => !isNaN(v.votes));
-
     if (pollType === PollType.WEIGHTED_MULTIPLE_VOTE && mode === EMode.QV) {
       updatedVotes = votes.map((v) => ({
         index: v.index,
-        votes: Math.floor(Math.sqrt(v.votes)),
+        votes: Math.floor(Math.sqrt(parseInt(v.votes))),
       }));
     }
+
+    console.log(updatedVotes);
 
     const votesToMessage = updatedVotes
       .sort((a, b) => a.index - b.index)
@@ -218,8 +226,6 @@ export const useVoting = ({
         });
         setSelectedCandidate(null);
       }
-
-      notification.success("Vote casted successfully");
     } catch (err) {
       console.error("err", err);
       notification.error("Casting vote failed, please try again");

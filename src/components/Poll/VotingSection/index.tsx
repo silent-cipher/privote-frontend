@@ -4,11 +4,14 @@ import styles from "~~/styles/userPoll.module.css";
 import { PollStatus, PollType } from "~~/types/poll";
 import VoteCard from "../VoteCard";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
+import MarkdownRenderer from "~~/components/common/MarkdownRenderer";
 import useVotingState from "~~/hooks/useVotingState";
 import { useCallback, useState, useEffect, useRef } from "react";
+import VoteSummarySection from "../VoteSummarySection";
+import { notification } from "~~/utils/scaffold-eth";
 
 interface VotingSectionProps {
-  votes: { index: number; votes: number }[];
+  votes: { index: number; votes: string }[];
   pollId: bigint;
   pollTitle: string;
   pollDescription?: string;
@@ -28,7 +31,7 @@ interface VotingSectionProps {
   selectedCandidate: number | null;
   isLoadingSingle: boolean;
   isLoadingBatch: boolean;
-  onVoteUpdate: (index: number, checked: boolean, votes: number) => void;
+  onVoteUpdate: (index: number, checked: boolean, votes: string) => void;
   setIsVotesInvalid: (status: Record<number, boolean>) => void;
   setSelectedCandidate: (index: number | null) => void;
   onVote: () => void;
@@ -85,11 +88,15 @@ export const VotingSection = ({
     const checkOverflow = () => {
       if (descriptionRef.current) {
         // Get the line height from computed styles
-        const lineHeight = parseInt(window.getComputedStyle(descriptionRef.current).lineHeight);
-        const maxHeight = lineHeight * 5; // Height for 5 lines
-        
+        const lineHeight = parseInt(
+          window.getComputedStyle(descriptionRef.current).lineHeight
+        );
+        const maxHeight = lineHeight * 4; // Height for 4 lines
+
         // Check if content height is greater than max height
-        setIsContentOverflowing(descriptionRef.current.scrollHeight > maxHeight);
+        setIsContentOverflowing(
+          descriptionRef.current.scrollHeight > maxHeight
+        );
       }
     };
 
@@ -109,9 +116,8 @@ export const VotingSection = ({
   });
 
   const handleVoteChange = useCallback(
-    (index: number, votes: number) => {
-      const isChecked = votes > 0;
-      onVoteUpdate(index, isChecked, votes);
+    (index: number, votes: string) => {
+      onVoteUpdate(index, true, votes);
     },
     [onVoteUpdate]
   );
@@ -142,29 +148,69 @@ export const VotingSection = ({
     [pollType, setSelectedCandidate, setIsVotesInvalid, isVotesInvalid]
   );
 
+  const currentTotalVotes = votes
+    ? votes.reduce((acc, v) => acc + Number(v.votes), 0)
+    : 0;
+
+  const handleWeightedVoteChange = useCallback(
+    (prevVotes: string | undefined, votes: string, index: number) => {
+      if (!isConnected) {
+        notification.error("Please connect your wallet");
+        return;
+      }
+
+      if (!isUserRegistered) {
+        notification.error("Please register to vote");
+        return;
+      }
+
+      if (Number(votes) < 0) return;
+      if (
+        maxVotePerPerson &&
+        currentTotalVotes - (Number(prevVotes) ?? 0) + Number(votes) >
+          maxVotePerPerson
+      ) {
+        notification.info("You have reached the maximum vote limit");
+        return;
+      }
+      handleVoteChange(index, votes);
+    },
+    [maxVotePerPerson, handleVoteChange, isConnected, isUserRegistered]
+  );
+
   return (
     <div className={styles["candidate-container"]}>
       <div className={styles.content}>
         <h1 className={styles.heading}>{pollTitle}</h1>
         {pollDescription && (
           <div>
-            <p
+            <div
               ref={descriptionRef}
-              className={`${styles.description} ${
-                !isExpanded && isContentOverflowing ? styles.descriptionTruncated : ""
+              className={`description ${
+                !isExpanded && isContentOverflowing && isMobile
+                  ? styles.descriptionTruncated
+                  : ""
               }`}
             >
-              {pollDescription}
-              {/* <div className={`${styles.fadeOverlay} ${!isExpanded && isMobile ? styles.fadeOverlayVisible : ''}`} /> */}
-            </p>
-            {isMobile && isContentOverflowing && (
-              <button
-                className={styles.showMoreButton}
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                {isExpanded ? "Show Less" : "Show More"}
-              </button>
-            )}
+              <MarkdownRenderer
+                content={
+                  isMobile
+                    ? isExpanded
+                      ? pollDescription
+                      : pollDescription.substring(0, 220)
+                    : pollDescription
+                }
+              />
+              {isMobile && (
+                <span
+                  className={styles.showMoreButton}
+                  onClick={() => setIsExpanded(!isExpanded)}
+                >
+                  {" "}
+                  {isExpanded ? "Show less" : "...read more"}
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -177,58 +223,76 @@ export const VotingSection = ({
           </p>
         </div>
       )}
-      <ul className={styles["candidate-list"]}>
-        {options.map((option: string, index: number) => (
-          <VoteCard
-            key={index}
-            votes={votes.find((v) => v.index === index)?.votes || 0}
-            pollOpen={pollStatus === PollStatus.OPEN}
-            maxVotePerPerson={maxVotePerPerson}
-            title={option}
-            bytesCid={optionInfo[index]}
-            index={index}
-            result={result?.find((r) => r.candidate === option)}
-            totalVotes={totalVotes}
-            isUserRegistered={isUserRegistered}
-            currentTotalVotes={votes
-              .filter((v) => v.index !== index)
-              .reduce((acc, v) => acc + v.votes, 0)}
-            isWinner={result?.[0]?.candidate === option}
-            pollType={pollType}
-            isInvalid={Boolean(isVotesInvalid[index])}
-            onVoteChange={(index, votes) => {
-              handleVoteChange(index, votes);
-            }}
-            onInvalidStatusChange={(status) =>
-              handleInvalidStatusChange(index, status)
-            }
-            onSelect={() => handleSelect(index)}
-            isSelected={selectedCandidate === index}
-            onVote={onVote}
-            isLoading={isLoadingBatch || isLoadingSingle}
-          />
-        ))}
-      </ul>
+      <h2 className={styles.heading}>Poll Options</h2>
+      <VoteSummarySection
+        options={options}
+        optionInfo={optionInfo}
+        votes={votes}
+        maxVotePerPerson={maxVotePerPerson}
+        currentTotalVotes={votes.reduce((acc, v) => acc + Number(v.votes), 0)}
+        onVoteChange={handleVoteChange}
+        onVote={onVote}
+        isLoading={isLoadingBatch || isLoadingSingle}
+        handleWeightedVoteChange={handleWeightedVoteChange}
+        canVote={
+          isLoadingSingle ||
+          isLoadingBatch ||
+          Object.values(isVotesInvalid).some((v) => v)
+        }
+      >
+        <ul className={styles["candidate-list"]}>
+          {options.map((option: string, index: number) => (
+            <VoteCard
+              key={index}
+              votes={votes.find((v) => v.index === index)?.votes || ""}
+              pollOpen={pollStatus === PollStatus.OPEN}
+              maxVotePerPerson={maxVotePerPerson}
+              title={option}
+              bytesCid={optionInfo[index]}
+              index={index}
+              result={result?.find((r) => r.candidate === option)}
+              totalVotes={totalVotes}
+              isUserRegistered={isUserRegistered}
+              handleWeightedVoteChange={handleWeightedVoteChange}
+              isWinner={result?.[0]?.candidate === option}
+              pollType={pollType}
+              isInvalid={Boolean(isVotesInvalid[index])}
+              onVoteChange={(index, votes) => {
+                handleVoteChange(index, votes);
+              }}
+              onInvalidStatusChange={(status) =>
+                handleInvalidStatusChange(index, status)
+              }
+              onSelect={() => handleSelect(index)}
+              isSelected={selectedCandidate === index}
+              onVote={onVote}
+              isLoading={isLoadingBatch || isLoadingSingle}
+            />
+          ))}
+        </ul>
+      </VoteSummarySection>
       {votingState.message && pollStatus === PollStatus.OPEN && (
         <p className={styles.message}>{votingState.message}</p>
       )}
       {votingState.canVote && (
         <div className={styles.col}>
-          <button
-            className={styles["poll-btn"]}
-            onClick={onVote}
-            disabled={
-              isLoadingSingle ||
-              isLoadingBatch ||
-              Object.values(isVotesInvalid).some((v) => v)
-            }
-          >
-            {isLoadingSingle || isLoadingBatch ? (
-              <span className={`${styles.spinner} spinner`}></span>
-            ) : (
-              <p>Vote Now</p>
-            )}
-          </button>
+          {pollType !== PollType.WEIGHTED_MULTIPLE_VOTE && (
+            <button
+              className={styles["poll-btn"]}
+              onClick={onVote}
+              disabled={
+                isLoadingSingle ||
+                isLoadingBatch ||
+                Object.values(isVotesInvalid).some((v) => v)
+              }
+            >
+              {isLoadingSingle || isLoadingBatch ? (
+                <span className={`${styles.spinner} spinner`}></span>
+              ) : (
+                <p>Vote Now</p>
+              )}
+            </button>
+          )}
         </div>
       )}
       {pollStatus === PollStatus.CLOSED && pollDeployer === userAddress && (

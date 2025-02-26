@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
 import styles from "~~/styles/userPoll.module.css";
 import Button from "~~/components/ui/Button";
 import { PollStatus } from "~~/types/poll";
 import { useAccount } from "wagmi";
 import { useState, useEffect } from "react";
-import { FaShare, FaWhatsapp, FaTwitter, FaFacebook } from "react-icons/fa";
+import { FaShare, FaQuestionCircle } from "react-icons/fa";
 import ShareModal from "~~/components/ui/ShareModal";
+import InstructionsModal from "~~/components/ui/InstructionsModal";
 
 interface PollHeaderProps {
   authType: string;
@@ -62,6 +62,7 @@ export const PollHeader = ({
   );
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
 
   const handleOpenShareModal = () => {
     setIsShareModalOpen(true);
@@ -69,6 +70,14 @@ export const PollHeader = ({
 
   const handleCloseShareModal = () => {
     setIsShareModalOpen(false);
+  };
+
+  const handleOpenInstructionsModal = () => {
+    setIsInstructionsModalOpen(true);
+  };
+
+  const handleCloseInstructionsModal = () => {
+    setIsInstructionsModalOpen(false);
   };
 
   useEffect(() => {
@@ -101,15 +110,30 @@ export const PollHeader = ({
           />
         </Link>
         <div className={styles.end}>
-          <button className={styles.shareButton} onClick={handleOpenShareModal}>
-            <FaShare /> Share
-          </button>
+          <div className={styles.headerButtons}>
+            <button
+              className={styles.instructionsButton}
+              onClick={handleOpenInstructionsModal}
+            >
+              <FaQuestionCircle /> How to Vote
+            </button>
+            <button
+              className={styles.shareButton}
+              onClick={handleOpenShareModal}
+            >
+              <FaShare /> Share
+            </button>
+          </div>
           <ShareModal
             isOpen={isShareModalOpen}
             onClose={handleCloseShareModal}
             url={typeof window !== "undefined" ? window.location.href : ""}
             title={pollName}
             description={pollDescription}
+          />
+          <InstructionsModal
+            isOpen={isInstructionsModalOpen}
+            onClose={handleCloseInstructionsModal}
           />
           {/* {!isConnected && <ConnectButton />} */}
           {isConnected &&

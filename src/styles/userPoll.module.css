@@ -59,6 +59,7 @@
   justify-content: center;
   align-items: center;
   margin-top: -20px;
+  padding-inline: 24px;
 }
 
 .heading {
@@ -77,25 +78,23 @@
 }
 
 .description {
-  font-size: 16px;
-  line-height: 1.5;
   color: #8c98a9;
   margin-bottom: 10px;
   max-width: 850px;
-  text-align: center;
   position: relative;
   overflow: hidden;
-  text-overflow: ellipsis;
-  transition: max-height 0.3s ease-out;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .descriptionTruncated {
-  max-height: 120px;
+  max-height: 92px;
   overflow: hidden;
-  display: -webkit-box;
+  /* display: -webkit-box;
   -webkit-box-orient: vertical;
-  line-clamp: 5;
-  -webkit-line-clamp: 5;
+  line-clamp: 4;
+  -webkit-line-clamp: 4; */
+  position: relative;
+  padding-bottom: 24px;
 }
 
 .showMoreButton {
@@ -103,8 +102,12 @@
   border: none;
   color: #d7e884;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 0;
   font-size: 14px;
+  text-decoration: none;
+  display: inline;
+  align-items: center;
+  gap: 4px;
 }
 
 .showMoreButton:hover {
@@ -114,13 +117,16 @@
 .fadeOverlay {
   position: absolute;
   bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 40px;
-  background: linear-gradient(to bottom, transparent, #000000);
+  right: 0;
+  width: 80px;
+  height: 24px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 1) 90%
+  );
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  opacity: 1;
 }
 
 .fadeOverlayVisible {
@@ -204,7 +210,6 @@
 
 .candidate-container {
   width: 100%;
-  max-width: 970px;
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
@@ -213,17 +218,17 @@
   align-items: center;
   gap: 16px;
   margin: 0 auto;
-  padding: 24px;
+  padding-block: 24px;
 }
 
-.candidate-container > ul {
-  margin-top: 30px;
+.candidate-list {
   width: 100%;
   display: flex;
   gap: 35px;
   flex-wrap: wrap;
   justify-content: center;
-  /* flex-direction: column; */
+  max-width: 970px;
+  margin-inline: auto;
   align-items: center;
 }
 
@@ -300,7 +305,8 @@
   transition: all 0.2s;
 }
 
-.shareButton:hover {
+.shareButton:hover,
+.instructionsButton:hover {
   background: #252525;
 }
 
@@ -350,7 +356,7 @@
   }
 
   .status {
-    padding: 2px 12px;
+    padding: 6px 12px;
   }
 }
 
@@ -366,4 +372,24 @@
   .candidate-container > ul {
     margin-top: 24px;
   }
+}
+
+.headerButtons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.instructionsButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
 }

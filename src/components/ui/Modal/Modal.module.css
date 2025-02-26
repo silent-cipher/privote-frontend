@@ -17,6 +17,8 @@
   border-radius: 12px;
   padding: 24px;
   width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
   max-width: 500px;
   position: relative;
   color: #fff;
@@ -46,6 +48,7 @@
   align-items: center;
   justify-content: center;
   transition: color 0.2s;
+  margin-left: auto;
 }
 
 .closeButton:hover {

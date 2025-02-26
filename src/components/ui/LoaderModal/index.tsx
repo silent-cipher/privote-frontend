@@ -20,13 +20,15 @@ const btnTextMap = {
 const LoaderModal: React.FC<{
   isOpen: boolean;
   status: ProofGenerationStatus;
-}> = ({ isOpen, status }) => {
+  onClose?: () => void;
+}> = ({ isOpen, status, onClose }) => {
   return (
     <Modal
       isOpen={isOpen}
-      showCloseButton={false}
+      showCloseButton
       maxWidth="300px"
-      onClose={() => {}}
+      padding="8px"
+      onClose={onClose || (() => {})}
     >
       <div className={styles.container}>
         {status === ProofGenerationStatus.SUCCESS ? (

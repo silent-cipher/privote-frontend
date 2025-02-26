@@ -6,6 +6,7 @@ import Button from "~~/components/ui/Button";
 import { PollType } from "~~/types/poll";
 import styles from "./OptionDetailsModal.module.css";
 import { IoMdClose } from "react-icons/io";
+import MarkdownRenderer from "~~/components/common/MarkdownRenderer";
 
 interface OptionDetailsModalProps {
   isOpen: boolean;
@@ -53,7 +54,12 @@ const OptionDetailsModal: React.FC<OptionDetailsModalProps> = ({
         </div>
         <div className={styles.divider} />
         <div className={styles.content}>
-          <p className={styles.description}>{description}</p>
+          <div className={styles.description}>
+            <MarkdownRenderer
+              content={description}
+              className={styles.description}
+            />
+          </div>
           {link && (
             <Link
               className={styles.link}
