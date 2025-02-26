@@ -154,15 +154,15 @@ export const VotingSection = ({
 
   const handleWeightedVoteChange = useCallback(
     (prevVotes: string | undefined, votes: string, index: number) => {
-      if (!isConnected) {
-        notification.error("Please connect your wallet");
-        return;
-      }
+      // if (!isConnected) {
+      //   notification.error("Please connect your wallet");
+      //   return;
+      // }
 
-      if (!isUserRegistered) {
-        notification.error("Please register to vote");
-        return;
-      }
+      // if (!isUserRegistered) {
+      //   notification.error("Please register to vote");
+      //   return;
+      // }
 
       if (Number(votes) < 0) return;
       if (

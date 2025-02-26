@@ -46,7 +46,7 @@ const WeightInput = ({
         <input
           type="text"
           onChange={(e) => {
-            // setShowInitial(false);
+            setShowInitial(false);
             const value = e.target.value;
             // Only allow numeric input (empty or numbers)
             if (value === "" || /^\d+$/.test(value)) {
