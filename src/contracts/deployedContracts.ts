@@ -13158,7 +13158,7 @@ const deployedContracts = {
       deploymentBlockNumber: 127565468,
     },
     privote_anon_multi: {
-      address: "0xE268b94a3D779F16B8B39926f6e33881c1D2f520",
+      address: "0x2885586c99f7e1fd274ce524906672CB8c09a748",
       abi: [
         {
           inputs: [
@@ -14919,7 +14919,7 @@ const deployedContracts = {
           type: "receive",
         },
       ],
-      deploymentBlockNumber: 127560507,
+      deploymentBlockNumber: 127635755,
     },
   },
 } as const;

@@ -128,33 +128,35 @@ const VoteCard = ({
           {description && (
             <MarkdownRenderer content={description}></MarkdownRenderer>
           )}
-          <div className={styles.actions}>
-            {link && (
-              <Link
-                className={styles.link}
-                href={link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <GoLink fill="#7F58B7" size={20} />{" "}
-                <span className={styles["link-text"]}>Link</span>
-              </Link>
-            )}
-            {description && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (pollType === PollType.SINGLE_VOTE) {
-                    onVoteChange(index, "1");
-                  }
-                  setIsModalOpen(true);
-                }}
-                className={styles.viewMore}
-              >
-                View More
-              </button>
-            )}
-          </div>
+          {(link || description) && (
+            <div className={styles.actions}>
+              {link && (
+                <Link
+                  className={styles.link}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <GoLink fill="#7F58B7" size={20} />{" "}
+                  <span className={styles["link-text"]}>Link</span>
+                </Link>
+              )}
+              {description && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (pollType === PollType.SINGLE_VOTE) {
+                      onVoteChange(index, "1");
+                    }
+                    setIsModalOpen(true);
+                  }}
+                  className={styles.viewMore}
+                >
+                  View More
+                </button>
+              )}
+            </div>
+          )}
         </div>
         {pollOpen && (
           <div className={styles.voteControls}>
@@ -174,16 +176,6 @@ const VoteCard = ({
                   checked={Number(votes) !== 0}
                   onChange={handleVoteChange}
                 />
-                {description && (
-                  <label
-                    htmlFor={`candidate-votes-${index}`}
-                    className={`${styles["vote-label"]} ${
-                      Number(votes) !== 0 ? styles.selected : ""
-                    }`}
-                  >
-                    <p>{Number(votes) !== 0 ? "Selected" : "Select"}</p>
-                  </label>
-                )}
               </div>
             )}
 

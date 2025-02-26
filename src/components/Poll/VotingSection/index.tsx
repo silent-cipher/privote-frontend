@@ -225,6 +225,7 @@ export const VotingSection = ({
       )}
       <h2 className={styles.heading}>Poll Options</h2>
       <VoteSummarySection
+        pollType={pollType}
         options={options}
         optionInfo={optionInfo}
         votes={votes}

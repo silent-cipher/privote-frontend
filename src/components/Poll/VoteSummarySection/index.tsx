@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import styles from "./index.module.css";
 import { WeightInput } from "../VoteCard/components";
+import { PollType } from "~~/types/poll";
 
 interface VoteSummarySectionProps {
   options: readonly string[];
@@ -18,6 +19,7 @@ interface VoteSummarySectionProps {
   isLoading: boolean;
   canVote: boolean;
   children: React.ReactNode;
+  pollType: PollType;
 }
 
 let showSummary = false;
@@ -34,6 +36,7 @@ const VoteSummarySection = ({
   isLoading,
   canVote,
   children,
+  pollType,
 }: VoteSummarySectionProps) => {
   const [selectedOption, setSelectedOption] = useState<number>(0);
   const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -56,7 +59,7 @@ const VoteSummarySection = ({
 
   return (
     <div className={`${styles.container} ${showSummary ? styles.show : ""}`}>
-      {showSummary && (
+      {showSummary && pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
         <div className={styles["left-wrapper"]}>
           <div className={styles.leftColumn}>
             <div className={styles.header}>
