@@ -234,11 +234,7 @@ export const VotingSection = ({
         onVote={onVote}
         isLoading={isLoadingBatch || isLoadingSingle}
         handleWeightedVoteChange={handleWeightedVoteChange}
-        canVote={
-          isLoadingSingle ||
-          isLoadingBatch ||
-          Object.values(isVotesInvalid).some((v) => v)
-        }
+        canVote={votingState.canVote}
       >
         <ul className={styles["candidate-list"]}>
           {options.map((option: string, index: number) => (
