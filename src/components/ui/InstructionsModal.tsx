@@ -36,9 +36,9 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({
         <ol>
           <li>Connect your wallet.</li>
           <li>
-            Get funds for gas on the Holesky testnet if needed (use a faucet
-            like{" "}
-            <Link href="https://cloud.google.com/application/web3/faucet/ethereum/holesky">
+            Get funds for gas on the Arbitrum Sepolia testnet if needed (use a
+            faucet like{" "}
+            <Link href="https://faucet.quicknode.com/arbitrum/sepolia">
               this
             </Link>
             ).
