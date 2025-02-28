@@ -49,8 +49,75 @@
 .copyButton {
   background: none;
   border: none;
-  padding: 0;
+  cursor: pointer;
+  color: #f5f5f5;
+  padding: 4px;
+}
+
+.getFaucetButton {
+  background: #c45ec6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 16px 0;
+}
+
+.getFaucetButton:hover {
+  background: #d46fd8;
+}
+
+.getFaucetButton:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.recaptchaNotice {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.recaptchaLink {
   color: #c45ec6;
+  text-decoration: none;
+}
+
+.recaptchaLink:hover {
+  text-decoration: underline;
+}
+
+.statusMessage,
+.successMessage,
+.errorMessage {
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.statusMessage {
+  background: #1a1a1a;
+  color: #f5f5f5;
+}
+
+.successMessage {
+  background: #064e3b;
+  color: #f5f5f5;
+}
+
+.errorMessage {
+  background: #7f1d1d;
+  color: #f5f5f5;
+
+  padding: 8px 12px;
+  color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
