@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Modal from "../Modal";
-import Image from "next/image";
 import styles from "./index.module.css";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoCopy, IoCheckmark } from "react-icons/io5";
@@ -29,6 +28,7 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const requestInProgress = React.useRef(false);
 
   const handleCopy = async () => {
     if (address) {
@@ -39,12 +39,13 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleGetFaucet = async () => {
-    if (!address) return;
+    if (!address || requestInProgress.current) return;
+
+    requestInProgress.current = true;
 
     setIsLoading(true);
     setError(null);
 
-    // Execute reCAPTCHA v3
     const token = await window.grecaptcha.execute(
       process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "",
       {
@@ -52,8 +53,8 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
       }
     );
 
-    setIsLoading(true);
-    setError(null);
+    // wait for 5 seconds
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     try {
       const response = await fetch(
@@ -72,6 +73,11 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
         throw new Error(data.message || "Failed to get test ETH");
       }
 
+      localStorage.setItem(
+        `faucet_last_request_${address}`,
+        Date.now().toString()
+      );
+
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
@@ -81,8 +87,10 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
       setError(err instanceof Error ? err.message : "Failed to get test ETH");
     } finally {
       setIsLoading(false);
+      requestInProgress.current = false;
     }
   };
+
   return (
     <Modal isOpen={isOpen} showCloseButton maxWidth="400px" onClose={onClose}>
       <div className={styles.container}>
@@ -103,13 +111,20 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
           </div>
         )}
         {!isLoading && !success && (
-          <button onClick={handleGetFaucet} className={styles.getFaucetButton}>
+          <button
+            onClick={handleGetFaucet}
+            className={styles.getFaucetButton}
+            disabled={isLoading || requestInProgress.current}
+          >
             Get Test ETH
           </button>
         )}
 
         {isLoading && (
-          <div className={styles.statusMessage}>Processing your request...</div>
+          <div className={styles.statusMessage}>
+            <span className={`${styles.spinner} spinner`}></span>Processing your
+            request...
+          </div>
         )}
 
         {success && (
