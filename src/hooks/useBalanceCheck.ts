@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAccount, useNetwork } from "wagmi";
 import { useAccountBalance } from "./scaffold-eth/useAccountBalance";
 
-const MIN_BALANCE = 0.00001;
+const MIN_BALANCE = 0;
 
 export const useBalanceCheck = () => {
   const { address, isConnected } = useAccount();
