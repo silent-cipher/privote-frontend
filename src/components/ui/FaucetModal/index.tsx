@@ -58,7 +58,7 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SOCKET_URL}/api/faucet/${address}`,
+        `${process.env.NEXT_PUBLIC_FAUCET_URL}/api/faucets/${address}`,
         {
           method: "POST",
           headers: {
@@ -70,7 +70,7 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || "Failed to get test ETH");
+        throw new Error(data.error || "Failed to get test ETH");
       }
 
       localStorage.setItem(
