@@ -19,7 +19,7 @@ export const useBalanceCheck = () => {
     }
 
     if (isSupportedChain && isConnected && !isLoading && balance !== null) {
-      const hasInsufficientBalance = balance < MIN_BALANCE;
+      const hasInsufficientBalance = balance <= MIN_BALANCE;
 
       setShowFaucetModal(hasInsufficientBalance);
     } else {
