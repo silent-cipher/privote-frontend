@@ -107,6 +107,7 @@ const WithImageInput = ({
           placeholder={`Description...`}
           value={option.description || ""}
           onChange={(e) => onChange(e, "description")}
+          rows={3}
         />
         <input
           type={"text"}

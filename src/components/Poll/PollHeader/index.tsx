@@ -3,7 +3,7 @@ import Image from "next/image";
 import { LogInWithAnonAadhaar } from "@anon-aadhaar/react";
 import styles from "~~/styles/userPoll.module.css";
 import Button from "~~/components/ui/Button";
-import { PollStatus } from "~~/types/poll";
+import { AuthType, PollStatus, PollType } from "~~/types/poll";
 import { useAccount } from "wagmi";
 import { useState, useEffect } from "react";
 import { FaShare, FaQuestionCircle } from "react-icons/fa";
@@ -13,6 +13,7 @@ import InstructionsModal from "~~/components/ui/InstructionsModal";
 interface PollHeaderProps {
   authType: string;
   pollName: string;
+  pollType: PollType;
   pollDescription?: string;
   pollEndTime: bigint;
   pollStartTime: bigint;
@@ -42,6 +43,7 @@ function formatTimeRemaining(time: number) {
 export const PollHeader = ({
   authType,
   pollName,
+  pollType,
   status,
   isConnected,
   isUserRegistered,
@@ -111,12 +113,15 @@ export const PollHeader = ({
         </Link>
         <div className={styles.end}>
           <div className={styles.headerButtons}>
-            <button
-              className={styles.instructionsButton}
-              onClick={handleOpenInstructionsModal}
-            >
-              <FaQuestionCircle /> How to Vote
-            </button>
+            {pollType === PollType.WEIGHTED_MULTIPLE_VOTE &&
+              authType === AuthType.ANON && (
+                <button
+                  className={styles.instructionsButton}
+                  onClick={handleOpenInstructionsModal}
+                >
+                  <FaQuestionCircle /> How to Vote
+                </button>
+              )}
             <button
               className={styles.shareButton}
               onClick={handleOpenShareModal}

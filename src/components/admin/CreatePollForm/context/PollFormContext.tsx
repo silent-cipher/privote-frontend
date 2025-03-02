@@ -26,6 +26,13 @@ const initialPollData: IPollData = {
       link: "",
       isUploadedToIPFS: false,
     },
+    {
+      title: "",
+      description: "",
+      cid: "0x" as `0x${string}`,
+      link: "",
+      isUploadedToIPFS: false,
+    },
   ],
   keyPair: new Keypair(),
   authType: AuthType.FREE,

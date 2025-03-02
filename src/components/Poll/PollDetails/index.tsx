@@ -141,6 +141,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
     <div className={styles["poll-details"]}>
       <PollHeader
         pollName={poll.name}
+        pollType={pollMetadata.pollType}
         pollDescription={pollMetadata.description}
         pollEndTime={poll.endTime}
         pollStartTime={poll.startTime}
