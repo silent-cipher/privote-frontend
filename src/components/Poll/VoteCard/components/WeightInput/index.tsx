@@ -64,7 +64,7 @@ const WeightInput = ({
         <button
           type="button"
           onClick={() => {
-            const newValue = Number(votes) + 1;
+            const newValue = Number(votes) + 5;
             if (!maxVotePerPerson || Number(newValue) <= maxVotePerPerson) {
               // setShowInitial(false);
               handleWeightedVoteChange(votes, newValue.toString(), index);
