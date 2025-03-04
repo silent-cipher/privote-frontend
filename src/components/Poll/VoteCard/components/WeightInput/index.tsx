@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./index.module.css";
+import { EMode } from "~~/types/poll";
 
 interface WeightInputProps {
   index: number;
@@ -13,6 +14,7 @@ interface WeightInputProps {
     index: number
   ) => void;
   isInvalid: boolean;
+  isQv: EMode;
 }
 
 const WeightInput = ({
@@ -21,6 +23,7 @@ const WeightInput = ({
   maxVotePerPerson,
   handleWeightedVoteChange,
   isInvalid,
+  isQv,
 }: WeightInputProps) => {
   const [showInitial, setShowInitial] = useState(true);
 
@@ -71,9 +74,11 @@ const WeightInput = ({
           <Image src="/plus.svg" alt="plus" width={16} height={16} />
         </button>
       </div>
-      <div className={styles["vote-weight"]}>
-        <p>Weight: {Math.floor(Math.sqrt(Number(votes)))}</p>
-      </div>
+      {isQv === EMode.QV && (
+        <div className={styles["vote-weight"]}>
+          <p>Weight: {Math.floor(Math.sqrt(Number(votes)))}</p>
+        </div>
+      )}
     </div>
   );
 };

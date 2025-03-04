@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import styles from "./index.module.css";
 import { WeightInput } from "../VoteCard/components";
-import { PollType } from "~~/types/poll";
+import { EMode, PollType } from "~~/types/poll";
 
 interface VoteSummarySectionProps {
   options: readonly string[];
@@ -20,6 +20,7 @@ interface VoteSummarySectionProps {
   canVote: boolean;
   children: React.ReactNode;
   pollType: PollType;
+  isQv: EMode;
 }
 
 let showSummary = false;
@@ -37,6 +38,7 @@ const VoteSummarySection = ({
   canVote,
   children,
   pollType,
+  isQv,
 }: VoteSummarySectionProps) => {
   const [selectedOption, setSelectedOption] = useState<number>(0);
   const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -91,6 +93,7 @@ const VoteSummarySection = ({
                     <div className={styles.optionInfo}>
                       <h3>{option}</h3>
                       <WeightInput
+                        isQv={isQv}
                         index={index}
                         votes={optionVotes}
                         maxVotePerPerson={maxVotePerPerson}

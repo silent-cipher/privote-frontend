@@ -156,6 +156,7 @@ const PollDetails = ({ id, isUserRegistered }: IPollDetails) => {
 
       <VotingSection
         votes={votes}
+        isQv={poll.isQv as EMode}
         pollTitle={poll.name}
         pollDescription={pollMetadata.description}
         pollId={id}

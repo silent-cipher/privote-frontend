@@ -110,7 +110,3 @@ body > div[data-rk] {
   text-decoration: underline;
   color: #7f58b7;
 }
-
-.description > *:nth-last-child(2) {
-  display: inline;
-}

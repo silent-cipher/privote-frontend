@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { PollType } from "~~/types/poll";
+import { EMode, PollType } from "~~/types/poll";
 import { GoLink } from "react-icons/go";
 import styles from "./index.module.css";
 import { decodeOptionInfo } from "~~/utils/optionInfo";
@@ -39,6 +39,7 @@ interface VoteCardProps {
   onVote: () => void;
   isLoading: boolean;
   isUserRegistered: boolean;
+  isQv: EMode;
 }
 
 const VoteCard = ({
@@ -61,6 +62,7 @@ const VoteCard = ({
   maxVotePerPerson,
   onVote,
   isLoading,
+  isQv,
 }: VoteCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isConnected } = useAccount();
@@ -182,6 +184,7 @@ const VoteCard = ({
             {pollType === PollType.WEIGHTED_MULTIPLE_VOTE && (
               <WeightInput
                 index={index}
+                isQv={isQv}
                 votes={votes}
                 maxVotePerPerson={maxVotePerPerson}
                 handleWeightedVoteChange={handleWeightedVoteChange}

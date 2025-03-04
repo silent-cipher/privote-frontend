@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "~~/styles/userPoll.module.css";
-import { PollStatus, PollType } from "~~/types/poll";
+import { EMode, PollStatus, PollType } from "~~/types/poll";
 import VoteCard from "../VoteCard";
 import { useAnonAadhaar } from "@anon-aadhaar/react";
 import MarkdownRenderer from "~~/components/common/MarkdownRenderer";
@@ -13,6 +13,7 @@ import { notification } from "~~/utils/scaffold-eth";
 interface VotingSectionProps {
   votes: { index: number; votes: string }[];
   pollId: bigint;
+  isQv: EMode;
   pollTitle: string;
   pollDescription?: string;
   pollStatus?: PollStatus;
@@ -40,6 +41,7 @@ interface VotingSectionProps {
 export const VotingSection = ({
   votes,
   pollId,
+  isQv,
   pollTitle,
   pollDescription,
   maxVotePerPerson,
@@ -225,6 +227,7 @@ export const VotingSection = ({
       )}
       <h2 className={styles.heading}>Poll Options</h2>
       <VoteSummarySection
+        isQv={isQv}
         pollType={pollType}
         options={options}
         optionInfo={optionInfo}
@@ -241,6 +244,7 @@ export const VotingSection = ({
           {options.map((option: string, index: number) => (
             <VoteCard
               key={index}
+              isQv={isQv}
               votes={votes.find((v) => v.index === index)?.votes || ""}
               pollOpen={pollStatus === PollStatus.OPEN}
               maxVotePerPerson={maxVotePerPerson}
