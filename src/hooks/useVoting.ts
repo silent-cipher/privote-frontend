@@ -5,7 +5,6 @@ import { genRandomSalt } from "maci-crypto";
 import { notification } from "~~/utils/scaffold-eth";
 import { PollType, PollStatus, EMode } from "~~/types/poll";
 import PollAbi from "~~/abi/Poll";
-import { useScaffoldContractWrite } from "./scaffold-eth";
 
 interface UseVotingProps {
   pollAddress?: string;
@@ -226,6 +225,8 @@ export const useVoting = ({
         });
         setSelectedCandidate(null);
       }
+
+      notification.success("Voted successfully!");
     } catch (err) {
       console.error("err", err);
       notification.error("Casting vote failed, please try again");

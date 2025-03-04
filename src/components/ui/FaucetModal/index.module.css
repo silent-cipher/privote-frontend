@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 24px;
   gap: 16px;
 }
 
@@ -64,7 +63,6 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 16px 0;
 }
 
 .getFaucetButton:hover {
@@ -99,7 +97,6 @@
   border-radius: 8px;
   width: 100%;
   text-align: center;
-  margin: 16px 0;
 }
 
 .statusMessage {
@@ -137,27 +134,65 @@
   color: #d671d8;
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  color: #666;
+  margin-block: 8px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #333;
+}
+
+.divider span {
+  margin: 0 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.externalLinksSection {
+  width: 100%;
+  border: 1px dashed #333;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #1a1a1a;
+}
+
+.externalLinksHeader {
+  font-size: 16px;
+  font-weight: 500;
+  color: #a3a3a3;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
 .links {
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  margin-top: 8px;
 }
 
 .link {
   display: block;
   padding: 12px;
-  background: #1a1a1a;
+  background: #242424;
   border: 1px solid #333;
   border-radius: 8px;
-  color: #c45ec6;
+  color: #a3a3a3;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .link:hover {
-  background: #242424;
-  border-color: #c45ec6;
+  background: #2a2a2a;
+  border-color: #666;
+  color: #c45ec6;
 }

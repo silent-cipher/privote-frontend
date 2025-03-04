@@ -92,7 +92,13 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} showCloseButton maxWidth="400px" onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      showCloseButton
+      maxWidth="400px"
+      padding="16px"
+      onClose={onClose}
+    >
       <div className={styles.container}>
         <IoWarningOutline size={64} />
         <h3 className={styles.title}>Insufficient Balance</h3>
@@ -129,11 +135,39 @@ const FaucetModal: React.FC<FaucetModalProps> = ({ isOpen, onClose }) => {
 
         {success && (
           <div className={styles.successMessage}>
-            Success! Test ETH has been sent to your wallet.
+            Success! Test ETH has been sent.
           </div>
         )}
 
         {error && <div className={styles.errorMessage}>{error}</div>}
+
+        <div className={styles.divider}>
+          <span>OR</span>
+        </div>
+
+        <div className={styles.externalLinksSection}>
+          <h4 className={styles.externalLinksHeader}>
+            External Faucet Options
+          </h4>
+          <div className={styles.links}>
+            <a
+              href="https://www.alchemy.com/faucets/arbitrum-sepolia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.link}
+            >
+              Alchemy Faucet
+            </a>
+            <a
+              href="https://faucet.quicknode.com/arbitrum/sepolia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.link}
+            >
+              Quicknode Faucet
+            </a>
+          </div>
+        </div>
         <div className={styles.recaptchaNotice}>
           This site is protected by reCAPTCHA and the Google{" "}
           <a
