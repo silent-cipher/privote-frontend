@@ -226,6 +226,7 @@ export const useVoting = ({
         setSelectedCandidate(null);
       }
 
+      setVotes([]);
       notification.success("Voted successfully!");
     } catch (err) {
       console.error("err", err);
