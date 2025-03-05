@@ -221,7 +221,7 @@ export const VotingSection = ({
           <Image src={"/info.svg"} alt="info" width={24} height={24} />
           <p>
             As no one knows whom you voted for, you can change your vote at any
-            time before the poll ends
+            time before the poll ends. Only the last vote counts.
           </p>
         </div>
       )}
