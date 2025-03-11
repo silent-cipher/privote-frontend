@@ -13,7 +13,7 @@ import OptionDetailsModal from "./OptionDetailsModal";
 import MarkdownRenderer from "~~/components/common/MarkdownRenderer";
 
 interface VoteCardProps {
-  votes: string;
+  votes: number | string;
   title: string;
   bytesCid: string;
   result?: {

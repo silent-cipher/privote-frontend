@@ -241,31 +241,44 @@ export const VotingSection = ({
         canVote={votingState.canVote}
       >
         <ul className={styles["candidate-list"]}>
-          {options.map((option: string, index: number) => (
+          {(pollStatus === PollStatus.RESULT_COMPUTED && result
+            ? [...options]
+                .map((option: string, index: number) => ({
+                  option,
+                  votes: result.find((r) => r.candidate === option)?.votes || 0,
+                  prevIndex: index,
+                }))
+                .sort((a, b) => b.votes - a.votes)
+            : options.map((option: string, index: number) => ({
+                option,
+                votes: votes.find((v) => v.index === index)?.votes || 0,
+                prevIndex: index,
+              }))
+          ).map(({ option, votes, prevIndex }, index) => (
             <VoteCard
-              key={index}
+              key={prevIndex}
               isQv={isQv}
-              votes={votes.find((v) => v.index === index)?.votes || ""}
+              votes={votes}
               pollOpen={pollStatus === PollStatus.OPEN}
               maxVotePerPerson={maxVotePerPerson}
               title={option}
-              bytesCid={optionInfo[index]}
-              index={index}
+              bytesCid={optionInfo[prevIndex]}
+              index={prevIndex}
               result={result?.find((r) => r.candidate === option)}
               totalVotes={totalVotes}
               isUserRegistered={isUserRegistered}
               handleWeightedVoteChange={handleWeightedVoteChange}
               isWinner={result?.[0]?.candidate === option}
               pollType={pollType}
-              isInvalid={Boolean(isVotesInvalid[index])}
+              isInvalid={Boolean(isVotesInvalid[prevIndex])}
               onVoteChange={(index, votes) => {
                 handleVoteChange(index, votes);
               }}
               onInvalidStatusChange={(status) =>
-                handleInvalidStatusChange(index, status)
+                handleInvalidStatusChange(prevIndex, status)
               }
-              onSelect={() => handleSelect(index)}
-              isSelected={selectedCandidate === index}
+              onSelect={() => handleSelect(prevIndex)}
+              isSelected={selectedCandidate === prevIndex}
               onVote={onVote}
               isLoading={isLoadingBatch || isLoadingSingle}
             />

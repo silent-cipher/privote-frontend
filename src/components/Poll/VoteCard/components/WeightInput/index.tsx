@@ -6,7 +6,7 @@ import { EMode } from "~~/types/poll";
 
 interface WeightInputProps {
   index: number;
-  votes: string;
+  votes: number | string;
   maxVotePerPerson: number | undefined;
   handleWeightedVoteChange: (
     prevVotes: string | undefined,
@@ -28,7 +28,7 @@ const WeightInput = ({
   const [showInitial, setShowInitial] = useState(true);
 
   useEffect(() => {
-    if (votes.length > 0) setShowInitial(false);
+    if (Number(votes) > 0) setShowInitial(false);
   }, [votes]);
 
   return (
@@ -40,7 +40,11 @@ const WeightInput = ({
             if (Number(votes) > 0) {
               // setShowInitial(false);
               const newValue = Number(votes) - 1;
-              handleWeightedVoteChange(votes, newValue.toString(), index);
+              handleWeightedVoteChange(
+                votes.toString(),
+                newValue.toString(),
+                index
+              );
             }
           }}
         >
@@ -53,7 +57,7 @@ const WeightInput = ({
             const value = e.target.value;
             // Only allow numeric input (empty or numbers)
             if (value === "" || /^\d+$/.test(value)) {
-              handleWeightedVoteChange(votes, value, index);
+              handleWeightedVoteChange(votes.toString(), value, index);
             }
           }}
           min={0}
@@ -67,7 +71,11 @@ const WeightInput = ({
             const newValue = Number(votes) + 5;
             if (!maxVotePerPerson || Number(newValue) <= maxVotePerPerson) {
               // setShowInitial(false);
-              handleWeightedVoteChange(votes, newValue.toString(), index);
+              handleWeightedVoteChange(
+                votes.toString(),
+                newValue.toString(),
+                index
+              );
             }
           }}
         >
