@@ -14,6 +14,7 @@ import { useAccount } from "wagmi";
 import { useSigContext } from "~~/contexts/SigContext";
 import { AuthType, PollType } from "~~/types/poll";
 import { getMaciContractName } from "~~/utils/maciName";
+import { useBalanceCheck } from "./useBalanceCheck";
 
 const anonAadhaarInitArgs: InitArgs = {
   wasmURL: artifactUrls.v2.wasm,
@@ -27,6 +28,8 @@ const useUserRegister = (authType?: AuthType, pollType?: PollType) => {
   const { keypair } = useSigContext();
   const [anonAadhaar] = useAnonAadhaar();
   const { address, isDisconnected } = useAccount();
+  const { showFaucetModal, onCloseFaucetModal, checkBalance } =
+    useBalanceCheck();
 
   useEffect(() => {
     init(anonAadhaarInitArgs);
@@ -136,6 +139,8 @@ const useUserRegister = (authType?: AuthType, pollType?: PollType) => {
   };
 
   const registerUser = async () => {
+    if (checkBalance()) return;
+
     if (authType === "free") {
       await registerUserForFreeForAll();
     } else {
@@ -143,7 +148,7 @@ const useUserRegister = (authType?: AuthType, pollType?: PollType) => {
     }
   };
 
-  return { registerUser, isLoading };
+  return { registerUser, isLoading, showFaucetModal, onCloseFaucetModal };
 };
 
 export default useUserRegister;

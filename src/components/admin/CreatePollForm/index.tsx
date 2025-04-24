@@ -11,6 +11,7 @@ import {
 } from "./components";
 import Button from "~~/components/ui/Button";
 import { usePollForm } from "./context";
+import FaucetModal from "~~/components/ui/FaucetModal";
 
 const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
   const { isConnected } = useAccount();
@@ -33,6 +34,8 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
     handleRemoveOption,
     handleSubmit,
     handleVeriMethodChange,
+    showFaucetModal,
+    onCloseFaucetModal,
   } = usePollForm();
 
   if (!isConnected) {
@@ -45,6 +48,7 @@ const CreatePollForm = ({ onClose, refetchPolls }: CreatePollFormProps) => {
 
   return (
     <div className={styles["create-form"]}>
+      <FaucetModal isOpen={showFaucetModal} onClose={onCloseFaucetModal} />
       <button className={styles.back} onClick={onClose}>
         <Image src="/arrow-left.svg" alt="arrow left" width={27} height={27} />
       </button>
