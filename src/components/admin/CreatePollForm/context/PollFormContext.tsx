@@ -10,6 +10,7 @@ import { uploadFileToLighthouse } from "~~/utils/lighthouse";
 import CID from "cids";
 import { AuthType, PollType } from "~~/types/poll";
 import { useRouter } from "next/navigation";
+import { useBalanceCheck } from "~~/hooks/useBalanceCheck";
 
 const initialPollData: IPollData = {
   title: "",
@@ -67,6 +68,8 @@ interface PollFormContextType {
   handleRemoveOption: (index: number) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   handleVeriMethodChange: (e: React.ChangeEvent<any>) => void;
+  showFaucetModal: boolean;
+  onCloseFaucetModal: () => void;
 }
 
 const PollFormContext = createContext<PollFormContextType | undefined>(
@@ -83,6 +86,8 @@ export const PollFormProvider = ({ children }: { children: ReactNode }) => {
   >("none");
   const [showKeys, setShowKeys] = useState({ show: false, privKey: "" });
   const [pollConfig, setPollConfig] = useState(0);
+  const { showFaucetModal, onCloseFaucetModal, checkBalance } =
+    useBalanceCheck();
 
   const duration = Math.round((pollData.expiry.getTime() - Date.now()) / 1000);
 
@@ -220,6 +225,8 @@ export const PollFormProvider = ({ children }: { children: ReactNode }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    if (checkBalance()) return;
+
     setIsLoading(true);
     try {
       const cids: `0x${string}`[] = [];
@@ -311,6 +318,8 @@ export const PollFormProvider = ({ children }: { children: ReactNode }) => {
     handleRemoveOption,
     handleSubmit,
     handleVeriMethodChange,
+    showFaucetModal,
+    onCloseFaucetModal,
   };
 
   return (

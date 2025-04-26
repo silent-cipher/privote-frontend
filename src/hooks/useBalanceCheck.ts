@@ -1,34 +1,43 @@
-import { useEffect, useState } from "react";
-import { useAccount, useNetwork } from "wagmi";
-import { useAccountBalance } from "./scaffold-eth/useAccountBalance";
+"use client";
+import { useState } from "react";
+import { useAccount, useBalance, useChainId, useNetwork } from "wagmi";
+import { notification } from "~~/utils/scaffold-eth";
 
 const MIN_BALANCE = 0;
 
 export const useBalanceCheck = () => {
-  const { address, isConnected } = useAccount();
-  const { chain, chains } = useNetwork();
-  const { balance, isLoading } = useAccountBalance(address);
+  const { address } = useAccount();
+  const chainId = useChainId();
+  const { chains } = useNetwork();
+  const { data: balance, isLoading } = useBalance({ address, chainId });
   const [showFaucetModal, setShowFaucetModal] = useState(false);
 
-  useEffect(() => {
-    const isSupportedChain = chains?.some((c) => c?.id === chain?.id);
+  const checkBalance = () => {
+    if (!address) {
+      notification.error("Please connect your wallet");
+      return true;
+    }
+    const isSupportedChain = chains?.some((c) => c?.id === chainId);
 
     if (!isSupportedChain) {
+      notification.error("Please connect to a supported network");
       setShowFaucetModal(false);
-      return;
+      return true;
     }
 
-    if (isSupportedChain && isConnected && !isLoading && balance !== null) {
-      const hasInsufficientBalance = balance <= MIN_BALANCE;
+    if (!isLoading && balance && Number(balance.value) <= MIN_BALANCE) {
+      notification.error("Insufficient balance");
+      setShowFaucetModal(true);
 
-      setShowFaucetModal(hasInsufficientBalance);
-    } else {
-      setShowFaucetModal(false);
+      return true;
     }
-  }, [isConnected, chain?.id, balance, isLoading, chains]);
+
+    return false;
+  };
 
   return {
     showFaucetModal,
     onCloseFaucetModal: () => setShowFaucetModal(false),
+    checkBalance,
   };
 };

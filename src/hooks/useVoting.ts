@@ -5,6 +5,7 @@ import { genRandomSalt } from "maci-crypto";
 import { notification } from "~~/utils/scaffold-eth";
 import { PollType, PollStatus, EMode } from "~~/types/poll";
 import PollAbi from "~~/abi/Poll";
+import { useBalanceCheck } from "./useBalanceCheck";
 
 interface UseVotingProps {
   pollAddress?: string;
@@ -36,6 +37,8 @@ export const useVoting = ({
   const [selectedCandidate, setSelectedCandidate] = useState<number | null>(
     null
   );
+  const { showFaucetModal, onCloseFaucetModal, checkBalance } =
+    useBalanceCheck();
 
   const { writeAsync: publishMessage, isLoading: isLoadingSingle } =
     useContractWrite({
@@ -126,6 +129,8 @@ export const useVoting = ({
       notification.error("Voting is closed for this poll");
       return;
     }
+
+    if (checkBalance()) return;
 
     // remove any votes from the array that are invalid
     let updatedVotes = votes
@@ -244,6 +249,8 @@ export const useVoting = ({
     setSelectedCandidate,
     voteUpdated,
     castVote,
+    showFaucetModal,
+    onCloseFaucetModal,
   };
 };
 
